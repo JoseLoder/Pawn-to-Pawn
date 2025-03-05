@@ -1,6 +1,10 @@
 import { useMutation } from '@tanstack/react-query'
 import { createClient } from '../../api/clients'
 import { RegisterClient } from '../../types/Clients'
+
+/*
+TODO: Use Zod to validate fields, control all errors and try use FormData
+*/
 export function AddClient() {
 
     const addClientMutation = useMutation({

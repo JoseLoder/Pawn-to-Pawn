@@ -19,3 +19,8 @@ export const createClient = async (client: RegisterClient) => {
     const res = await clientsApi.post('/', client)
     return res.data
 }
+
+export const removeClient = async (id: string) => {
+    const res = await clientsApi.delete(`/${id}`)
+    return res.data
+}
