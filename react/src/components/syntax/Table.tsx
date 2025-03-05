@@ -22,8 +22,9 @@ export function Table({ clients }: TableProps) {
   const getClientMutation = useMutation({
     mutationKey: ['Get Client'],
     mutationFn: getClientsById,
-    onSuccess: () => {
+    onSuccess: (client) => {
       alert('Client Found')
+      console.log(client)
     }
   })
 
@@ -58,7 +59,7 @@ export function Table({ clients }: TableProps) {
               ))}
             <td>
               <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => {removeRow(e, client.id)}}>Borrar</button>
-              <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => {getClient(e, client.id)}}>Show more</button>
+              <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => {getClient(e, client.id)}}>Edit Client</button>
             </td>
           </tr>
         ))}
