@@ -1,0 +1,19 @@
+{
+  "name": "pawn-to-pawn",
+  "version": "1.0.0",
+  "description": "Project to learn",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jrx-jms/pawn-to-pawn.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jrx-jms/pawn-to-pawn/issues"
+  },
+  "homepage": "https://github.com/jrx-jms/pawn-to-pawn#readme"
+}

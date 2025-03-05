@@ -1,0 +1,30 @@
+[
+  {
+    "id": "90837eb0-573f-4ea1-83eb-9b2153623178",
+    "dni": "12345678A",
+    "name": "John Doe",
+    "email": "john@jonh.com",
+    "phone": "123456789"
+  },
+  {
+    "id": "70ca3694-526f-453b-b9b2-9e29f4622e42",
+    "dni": "87654321B",
+    "name": "Jane Doe",
+    "email": "jane@jane.com",
+    "phone": "987654321"
+  },
+  {
+    "id": "fafe4679-de2b-41df-bbf3-b8feaa200d30",
+    "dni": "12345563A",
+    "name": "test",
+    "email": "test@test.com",
+    "phone": "321432543"
+  },
+  {
+    "id": "ec4061fe-ee9b-465f-ac2d-4ef475bb024c",
+    "dni": "77653071B",
+    "name": "josh",
+    "email": "jose@jose.com",
+    "phone": "633338128"
+  }
+]
