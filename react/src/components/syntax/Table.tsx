@@ -1,6 +1,6 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { Client } from "../../types/Clients";
-import { removeClient } from "../../api/clients";
+import { getClientsById, removeClient } from "../../api/clients";
 
 interface TableProps {
   readonly clients: Client[];
@@ -19,9 +19,21 @@ export function Table({ clients }: TableProps) {
     }
   })
 
+  const getClientMutation = useMutation({
+    mutationKey: ['Get Client'],
+    mutationFn: getClientsById,
+    onSuccess: () => {
+      alert('Client Found')
+    }
+  })
+
   const removeRow = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault()
     deleteClientMutation.mutate(id)
+  }
+  const getClient = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
+    e.preventDefault()
+    getClientMutation.mutate(id)
   }
 
   return (
@@ -46,6 +58,7 @@ export function Table({ clients }: TableProps) {
               ))}
             <td>
               <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => {removeRow(e, client.id)}}>Borrar</button>
+              <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => {getClient(e, client.id)}}>Show more</button>
             </td>
           </tr>
         ))}
