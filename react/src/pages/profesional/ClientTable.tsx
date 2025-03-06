@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 
-import { Table } from "../../components/syntax/Table";
+import { Table } from "../../components/semantic/Table";
 import { getClients } from "../../api/clients";
 
 export function ClientTable() {

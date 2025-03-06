@@ -1,4 +1,4 @@
-import { Header } from "../components/syntax/Header"
+import { Header } from "../components/semantic/Header"
 
 export function Client() {
     return (

@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
-import { Header } from "../components/syntax/Header";
-import { Nav } from "../components/syntax/Nav";
+import { Header } from "../components/semantic/Header";
+import { Nav } from "../components/semantic/Nav";
 import styled from "@emotion/styled";
 
 const StyledMain = styled.main`

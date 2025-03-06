@@ -12,6 +12,7 @@ import App from "./App.tsx";
 import { AddClient } from "./pages/profesional/AddClient.tsx";
 import { Login } from "./pages/home/Login.tsx";
 import { Register } from "./pages/home/Register.tsx";
+import { EditClient } from "./pages/profesional/EditClient.tsx";
 
 const StyledRoot = styled.div`
   width: 100%;
@@ -40,6 +41,7 @@ createRoot(document.getElementById("root")!).render(
         <Route path="professional" element={<Professional />}>
           <Route path="clients" element={<ClientTable />} />
           <Route path="add-client" element={<AddClient />} />
+          <Route path="edit-client/" element={<EditClient />} />
         </Route>
         <Route path="client" element={<Client />}>
           {/* Routes from client */}

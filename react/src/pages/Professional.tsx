@@ -1,12 +1,13 @@
 import { Outlet } from "react-router";
-import { Header } from "../components/syntax/Header";
-import { Nav } from "../components/syntax/Nav";
-
+import { Header } from "../components/semantic/Header";
+import { Nav } from "../components/semantic/Nav";
+import { ProfesionalContextProvider } from "../contexts/ProfessionalContextProvider";
 export function Professional() {
 
   const linksToShow = [
     { to: "add-client", text: "Add Client" },
-    { to: "clients", text: "Clients" }
+    { to: "clients", text: "Clients" },
+    { to: "edit-client", text: "Edit Client" }
   ]
 
     return (
@@ -14,7 +15,9 @@ export function Professional() {
             <Header title="Hello Profesional">
               <Nav links={linksToShow} />
             </Header>
-            <Outlet />
+            <ProfesionalContextProvider>
+              <Outlet />
+            </ProfesionalContextProvider>
         </>
       )
     }

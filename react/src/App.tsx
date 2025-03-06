@@ -1,4 +1,4 @@
-import { Nav } from './components/syntax/Nav'
+import { Nav } from './components/semantic/Nav'
 function App() {
 const linksToShow = [
     { to: "professional", text: "Professional" },
