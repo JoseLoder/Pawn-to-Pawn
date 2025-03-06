@@ -1,90 +1,38 @@
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { Client } from "../../types/Clients";
-import { getClientsById, removeClient } from "../../api/clients";
-import { useNavigate } from "react-router";
-import { useContext } from "react";
-import { ProfessionalContext } from "../../contexts/ProfessionalContext";
-
-
-/* type Columns = {
-  path: string,
-  name: string,
-}
-interface IncomingStructureData {
-  columns: Columns[],
-  items: any[];
-} */
-
-
-interface TableProps {
-  clients: Client[];
-}
-
-export function Table({clients}: Readonly<TableProps>/* { columns, items }: Readonly<IncomingStructureData> */) {
-
-  const queryClient = useQueryClient() 
-  const navigate = useNavigate()
-
-  const deleteClientMutation = useMutation({
-    mutationKey: ['Delete Client'],
-    mutationFn: removeClient,
-    onSuccess: () => {
-      alert('Client remove')
-      queryClient.invalidateQueries({ queryKey: ['clients'] }) // Compares the cache and re-triggers the client request
-    }
-  })
-
-  const contextProffesionalProvider = useContext(ProfessionalContext)
-  if (!contextProffesionalProvider) {
-    throw new Error("ProfessionalContext must be used within a ProfessionalProvider")
+type Columns = {
+    path: string,
+    name: string,
   }
-  const { handleSetClient } = contextProffesionalProvider
-
-  const getClientMutation = useMutation({
-    mutationKey: ['Get Client'],
-    mutationFn: getClientsById,
-    onSuccess: (client) => {
-      handleSetClient(client)
-      navigate('/professional/edit-client')
-    }
-  })
-
-  const removeRow = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
-    e.preventDefault()
-    deleteClientMutation.mutate(id)
+  interface IncomingStructureData {
+    columns: Columns[],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    items: any[];
   }
-  const getClient = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
-    e.preventDefault()
-    getClientMutation.mutate(id)
-  }
-
-  return (
-    <table>
-      <thead>
-        <tr>
-          {Object.keys(clients[0])
-            .filter((key) => key !== "id" && key !== "dni")
-            .map((key) => (
-              <th key={key}>{key}</th>
-            ))}
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {clients.map((client) => (
-          <tr key={client.id}>
-            {Object.entries(client)
-              .filter(([key]) => key !== "id" && key !== "dni")
-              .map(([key, value]) => (
-                <td key={key}>{value}</td>
+  
+export function Table({ columns, items }: Readonly<IncomingStructureData>) {
+    return (
+        <table>
+          <thead>
+            <tr>
+              {columns.map((column) => (
+                <th key={column.path + column.name}>{column.name}</th>
               ))}
-            <td>
-              <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => {removeRow(e, client.id)}}>Borrar</button>
-              <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => {getClient(e, client.id)}}>Edit Client</button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+    {/*           <th>Actions</th> */}
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item) => (
+              <tr key={item.id}>
+                {columns.map((column) => (
+                  <td key={column.path + column.name}>{item[column.path]}</td>
+                ))}
+    {/*             <td>
+                  <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => {removeRow(e, item.id)}}>Borrar</button>
+                  <button onClick={(e: React.MouseEvent<HTMLButtonElement>) => {getClient(e, item.id)}}>Edit Client</button>
+                </td> */}
+              </tr>
+            ))}
+    
+          </tbody>
+        </table>
+      );
 }

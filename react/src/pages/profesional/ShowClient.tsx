@@ -1,10 +1,10 @@
 import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 
-import { Table } from "../../components/semantic/Table";
+import { ClientsTable } from "../../components/other/ClientsTable";
 import { getClients } from "../../api/clients";
 
-export function ClientTable() {
+export function ShowClient() {
   const clientListQuery = useQuery({
     queryKey: ["clients"],
     queryFn: getClients,
@@ -21,7 +21,7 @@ export function ClientTable() {
         <section>
           <h3>Clients table</h3>
           <div>Result {clients.length} clients</div>
-          <Table clients={clients} />
+          <ClientsTable clients={clients}/>
         </section>
       )}
     </>

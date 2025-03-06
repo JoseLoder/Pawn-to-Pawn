@@ -6,7 +6,7 @@ export function Professional() {
 
   const linksToShow = [
     { to: "add-client", text: "Add Client" },
-    { to: "clients", text: "Clients" },
+    { to: "show-client", text: "Show Client" },
     { to: "edit-client", text: "Edit Client" }
   ]
 

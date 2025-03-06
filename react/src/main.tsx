@@ -7,7 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Professional } from "./pages/Professional.tsx";
 import { Home } from "./pages/Home.tsx";
 import { Client } from "./pages/Client.tsx";
-import { ClientTable } from "./pages/profesional/ClientTable.tsx";
+import { ShowClient } from "./pages/profesional/ShowClient.tsx";
 import App from "./App.tsx";
 import { AddClient } from "./pages/profesional/AddClient.tsx";
 import { Login } from "./pages/home/Login.tsx";
@@ -39,7 +39,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="register" element={<Register/>}/>
         </Route>
         <Route path="professional" element={<Professional />}>
-          <Route path="clients" element={<ClientTable />} />
+          <Route path="show-client" element={<ShowClient />} />
           <Route path="add-client" element={<AddClient />} />
           <Route path="edit-client/" element={<EditClient />} />
         </Route>
