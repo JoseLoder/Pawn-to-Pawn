@@ -6,9 +6,14 @@ interface IncomingStructureData {
   columns: Columns[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   items: any[];
+  actions?: {
+    name: string;
+    action: (id: string) => void;
+    icon?: string;
+  }[];
 }
 
-export function Table({ columns, items }: Readonly<IncomingStructureData>) {
+export function Table({ columns, items, actions }: Readonly<IncomingStructureData>) {
   return (
     <table>
       <thead>
@@ -25,8 +30,8 @@ export function Table({ columns, items }: Readonly<IncomingStructureData>) {
               <td key={column.path}>
                 {column.path === "actions" ? (
                   <>
-                    {item.actions.map((action: { name: string; action: () => void }) => (
-                      <button key={action.name} onClick={action.action}>
+                    {actions?.map((action) => (
+                      <button key={action.name} onClick={() => action.action(item.id)}>
                         {action.name}
                       </button>
                     ))}

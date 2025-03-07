@@ -4,7 +4,7 @@ import { Table } from "../semantic/Table";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { getClientsById, removeClient } from "../../api/clients";
 import { useNavigate } from "react-router";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { ProfessionalContext } from "../../contexts/ProfessionalContext";
 
 const columns = [
@@ -58,23 +58,36 @@ export function ClientsTable({ clients }: Readonly<{ clients: Client[] }>) {
     },
   });
 
-  // Desctructure clients and add actions
-  const clientsWithActions = clients.map((client) => ({
-    ...client,
-    actions: [
-      {
+  // Actions to be performed on the client
+  const deleteClient = useCallback(
+    (id: string) => {
+      deleteClientMutation.mutate(id);
+    },
+    [deleteClientMutation]
+  );
+
+  const editClient = useCallback(
+    (id: string) => {
+      getClientMutation.mutate(id);
+    },
+    [getClientMutation]
+  );
+
+  // Create actions
+  const actions = [
+    {
       name: "Delete",
-      action: () => {
-        deleteClientMutation.mutate(client.id);
-      }
+      action: (id: string) => {
+        deleteClient(id);
+      },
     },
     {
       name: "Edit",
-      action: () => {
-        getClientMutation.mutate(client.id);
-      }
-    }
-    ],
-  }));
-  return <Table columns={columns} items={clientsWithActions} />;
+      action: (id: string) => {
+        editClient(id);
+      },
+    },
+  ];
+
+  return <Table columns={columns} items={clients} actions={actions} />;
 }
