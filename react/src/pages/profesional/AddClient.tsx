@@ -1,11 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
 import { createClient } from '../../api/clients'
-import { RegisterClient } from '../../types/Clients'
+import { Client } from '../../types/Clients'
+import { useRef } from 'react'
 
 /*
 TODO: Use Zod to validate fields, control all errors and try use FormData
 */
 export function AddClient() {
+    const formRef = useRef<HTMLFormElement>(null)
 
     const addClientMutation = useMutation({
         mutationKey: ['add Client'],
@@ -17,37 +19,20 @@ export function AddClient() {
     })
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-/*         const formData = new FormData(e.target as HTMLFormElement)
-        const client = Object.fromEntries(formData) as Client */
-        const client = getFields()
+        const formData = new FormData(e.target as HTMLFormElement)
+        const client = Object.fromEntries(formData) as Client
         addClientMutation.mutate(client)
     }
-
-     const getFields = (): RegisterClient => {
-        const dni = (document.getElementById('dni') as HTMLInputElement).value
-        const name = (document.getElementById('name') as HTMLInputElement).value
-        const email = (document.getElementById('email') as HTMLInputElement).value
-        const phone = (document.getElementById('phone') as HTMLInputElement).value
-
-        const client = {
-            dni,
-            name,
-            email,
-            phone
-        }
-        return client
-    }
     const clearFields = () => {
-        (document.getElementById('dni') as HTMLInputElement).value = ''
-        ;(document.getElementById('name') as HTMLInputElement).value = ''
-        ;(document.getElementById('email') as HTMLInputElement).value = ''
-        ;(document.getElementById('phone') as HTMLInputElement).value = ''
+        if (formRef.current) {
+            formRef.current.reset();
+        }
     } 
        
     return (
         <div>
             <h1>Add Client</h1>
-            <form onSubmit={handleSubmit}>
+            <form ref={formRef} onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="dni">DNI</label>
                     <input type="text" id="dni" />
