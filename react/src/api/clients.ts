@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { RegisterClient } from '../types/Clients'
+import { Client, RegisterClient } from '../types/Clients'
 
 const clientsApi = axios.create({
     baseURL: 'http://localhost:3000/clients'
@@ -22,5 +22,10 @@ export const createClient = async (client: RegisterClient) => {
 
 export const removeClient = async (id: string) => {
     const res = await clientsApi.delete(`/${id}`)
+    return res.data
+}
+
+export const modifyClient = async (client: Client) => {
+    const res = await clientsApi.put(`/${client.id}`, client)
     return res.data
 }

@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { ProfessionalContext } from "../../contexts/ProfessionalContext";
-import { useQuery } from "@tanstack/react-query";
-import { getClients } from "../../api/clients";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getClients, modifyClient } from "../../api/clients";
 import { Client } from "../../types/Clients";
 
 export function EditClient () {
@@ -9,6 +9,16 @@ export function EditClient () {
         queryKey: ['client'],
         queryFn: getClients
     });
+
+/*     const modifyClientMutation = useMutation({
+        mutationKey: ['Modify Client'],
+        mutationFn: modifyClient,
+    }); */
+    const handleModifyClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        //modifyClientMutation.mutate();
+    }
+
     
     const { data: clients, isLoading } = clientListQuery;
 
@@ -45,7 +55,7 @@ export function EditClient () {
             <input type="text" id="email" value={clientContext?.email} />
             <label htmlFor="phone">Phone</label>
             <input type="text" id="phone" value={clientContext?.phone} />
-            <button>Modify</button>
+            <button onClick={handleModifyClick}>Modify</button>
         </form>
         )
     )
