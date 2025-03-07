@@ -46,14 +46,14 @@ export function ClientsTable({ clients }: Readonly<{ clients: Client[] }>) {
       "ProfessionalContext must be used within a ProfessionalProvider"
     );
   }
-  const { handleSetClient } = contextProffesionalProvider;
+  const { setClientContext } = contextProffesionalProvider;
   const navigate = useNavigate();
 
   const getClientMutation = useMutation({
     mutationKey: ["Get Client"],
     mutationFn: getClientsById,
     onSuccess: (client) => {
-      handleSetClient(client);
+      setClientContext(client);
       navigate("/professional/edit-client");
     },
   });

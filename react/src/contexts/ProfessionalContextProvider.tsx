@@ -9,21 +9,21 @@ interface ProfessionalContextProps {
 export const ProfesionalContextProvider: React.FC<ProfessionalContextProps> = ({ children }) => {
     const [client, setClient] = useState<Client | undefined>(undefined);
 
-    const handleSetClient = useCallback((client: Client) => {
+    const setClientContext = useCallback((client: Client) => {
         setClient(client);
     }, []);
     
 
-    const getClient = useCallback(() => {
+    const getClientContext = useCallback(() => {
         return client;
     }, [client]);
 
     const memoizedProfessionalContextValue = useMemo(() => {
         return {
-            getClient,
-            handleSetClient,
+            getClientContext,
+            setClientContext,
         };
-    }, [getClient, handleSetClient]);
+    }, [getClientContext, setClientContext]);
 
     return (
         <ProfessionalContext.Provider value={ memoizedProfessionalContextValue }>
