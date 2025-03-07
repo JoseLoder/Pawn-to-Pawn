@@ -1,27 +1,38 @@
 import { useContext } from "react"
 import { ProfessionalContext } from "../../contexts/ProfessionalContext";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getClients, modifyClient } from "../../api/clients";
 import { Client } from "../../types/Clients";
 
 export function EditClient () {
+    // Get clients
     const clientListQuery = useQuery({
         queryKey: ['client'],
         queryFn: getClients
     });
 
-/*     const modifyClientMutation = useMutation({
-        mutationKey: ['Modify Client'],
-        mutationFn: modifyClient,
-    }); */
-    const handleModifyClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        //modifyClientMutation.mutate();
-    }
-
-    
     const { data: clients, isLoading } = clientListQuery;
 
+    // Modify client
+    const queryClient = useQueryClient();
+
+    const modifyClientMutation = useMutation({
+        mutationKey: ['Modify Client'],
+        mutationFn: modifyClient,
+        onSettled: () => {
+//            clientListQuery.refetch(); Less performance than invalidateQueries
+            queryClient.invalidateQueries({ queryKey: ['client'] });
+        }
+    });
+    const handleModifyClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.target as HTMLFormElement);
+        const client = Object.fromEntries(formData) as Client;
+        console.log(client);
+        modifyClientMutation.mutate(client);
+    }
+
+    // Get client context
     const professionalClientContext = useContext(ProfessionalContext)
     if (!professionalClientContext) {
         throw new Error("ProfessionalContext must be used within a ProfessionalProvider");
