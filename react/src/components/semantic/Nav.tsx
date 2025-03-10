@@ -27,7 +27,7 @@ export const Nav = ({ links }: NavProps) => {
                 {links.map((link) => (
                     <li key={link.text}>
                         <NavLink to={link.to} style={({ isActive }: { isActive: boolean }) => ({
-                            color: isActive ? "red" : "black",
+                            color: isActive ? "green" : "white",
                         })}>{link.text}</NavLink>
                     </li>
                 ))}

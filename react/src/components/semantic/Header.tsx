@@ -1,5 +1,5 @@
-import { Link } from "react-router";
 import styled from '@emotion/styled';
+import { Nav } from "./Nav";
 
 const StyledHeader = styled.header`
     width: 100%;
@@ -19,7 +19,7 @@ export const Header = ({ title, children }: HeaderProps) => {
         <StyledHeader >
             <h1>{title}</h1>
             {children}
-            <Link to="/">Logout</Link>
+            <Nav links={[{ to: "/", text: "Log Out" }]}></Nav>
         </StyledHeader>
     )
 }

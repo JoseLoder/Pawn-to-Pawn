@@ -27,6 +27,7 @@ export function EditClient () {
     const handleModifyClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         const formData = new FormData(e.target as HTMLFormElement);
+        console.log(formData);
         const client = Object.fromEntries(formData) as Client;
         console.log(client);
         modifyClientMutation.mutate(client);

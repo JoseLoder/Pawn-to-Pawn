@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
+import './styles.css';
 import { Professional } from "./pages/Professional.tsx";
 import { Home } from "./pages/Home.tsx";
 import { Client } from "./pages/Client.tsx";
@@ -15,7 +16,10 @@ import { Register } from "./pages/home/Register.tsx";
 import { EditClient } from "./pages/profesional/EditClient.tsx";
 
 const StyledRoot = styled.div`
-  width: 100%;
+  min-height: 100vh;
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
