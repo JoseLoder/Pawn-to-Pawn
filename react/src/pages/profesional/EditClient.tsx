@@ -26,10 +26,12 @@ export function EditClient() {
   });
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const client = Object.fromEntries(formData) as Client;
-    console.log(client);
-    /*         modifyClientMutation.mutate(client); */
+    const client = getClientContext();
+      if (client) {
+        modifyClientMutation.mutate(client);
+      } else {
+        console.error("Client is undefined");
+      }
   };
 
   // Get client context
