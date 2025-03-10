@@ -3,7 +3,8 @@ import axios from 'axios'
 import { Client, RegisterClient } from '../types/Clients'
 
 const clientsApi = axios.create({
-    baseURL: 'http://localhost:3000/clients'
+    baseURL: 'http://localhost:3000/clients',
+    withCredentials: true
 })
 
 export const getClients = async () => {

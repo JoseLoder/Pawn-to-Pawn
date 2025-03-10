@@ -4,7 +4,6 @@ import { Nav } from "../components/semantic/Nav";
 import styled from "@emotion/styled";
 
 const StyledMain = styled.main`
-background-color: aliceblue;
 form {
   display: flex;
   flex-direction: column;

@@ -16,6 +16,7 @@ export function Login () {
       .then((response) => {
         if (response.status === 200) {
           console.log('Ehtamoh activoh papi')
+          console.log(response.data)
           document.cookie = `access_token=${response.data.accessToken}`
           navigate('/professional')
         }

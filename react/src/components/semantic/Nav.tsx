@@ -17,7 +17,7 @@ const StyledNav = styled.nav`
 `
 
 interface NavProps {
-    links: { to: string, text: string }[];
+    links: { to: string, text: string, actions?: () => void}[];
 }
 
 export const Nav = ({ links }: NavProps) => {
@@ -26,7 +26,7 @@ export const Nav = ({ links }: NavProps) => {
             <ul>
                 {links.map((link) => (
                     <li key={link.text}>
-                        <NavLink to={link.to} style={({ isActive }: { isActive: boolean }) => ({
+                        <NavLink onClick={link.actions} to={link.to} style={({ isActive }: { isActive: boolean }) => ({
                             color: isActive ? "green" : "white",
                         })}>{link.text}</NavLink>
                     </li>

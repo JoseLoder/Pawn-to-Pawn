@@ -19,7 +19,13 @@ export class UserController {
       )
       res
         .status(200)
-        .json({ message: 'Login success', accessToken: token })
+        .cookie('access_token', token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+          sameSite: 'strict',
+          maxAge: 3600000 // 1 hour
+        })
+        .json({ message: 'Login success' })
     } catch (error) {
       res
         .status(400)
