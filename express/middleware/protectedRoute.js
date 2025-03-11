@@ -3,8 +3,6 @@ import { SECRET_JWT_KEY } from '../config.js'
 
 export function protectedRoute (req, res, next) {
   const token = req.cookies.access_token
-  console.log()
-
   req.session = { user: null }
 
   try {

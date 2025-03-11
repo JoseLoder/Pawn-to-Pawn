@@ -12,12 +12,10 @@ export function Register () {
     axios.post('http://localhost:3000/users/login', newUser)
       .then((response) => {
         if (response.status === 201) {
-          console.log('Ehtamoh activoh papi')
           console.log(response.data.message)
         }
       })
       .catch((error) => {
-        console.log('ehto que eh` lo que eh`')
         console.error('Error:', error)
     })
   }

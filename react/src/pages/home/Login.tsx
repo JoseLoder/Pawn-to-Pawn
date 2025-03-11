@@ -1,5 +1,6 @@
-import axios from "axios"
 import { useNavigate } from "react-router"
+import { useMutation } from "@tanstack/react-query";
+import { login } from "../../api/users";
 type Login = {
   username: string,
   password: string
@@ -7,23 +8,17 @@ type Login = {
 
 export function Login () {
   const navigate = useNavigate();
-
+  const loginMutation = useMutation({
+    mutationKey: ["Login"],
+    mutationFn: login,
+    onSuccess: () => {
+      navigate('/professional')
+    }
+  });
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const login = getFields()
-    
-    axios.post('http://localhost:3000/users/login', login)
-      .then((response) => {
-        if (response.status === 200) {
-          console.log('Ehtamoh activoh papi')
-          console.log(response.data)
-          document.cookie = `access_token=${response.data.accessToken}`
-          navigate('/professional')
-        }
-      }).catch((error) => {
-        console.log('ehto que eh` lo que eh`')
-        console.error('Error:', error)
-    })
+    loginMutation.mutate(getFields())
   }
   const getFields = () : Login => {
     const username = (document.getElementById('username') as HTMLInputElement).value

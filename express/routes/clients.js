@@ -1,12 +1,13 @@
 import { Router } from 'express'
 import { ClientController } from '../controllers/clients.js'
+import { protectedRoute } from '../middleware/protectedRoute.js'
 /* import { protectedRoute } from '../middleware/protectedRoute.js' */
 
 export const clientsRouter = Router()
 
 // Middleware
-/* clientsRouter.use('/', protectedRoute)
- */
+clientsRouter.use('/', protectedRoute)
+
 // End-Points
 clientsRouter.get('/', ClientController.getAll)
 clientsRouter.get('/:id', ClientController.getById)
