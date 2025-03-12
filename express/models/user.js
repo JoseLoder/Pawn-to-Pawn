@@ -49,6 +49,6 @@ export class UserModel {
     const validated = partialValidation({ username, password })
     if (validated.error) throw new Error(validated.error.message)
 
-    return user
+    return { id: user._id, username: user.username, name: user.name }
   }
 }

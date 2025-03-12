@@ -1,17 +1,31 @@
 import { useNavigate } from "react-router"
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../../api/users";
+import { UserContext } from "../../contexts/UserContext";
+import { useContext } from "react";
+import { User } from "../../types/Users";
 type Login = {
   username: string,
   password: string
 }
 
 export function Login () {
+
   const navigate = useNavigate();
+
+  // Set user context
+  const userContextProvider = useContext(UserContext);
+  if (!userContextProvider) {
+    throw new Error("UserContext must be used within a UserProvider");
+  }
+  const { setUserContext } = userContextProvider;
+
+  // Login mutation
   const loginMutation = useMutation({
     mutationKey: ["Login"],
     mutationFn: login,
-    onSuccess: () => {
+    onSuccess: (data: User) => {
+      setUserContext(data)
       navigate('/professional')
     }
   });
@@ -29,6 +43,7 @@ export function Login () {
       password
     }
   }
+
   return (
     <section>
       <h2>Welcome to login</h2>

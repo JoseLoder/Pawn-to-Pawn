@@ -25,7 +25,7 @@ export class UserController {
           sameSite: 'strict',
           maxAge: 3600000 // 1 hour
         })
-        .json({ message: 'Login success' })
+        .json(user)
     } catch (error) {
       res
         .status(400)

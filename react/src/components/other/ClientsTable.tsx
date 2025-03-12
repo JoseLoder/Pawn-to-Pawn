@@ -40,13 +40,13 @@ export function ClientsTable({ clients }: Readonly<{ clients: Client[] }>) {
   });
 
   // Get client by id, set in context and navigate to edit client
-  const contextProffesionalProvider = useContext(ProfessionalContext);
-  if (!contextProffesionalProvider) {
+  const contextProfessionalProvider = useContext(ProfessionalContext);
+  if (!contextProfessionalProvider) {
     throw new Error(
       "ProfessionalContext must be used within a ProfessionalProvider"
     );
   }
-  const { setClientContext } = contextProffesionalProvider;
+  const { setClientContext } = contextProfessionalProvider;
   const navigate = useNavigate();
 
   const getClientMutation = useMutation({

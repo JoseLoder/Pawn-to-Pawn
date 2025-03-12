@@ -1,14 +1,12 @@
-import { Outlet, Navigate } from "react-router";
+import { Outlet } from "react-router";
+interface ProtectedRouteProps {
 
-export const ProtectedRoute = ({
-    canActivate,
-    redirectTo
-}: {
-    canActivate: boolean;
-    redirectTo: string;
-}) => {
-    const renderOutlet = () => <Outlet />;
-    const renderNavigate = () => <Navigate to={redirectTo} />;
+    isActivated: boolean;
+  
+  }
 
-    return canActivate ? renderOutlet() : renderNavigate();
+  export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ isActivated }) => {
+
+    return isActivated ?? <Outlet />
+
 }
