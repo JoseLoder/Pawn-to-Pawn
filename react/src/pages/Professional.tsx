@@ -1,8 +1,9 @@
-import { Outlet } from "react-router";
+
 import { Header } from "../components/semantic/Header";
 import { Nav } from "../components/semantic/Nav";
 import { ProfesionalContextProvider } from "../contexts/ProfessionalContextProvider";
 import { Logout } from "./home/Logout";
+import { ProtectedRoute } from "../components/utils/ProtectedRoute";
 export function Professional() {
 
   const linksToShow = [
@@ -18,7 +19,7 @@ export function Professional() {
               <Logout />
             </Header>
             <ProfesionalContextProvider>
-              <Outlet />
+              <ProtectedRoute canActivate={true} redirectTo="/home/login" />
             </ProfesionalContextProvider>
         </>
       )

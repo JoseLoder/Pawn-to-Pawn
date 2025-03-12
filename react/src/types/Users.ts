@@ -7,3 +7,8 @@ export type RegisterUser = {
     name: string,
     password: string
 }
+export type User = {
+    id: number,
+    username: string,
+    name: string
+}
