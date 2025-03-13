@@ -1,13 +1,22 @@
 import { useMutation } from '@tanstack/react-query'
 import { createClient } from '../../api/clients'
-import { Client } from '../../types/Clients'
-import { useRef } from 'react'
+import {RegisterClient } from '../../types/Clients'
+import { useState } from 'react'
+import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router';
 
 /*
 TODO: Use Zod to validate fields, control all errors and try use FormData
 */
 export function AddClient() {
-    const formRef = useRef<HTMLFormElement>(null)
+    const navigate = useNavigate()
+
+    const [client, setClient] = useState<RegisterClient>({
+        dni: '',
+        name: '',
+        email: '',
+        phone: '',
+      });
 
     const addClientMutation = useMutation({
         mutationKey: ['add Client'],
@@ -15,42 +24,87 @@ export function AddClient() {
         onSuccess: () =>  {
             alert('Client Added')
             clearFields()
+        },
+        onError: (e) => {
+            if(e.name === 'AxiosError')
+            {
+                const axiosError = e as AxiosError
+                console.log(axiosError.response?.data)
+                if (axiosError.status == 401) {
+                    alert(axiosError.response?.data)
+                    navigate('/home/login')
+                }
+            }
         }
     })
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setClient((prevClient) => ({
+          ...prevClient,
+          [name]: value, 
+        }));
+      };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        const formData = new FormData(e.target as HTMLFormElement)
-        const client = Object.fromEntries(formData) as Client
         addClientMutation.mutate(client)
     }
     const clearFields = () => {
-        if (formRef.current) {
-            formRef.current.reset();
-        }
-    } 
+        setClient({
+          dni: '',
+          name: '',
+          email: '',
+          phone: '',
+        });
+      };
        
-    return (
+      return (
         <div>
-            <h1>Add Client</h1>
-            <form ref={formRef} onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="dni">DNI</label>
-                    <input type="text" id="dni" />
-                </div>
-                <div>
-                    <label htmlFor="name">Name</label>
-                    <input type="text" id="name" />
-                </div>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input type="email" id="email" />
-                </div>
-                <div>
-                    <label htmlFor="phone">Phone</label>
-                    <input type="text" id="phone" />
-                </div>
-                <button>Add</button>
-            </form>
+          <h1>Add Client</h1>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="dni">DNI</label>
+              <input
+                type="text"
+                id="dni"
+                name="dni"
+                value={client.dni}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="name">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={client.name}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={client.email}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <label htmlFor="phone">Phone</label>
+              <input
+                type="text"
+                id="phone"
+                name="phone"
+                value={client.phone}
+                onChange={handleChange}
+              />
+            </div>
+            <button type="submit">Add</button>
+          </form>
         </div>
-    )
+      )
 }

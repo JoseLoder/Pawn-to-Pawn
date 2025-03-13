@@ -4,6 +4,7 @@ import { login } from "../../api/users";
 import { UserContext } from "../../contexts/UserContext";
 import { useContext } from "react";
 import { User } from "../../types/Users";
+import { AxiosError } from "axios";
 type Login = {
   username: string,
   password: string
@@ -27,6 +28,15 @@ export function Login () {
     onSuccess: (data: User) => {
       setUserContext(data)
       navigate('/professional')
+    },
+    onError: (e) =>{
+      if (e.name === 'AxiosError') {
+        const axiosError = e as AxiosError
+        if (axiosError.response) {
+          console.log(axiosError.response.data)
+        }
+      }
+
     }
   });
   

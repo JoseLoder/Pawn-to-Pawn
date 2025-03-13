@@ -1,4 +1,4 @@
-import { Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router";
 interface ProtectedRouteProps {
 
     isActivated: boolean;
@@ -7,6 +7,6 @@ interface ProtectedRouteProps {
 
   export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ isActivated }) => {
 
-    return isActivated ?? <Outlet />
+    return isActivated ? <Outlet /> : <Navigate to="/home/login" />
 
 }

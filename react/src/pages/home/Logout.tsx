@@ -6,6 +6,8 @@ export const Logout = () => {
   const logoutMutation = useMutation({
     mutationKey: ["Logout"],
     mutationFn: logout,
+    onSuccess: () => {
+    },
   });
 
   return (
@@ -16,6 +18,7 @@ export const Logout = () => {
           text: "Log Out",
             actions: () => {
                 logoutMutation.mutate();
+                localStorage.removeItem("user");
                 console.log("Logged out");
             }
         },
