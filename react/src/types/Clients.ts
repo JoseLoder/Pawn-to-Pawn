@@ -12,3 +12,8 @@ export type RegisterClient = {
   email: string
   phone: string
 }
+
+export type ClientError = {
+  path: string
+  message: string
+}
