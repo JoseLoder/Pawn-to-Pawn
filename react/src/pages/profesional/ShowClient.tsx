@@ -17,7 +17,7 @@ export function ShowClient() {
   });
   const { data: clients, isLoading, isError, error } = clientListQuery;
 
-  useEffect(() => {
+/*   useEffect(() => {
     if (isError) {
       if (error.name == 'AxiosError') {
         const errorAxios = error as AxiosError
@@ -27,25 +27,30 @@ export function ShowClient() {
         }
       }
     }
-  }, [isError, error, navigate]);
+    console.log(isError, error, clients)
+  }, [isError, error, navigate]); */
 
   return (
     <>
       <button>
         <Link to="/professional">Back</Link>
       </button>
-      {isLoading ? 
-      (<div>Loading...</div>) :
-      (
-        isError ? 
-        (<h1>Something has gone wrong</h1>) :
-(      <section>
-          <h3>Clients table</h3>
-          <div>Result {clients.length} clients</div>
-          <ClientsTable clients={clients}/>
-        </section>)
-        )
-    }
+{isLoading ? (
+  <div>Loading...</div>
+
+) : (
+  <>
+    {isError ? (
+      <h1>Something has gone wrong</h1>
+    ) : (
+      <section>
+        <h3>Clients table</h3>
+        <div>Result {clients.length} clients</div>
+        <ClientsTable clients={clients} />
+      </section>
+    )}
+  </>
+)}
     </>
   );
 }
