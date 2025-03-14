@@ -7,26 +7,22 @@ const clientsApi = axios.create({
     withCredentials: true
 })
 
-export const getClients = async () => {
-    const res = await clientsApi.get('/')
-    return res.data
-}
-export const getClientsById = async (id: string) => {
-    const res = await clientsApi.get(`/${id}`)
-    return res.data
+export const getClients = () => {
+    return clientsApi.get('/')
 }
 
-export const createClient = async (client: RegisterClient) => {
-    const res = await clientsApi.post('/', client)
-    return res.data
+export const getClientsById = (id: string) => {
+    return clientsApi.get(`/${id}`)
 }
 
-export const removeClient = async (id: string) => {
-    const res = await clientsApi.delete(`/${id}`)
-    return res.data
+export const createClient = (client: RegisterClient) => {
+    return clientsApi.post('/', client)
 }
 
-export const modifyClient = async (client: Client) => {
-    const res = await clientsApi.put(`/${client.id}`, client)
-    return res.data
+export const removeClient = (id: string) => {
+    return clientsApi.delete(`/${id}`)
+}
+
+export const modifyClient = (client: Client) => {
+    return clientsApi.put(`/${client.id}`, client)
 }

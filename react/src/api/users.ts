@@ -7,17 +7,14 @@ const userApi = axios.create({
     withCredentials: true
 })
 
-export const login = async (user: LogUser) => {
-    const res = await userApi.post('/login', user)
-    return res.data
+export const login = (user: LogUser) => {
+    return userApi.post('/login', user)
 }
 
-export const register = async (user: RegisterUser) => {
-    const res = await userApi.post('/register', user)
-    return res.data
+export const register = (user: RegisterUser) => {
+    return userApi.post('/register', user)
 }
 
-export const logout = async () => {
-    const res = await userApi.post('/logout')
-    return res.data
+export const logout = () => {
+    return userApi.post('/logout')
 }

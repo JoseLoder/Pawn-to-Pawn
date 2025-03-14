@@ -29,7 +29,6 @@ export function AddClient() {
             if(e.name === 'AxiosError')
             {
                 const axiosError = e as AxiosError
-                console.log(axiosError.response?.data)
                 if (axiosError.status == 401) {
                     alert(axiosError.response?.data) //Access not authorized
                     // TODO hacer un logout para limpiar el user del localstorage y el estado del contexto
