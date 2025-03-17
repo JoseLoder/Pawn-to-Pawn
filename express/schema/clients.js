@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 const clientSchema = z.object({
   dni: z.string().length(9),
-  name: z.string(),
+  name: z.string().min(3),
   email: z.string().email(),
   phone: z.string().length(9)
 })

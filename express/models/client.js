@@ -28,9 +28,9 @@ export class ClientModel {
     return client
   }
 
-  static async update (id, client) {
+  static async update (id, newName, newEmail, newPhone) {
     const index = clients.findIndex(client => client.id === id)
-    clients[index] = { id, ...client }
+    clients[index] = { ...clients[index], name: newName, email: newEmail, phone: newPhone }
     fs.writeFileSync('./database/clients.json', JSON.stringify(clients))
     return clients[index]
   }

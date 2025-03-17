@@ -46,7 +46,9 @@ export class ClientController {
     if (!clientExists) return res.status(404).json({ message: 'Client not found' })
     if (validated.error) return res.status(400).json({ message: validated.error.message })
 
-    const client = await ClientModel.update(id, validated.data)
+    const { name, email, phone } = validated.data
+
+    const client = await ClientModel.update(id, name, email, phone)
     if (client) {
       res.status(200).json(client)
     } else {
