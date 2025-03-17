@@ -52,7 +52,8 @@ export function ClientsTable({ clients }: Readonly<{ clients: Client[] }>) {
   const getClientMutation = useMutation({
     mutationKey: ["Get Client"],
     mutationFn: getClientsById,
-    onSuccess: (client) => {
+    onSuccess: (response) => {
+      const client = response.data;
       setClientContext(client);
       navigate("/professional/edit-client");
     },

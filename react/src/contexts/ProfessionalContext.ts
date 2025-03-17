@@ -2,7 +2,7 @@ import { createContext } from 'react';
 import { Client } from '../types/Clients';
 
 export interface ProfessionalContextValue {
-  getClientContext: () => Client | undefined;
+  getClientContext: () => Client;
   setClientContext: (client: Client) => void;
 }
 

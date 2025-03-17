@@ -7,7 +7,13 @@ interface ProfessionalContextProps {
 }
 
 export const ProfesionalContextProvider: React.FC<ProfessionalContextProps> = ({ children }) => {
-    const [client, setClient] = useState<Client | undefined>(undefined);
+    const [client, setClient] = useState<Client>({
+        id: '',
+        dni: '',
+        name: '',
+        email: '',
+        phone: ''
+    });
 
     const setClientContext = useCallback((client: Client) => {
         setClient(client);

@@ -2,13 +2,23 @@ import { useContext, useEffect } from "react";
 import { AxiosError } from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 import { ProfessionalContext } from "../../contexts/ProfessionalContext";
 import { getClients, modifyClient } from "../../api/clients";
-import { Client } from "../../types/Clients";
+import { Client, RegisterClient } from "../../types/Clients";
+import { clientSchema } from "../../schema/clients";
 
 export function EditClient() {
+
   const navigate = useNavigate();
+  const { 
+    setValue,
+    register,
+    handleSubmit,
+    formState: {errors}
+  } = useForm<RegisterClient>({resolver: zodResolver(clientSchema)})
 
   // Get clients
   const {
@@ -72,42 +82,53 @@ export function EditClient() {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    // Get client context
+    const professionalClientContext = useContext(ProfessionalContext);
+    if (!professionalClientContext) {
+      throw new Error(
+        "ProfessionalContext must be used within a ProfessionalProvider"
+      );
+    }
+    const { setClientContext, getClientContext } = professionalClientContext;
+  
+    const clientContext = getClientContext();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, value} = e.target
+    setClientContext({
+      ...clientContext,
+      [name]: value
+    } as Client);
+  };
+
+  const submitData = () => {
     const client = getClientContext();
     if (client) {
       modifyClientMutation.mutate(client);
     } else {
-      console.error("Client is undefined");
+      console.log("Client is undefined");
     }
   };
-
-  // Get client context
-  const professionalClientContext = useContext(ProfessionalContext);
-  if (!professionalClientContext) {
-    throw new Error(
-      "ProfessionalContext must be used within a ProfessionalProvider"
-    );
-  }
-  const { setClientContext, getClientContext } = professionalClientContext;
-
-  const clientContext = getClientContext();
 
   return isLoading ? (
     <p>Loading...</p>
   ) : (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(submitData)}>
 
       <label htmlFor="dni">DNI</label>
       <select
         id="dni"
-        value={clientContext?.id ?? ""}
+        value={clientContext.id ?? ""}
         onChange={(e) => {
           const selectedClient = clients?.data.find(
             (client: Client) => client.id === e.target.value
           );
           if (selectedClient) {
             setClientContext(selectedClient);
+            setValue("dni", selectedClient.dni)
+            setValue("email", selectedClient.email)
+            setValue("name", selectedClient.name)
+            setValue("phone", selectedClient.phone)
           }
         }}
       >
@@ -116,47 +137,46 @@ export function EditClient() {
           Seleccione un cliente
         </option>
         {clients?.data.map((client: Client) => (
-          <option key={client.id} value={client.id}>
+          <option 
+            key={client.id}
+            value={client.id}
+            >
             {client.dni}
           </option>
         ))}
       </select>
+      
       <label htmlFor="name">Name</label>
       <input
         type="text"
         id="name"
-        value={clientContext?.name}
-        onChange={(e) => {
-          setClientContext({
-            ...clientContext,
-            name: e.target.value,
-          } as Client);
-        }}
+        {...register("name")}
+        value={clientContext.name}
+        onChange={handleChange}
       />
+      {errors.name && <span>{errors.name.message}</span>}
+
+
       <label htmlFor="email">Email</label>
       <input
         type="text"
         id="email"
-        value={clientContext?.email}
-        onChange={(e) => {
-          setClientContext({
-            ...clientContext,
-            email: e.target.value,
-          } as Client);
-        }}
+        {...register("email")}
+        value={clientContext.email}
+        onChange={handleChange}
       />
+      {errors.email && <span>{errors.email.message}</span>}
+
       <label htmlFor="phone">Phone</label>
       <input
         type="text"
         id="phone"
-        value={clientContext?.phone}
-        onChange={(e) => {
-          setClientContext({
-            ...clientContext,
-            phone: e.target.value,
-          } as Client);
-        }}
+        {...register("phone")}
+        value={clientContext.phone}
+        onChange={handleChange}
       />
+      {errors.phone && <span>{errors.phone.message}</span>}
+
       <button>Modify</button>
     </form>
   );
