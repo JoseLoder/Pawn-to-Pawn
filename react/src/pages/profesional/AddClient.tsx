@@ -7,11 +7,8 @@ import { RegisterClient } from '../../types/Clients'
 import { useState } from 'react'
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router';
-import { clientSchema, validateClient } from '../../schema/clients'
+import { clientSchema } from '../../schema/clients'
 
-/*
-TODO: Use Zod to validate fields, control all errors and try use FormData
-*/
 
 export function AddClient() {
   const navigate = useNavigate()

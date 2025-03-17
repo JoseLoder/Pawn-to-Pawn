@@ -24,12 +24,15 @@ export function ShowClient() {
     //lanzamos un efecto cuando la variable isError cambia para redirigir al login
     if (isError) {
       if (error.name == "AxiosError") {
-        const errorAxios = error as AxiosError;
-        if (errorAxios.response?.status == 401) {
-          alert(errorAxios.response.data); //Access unauthorized
+        const axiosError = error as AxiosError;
+        if (axiosError.response?.status == 401) {
+          alert(axiosError.response.data); //Access unauthorized
           // TODO hacer un logout para limpiar el user del localstorage y el estado del contexto
           navigate("/home/login");
-        }
+        }else if (axiosError.status == 400) {
+          const errorMessage = (axiosError.response?.data as { message: string }).message;
+          alert(errorMessage)
+      }
       }
     }
   }, [isError]);

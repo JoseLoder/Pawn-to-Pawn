@@ -1,10 +1,11 @@
 import { useContext, useEffect } from "react";
-import { ProfessionalContext } from "../../contexts/ProfessionalContext";
+import { AxiosError } from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
+
+import { ProfessionalContext } from "../../contexts/ProfessionalContext";
 import { getClients, modifyClient } from "../../api/clients";
 import { Client } from "../../types/Clients";
-import { AxiosError } from "axios";
-import { useNavigate } from "react-router";
 
 export function EditClient() {
   const navigate = useNavigate();
@@ -23,14 +24,17 @@ export function EditClient() {
 
   useEffect(() => {
     if (isError) {
-      if (isError) {
-        if (error.name == "AxiosError") {
-          const errorAxios = error as AxiosError;
-          if (errorAxios.response?.status == 401) {
-            alert(errorAxios.response.data); //Access unauthorized
-            // TODO hacer un logout para limpiar el user del localstorage y el estado del contexto
-            navigate("/home/login");
-          }
+      if (error.name == "AxiosError") {
+        const axiosError = error as AxiosError;
+        if (axiosError.response?.status == 401) {
+          alert(axiosError.response.data); //Access unauthorized
+          // TODO hacer un logout para limpiar el user del localstorage y el estado del contexto
+          navigate("/home/login");
+        } else if (axiosError.status == 400) {
+          const errorMessage = (
+            axiosError.response?.data as { message: string }
+          ).message;
+          alert(errorMessage);
         }
       }
     }
@@ -44,10 +48,10 @@ export function EditClient() {
     mutationKey: ["Modify Client"],
     mutationFn: modifyClient,
     onSuccess: () => {
-      alert('Successfully modified client');
+      alert("Successfully modified client");
     },
     onSettled: () => {
-      //            clientListQuery.refetch(); Less performance than invalidateQueries
+      // clientListQuery.refetch(); Less performance than invalidateQueries
       queryClient.invalidateQueries({ queryKey: ["client"] });
     },
     onError: (e) => {
@@ -58,10 +62,16 @@ export function EditClient() {
           alert(axiosError.response?.data); //Access not authorized
           // TODO hacer un logout para limpiar el user del localstorage y el estado del contexto
           navigate("/home/login");
+        } else if (axiosError.status == 400) {
+          const errorMessage = (
+            axiosError.response?.data as { message: string }
+          ).message;
+          alert(errorMessage);
         }
       }
     },
   });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const client = getClientContext();
@@ -87,6 +97,7 @@ export function EditClient() {
     <p>Loading...</p>
   ) : (
     <form onSubmit={handleSubmit}>
+
       <label htmlFor="dni">DNI</label>
       <select
         id="dni"
@@ -100,6 +111,7 @@ export function EditClient() {
           }
         }}
       >
+
         <option value="" disabled={!clientContext}>
           Seleccione un cliente
         </option>
