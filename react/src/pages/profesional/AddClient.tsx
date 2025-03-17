@@ -37,6 +37,9 @@ export function AddClient() {
           alert(axiosError.response?.data) //Access not authorized
           // TODO hacer un logout para limpiar el user del localstorage y el estado del contexto
           navigate('/home/login')
+        }else if (axiosError.status == 400) {
+            const errorMessage = (axiosError.response?.data as { message: string }).message;
+            alert(errorMessage)
         }
       }
     }
@@ -52,7 +55,7 @@ export function AddClient() {
 
       const submitData = (data: RegisterClient) => {
         console.log("IT WORKED", data)
-          //addClientMutation.mutate(client)
+        addClientMutation.mutate(client)
 
       }
   const clearFields = () => {
