@@ -1,7 +1,6 @@
 import { Router } from 'express'
-import { ClientController } from '../controllers/clients.js'
+import { ClientController } from '../controllers/clients.controller.js'
 import { protectedRoute } from '../middleware/protectedRoute.js'
-/* import { protectedRoute } from '../middleware/protectedRoute.js' */
 
 export const clientsRouter = Router()
 

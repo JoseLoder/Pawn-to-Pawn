@@ -1,1 +1,14 @@
-[{"_id":"92869d27-f823-45d4-ba72-5cc9d46dd502","name":"Soy test","username":"test1","password":"$2b$10$xyROS7Kvug/GXKk1CZ4Vd.TNRm5XNBYROJGzHRVXlDXeXqXS4e0Cm"}]
+[
+  {
+    "_id": "581041db-2390-4221-b490-40d898f5b7dd",
+    "name": "Soy test",
+    "username": "test2",
+    "password": "$2b$10$egSwN.Libt0HvTxZEX8CS.FxOhw.FpIs4Px914NY61e82X7vsqiFu"
+  },
+  {
+    "_id": "92869d27-f823-45d4-ba72-5cc9d46dd502",
+    "name": "Soy test",
+    "username": "test1",
+    "password": "$2b$10$xyROS7Kvug/GXKk1CZ4Vd.TNRm5XNBYROJGzHRVXlDXeXqXS4e0Cm"
+  }
+]
