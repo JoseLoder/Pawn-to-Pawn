@@ -21,7 +21,7 @@ function connected(err) {
 
 let sql = `
 CREATE TABLE IF NOT EXISTS clients (
-    id INTEGER PRIMARY KEY,
+    id UUID PRIMARY KEY,
     dni TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,

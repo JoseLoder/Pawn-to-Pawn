@@ -2,7 +2,7 @@
 GET http://localhost:3000/clients
 
 ### GET CLIENT BY ID
-GET http://localhost:3000/clients/fafe4679-de2b-41df-bbf3-b8feaa200d30
+GET http://localhost:3000/clients/1
 
 ### GET CLIENT BY DNI
 GET http://localhost:3000/clients/dni/77653071B
@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 
 ### UPDATE CLIENT
-PUT http://localhost:3000/clients/f893ef4b-8666-407d-a38c-2d4024c79ec6
+PUT http://localhost:3000/clients/1
 Content-Type: application/json
 
 {
@@ -30,7 +30,7 @@ Content-Type: application/json
 }
 
 ### DELETE CLIENT
-DELETE http://localhost:3000/clients/77653071B
+DELETE http://localhost:3000/clients/1
 
 ### USER REGISTER
 POST http://localhost:3000/users/register

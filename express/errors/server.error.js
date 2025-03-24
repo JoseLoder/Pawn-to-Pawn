@@ -19,7 +19,7 @@ export class TableCreationError extends ServerError {
 }
 export class QueryError extends ServerError {
   constructor(message) {
-    super(message)
+    super('Error executing query: ' + message)
     this.name = 'QueryError'
   }
 }
