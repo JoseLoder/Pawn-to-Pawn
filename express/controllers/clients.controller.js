@@ -66,7 +66,7 @@ export class ClientController {
         ...validated.data
       }
       console.log(client)
-      const createdClientId = await ClientModel.create(client)
+      const createdClientId = await ClientModel.create(client) // TODO this must be run
       if (!createdClientId) {
         throw new ServerError('Finally the client was not be created')
       }
