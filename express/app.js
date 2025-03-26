@@ -4,14 +4,12 @@ import cors from 'cors'
 
 import { clientsRouter } from './routes/clients.route.js'
 import { usersRouter } from './routes/users.route.js'
-/* import { corsMiddleware } from './middleware/cors.js' */
 
 const port = process.env.PORT ?? 3000
 const app = express()
 app.disable('x-powered-by')
 
 // Middlewares
-/* app.use(corsMiddleware) */
 app.use(
   cors({
     origin: 'http://localhost:5173',
