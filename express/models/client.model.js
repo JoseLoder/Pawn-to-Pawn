@@ -1,12 +1,5 @@
-import fs from 'node:fs'
-import { randomUUID } from 'node:crypto'
-
 import { DB } from '../database/connect.js'
-import { QueryError, ServerError } from '../errors/server.error.js'
-import { ClientError } from '../errors/client.error.js'
-import { rejects } from 'node:assert'
-// const clients = JSON.parse(fs.readFileSync('./database/clients.json', 'utf-8'))
-
+import { QueryError } from '../errors/server.error.js'
 export class ClientModel {
   static async getAll() {
     const sql = 'SELECT * FROM clients'

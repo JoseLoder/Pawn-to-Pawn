@@ -18,11 +18,5 @@
     "jsonwebtoken": "^9.0.2",
     "sqlite3": "^5.1.7",
     "zod": "^3.24.2"
-  },
-  "devDependencies": {
-    "standard": "^17.1.2"
-  },
-  "eslintConfig": {
-    "extends": "standard"
   }
 }

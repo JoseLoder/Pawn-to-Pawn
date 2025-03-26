@@ -2,35 +2,34 @@
 GET http://localhost:3000/clients
 
 ### GET CLIENT BY ID
-GET http://localhost:3000/clients/1
+GET http://localhost:3000/clients/ea1fc9fd-872e-47b7-a7aa-8ef821eaf0ee
 
 ### GET CLIENT BY DNI
-GET http://localhost:3000/clients/dni/77653071B
+GET http://localhost:3000/clients/dni/12345678A
 
 ### ADD CLIENT
 POST http://localhost:3000/clients
 Content-Type: application/json
 
 {
-    "dni": "77653071B",
+    "dni": "12345678A",
     "name": "jose",
     "email": "jose@jose.com",
     "phone": "633338128"
 }
 
 ### UPDATE CLIENT
-PUT http://localhost:3000/clients/1
+PUT http://localhost:3000/clients/ea1fc9fd-872e-47b7-a7aa-8ef821eaf0ee
 Content-Type: application/json
 
 {
-    "dni": "77653071B",
-    "name": "josh",
+    "name": "jose",
     "email": "jose@jose.com",
     "phone": "633338128"
 }
 
 ### DELETE CLIENT
-DELETE http://localhost:3000/clients/1
+DELETE http://localhost:3000/clients/c11f3d97-7797-420a-bb34-7591e45068da
 
 ### USER REGISTER
 POST http://localhost:3000/users/register
@@ -38,7 +37,7 @@ Content-Type: application/json
 
 {
     "name": "Soy test",
-    "username": "test2",
+    "email": "jose@jose.com",
     "password": "tesssst"
 }
 
@@ -47,9 +46,12 @@ POST http://localhost:3000/users/login
 Content-Type: application/json
 
 {
-    "username": "test2",
+    "email": "jose@jose.com",
     "password": "tesssst"
 }
 
 ### USER LOGOUT 
 POST http://localhost:3000/users/logout
+
+### DELETE USER
+DELETE http://localhost:3000/users/4a91b19f-75eb-4343-8a84-d0e268f27479

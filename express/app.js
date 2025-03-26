@@ -2,9 +2,8 @@ import express, { json } from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
-import { DB } from './database/connect.js'
 import { clientsRouter } from './routes/clients.route.js'
-import { usersRouter } from './routes/users.js'
+import { usersRouter } from './routes/users.route.js'
 /* import { corsMiddleware } from './middleware/cors.js' */
 
 const port = process.env.PORT ?? 3000
