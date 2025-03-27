@@ -1,44 +1,16 @@
 {
   "name": "express",
   "version": "1.0.0",
-  "main": "app.js",
-  "type": "module",
+  "main": "index.js",
   "scripts": {
-    "lint": "ts-standard",
-    "dev": "ts-node-dev src/app.ts",
-    "start": "node build/app.ts",
     "tsc": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
-  "dependencies": {
-    "bcrypt": "5.1.1",
-    "cookie-parser": "1.4.7",
-    "cors": "2.8.5",
-    "express": "4.21.2",
-    "jsonwebtoken": "9.0.2",
-    "sqlite3": "5.1.7",
-    "zod": "3.24.2"
-  },
   "devDependencies": {
-    "@eslint/js": "^9.23.0",
-    "@types/bcrypt": "5.0.2",
-    "@types/express": "5.0.1",
-    "@types/jsonwebtoken": "9.0.9",
-    "@types/node": "22.13.13",
-    "globals": "^16.0.0",
-    "ts-standard": "12.0.2",
-    "typescript": "^5.8.2",
-    "typescript-eslint": "^8.28.0"
-  },
-  "eslintConfig": {
-    "parserOptions": {
-      "project": "./tsconfig.json"
-    },
-    "extends": [
-      ".node_modules/ts-standard/eslintrc.json"
-    ]
+    "typescript": "5.8.2"
   }
 }
