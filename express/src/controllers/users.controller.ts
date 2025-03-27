@@ -1,25 +1,28 @@
 import jwt from 'jsonwebtoken'
+import { ZodError } from 'zod'
+import { CookieOptions, Request, Response } from 'express'
 
 import bcrypt from 'bcrypt'
 import { UserModel } from '../models/user.model.js'
 import { ClientError } from '../errors/client.error.js'
 import { validateUser } from '../schema/users.schema.js'
-import { ZodError } from 'zod'
 import { ServerError } from '../errors/server.error.js'
 import { handleError } from '../errors/handleError.js'
+import { LogUser, RegisterUser, User } from '../types/users.types.js'
 
-export class UserController {
-  static async login(req, res) {
+export const UserController = {
+  async login(req: Request, res: Response): Promise<void> {
     try {
-      const { email, password } = req.body
+      const { email, password } = req.body as LogUser
       if (!email?.trim() || !password?.trim()) {
         throw new ClientError('Email and password are required')
       }
 
-      const user = await UserModel.getByEmail(email.trim())
+      const user: User | undefined = await UserModel.getByEmail(email.trim());
       if (!user) {
         throw new ClientError('Invalid credentials')
-      }
+      };
+
 
       const isValid = await bcrypt.compare(password.trim(), user.password)
       if (!isValid) {
@@ -30,13 +33,13 @@ export class UserController {
         {
           id: user.id
         },
-        process.env.SECRET_JWT_KEY || 'fallback_secret',
+        process.env.SECRET_JWT_KEY ?? 'fallback_secret',
         {
           expiresIn: '15m'
         }
       )
 
-      const cookieOptions = {
+      const cookieOptions: CookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
@@ -46,7 +49,7 @@ export class UserController {
 
       const refreshToken = jwt.sign(
         { id: user.id },
-        process.env.REFRESH_JWT_KEY || 'fallback_refresh_secret',
+        process.env.REFRESH_JWT_KEY ?? 'fallback_refresh_secret',
         { expiresIn: '7d' }
       )
       res
@@ -65,11 +68,11 @@ export class UserController {
           }
         })
     } catch (e) {
-      handleError(e, res)
+      handleError(e as Error, res)
     }
-  }
+  },
 
-  static async register(req, res) {
+  async register(req: Request, res: Response): Promise<void> {
     try {
       const { email, name, password } = req.body
       const validated = await validateUser({ email, name, password })
@@ -107,9 +110,9 @@ export class UserController {
     } catch (e) {
       handleError(e, res)
     }
-  }
+  },
 
-  static async logout(req, res) {
+  async logout(req, res) {
     try {
       const cookieOptions = {
         httpOnly: true,
@@ -129,9 +132,9 @@ export class UserController {
     } catch (e) {
       handleError(e, res)
     }
-  }
+  },
 
-  static async delete(req, res) {
+  async delete(req, res) {
     try {
       const { id } = req.params
       if (!id) throw new ClientError('Id must be correct')

@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { RegisterUser } from '../types/users.types'
 
 const userSchema = z.object({
   name: z.string().min(3),
@@ -6,6 +7,6 @@ const userSchema = z.object({
   password: z.string().min(6)
 })
 
-export function validateUser({ name, email, password }) {
+export function validateUser({ name, email, password }: RegisterUser) {
   return userSchema.safeParseAsync({ name, email, password })
 }

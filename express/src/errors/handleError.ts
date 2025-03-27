@@ -1,8 +1,9 @@
 import { ZodError } from 'zod'
+import { Response } from 'express'
 import { ServerError } from './server.error.js'
 import { ClientError } from './client.error.js'
 
-export const handleError = (e, res) => {
+export const handleError = (e: Error, res: Response) => {
   if (e instanceof ZodError) {
     res.status(400).json({
       success: false,

@@ -1,7 +1,7 @@
 import { DB } from '../database/connect.js'
 import { QueryError } from '../errors/server.error.js'
-export class ClientModel {
-  static async getAll() {
+export const ClientModel = {
+  async getAll() {
     const sql = 'SELECT * FROM clients'
     const data = { clients: [] }
 
@@ -20,9 +20,9 @@ export class ClientModel {
         resolve(data)
       })
     })
-  }
+  },
 
-  static async getById(id) {
+  async getById(id) {
     const sql = 'SELECT * FROM clients WHERE id = ?'
 
     return new Promise((resolve, reject) => {
@@ -40,9 +40,9 @@ export class ClientModel {
         resolve(row)
       })
     })
-  }
+  },
 
-  static async getByDni(dni) {
+  async getByDni(dni) {
     const sql = 'SELECT * FROM clients WHERE dni = ?'
     return new Promise((resolve, reject) => {
       DB.get(sql, dni, (err, row) => {
@@ -58,9 +58,9 @@ export class ClientModel {
         resolve(row)
       })
     })
-  }
+  },
 
-  static async create(client) {
+  async create(client) {
     const sql =
       'INSERT INTO clients(id, dni, name, email, phone) VALUES(?, ?, ?, ?, ?)'
     return new Promise((resolve, reject) => {
@@ -75,9 +75,9 @@ export class ClientModel {
         }
       )
     })
-  }
+  },
 
-  static async update(id, newName, newEmail, newPhone) {
+  async update(id, newName, newEmail, newPhone) {
     const sql = 'UPDATE clients SET name = ?, email = ?, phone = ? WHERE id = ?'
     return new Promise((resolve, reject) => {
       DB.run(sql, [newName, newEmail, newPhone, id], (err, row) => {
@@ -85,9 +85,9 @@ export class ClientModel {
         resolve(id)
       })
     })
-  }
+  },
 
-  static async delete(id) {
+  async delete(id) {
     const sql = 'DELETE FROM clients WHERE id = ?'
     return new Promise((resolve, reject) => {
       DB.run(sql, [id], (err, row) => {
