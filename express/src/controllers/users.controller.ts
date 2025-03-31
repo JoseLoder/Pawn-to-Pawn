@@ -5,23 +5,27 @@ import { CookieOptions, Request, Response } from 'express'
 import bcrypt from 'bcrypt'
 import { UserModel } from '../models/user.model.ts'
 import { ClientError } from '../errors/client.error.ts'
-import { validateUser } from '../schema/users.schema.ts'
+import { validateLogin, validateUser } from '../schema/users.schema.ts'
 import { ServerError } from '../errors/server.error.ts'
 import { handleError } from '../errors/handleError.ts'
-import { LogUser, RegisterUser, User } from '../types/users.types.ts'
+import { LogUser, RegisterUser } from '../types/users.types.ts'
 
 export const UserController = {
   async login(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body as LogUser
-      if (!email?.trim() || !password?.trim()) {
-        throw new ClientError('Email and password are required')
+      const validated = await validateLogin({ email, password })
+      if (!validated.success || !validated.data) {
+        if (validated.error instanceof ZodError) {
+          throw validated.error
+        }
+        throw new ClientError('Validation failed')
       }
 
-      const user: User | undefined = await UserModel.getByEmail(email.trim());
-      if (!user) {
+      const user = await UserModel.getByEmail(validated.data.email);
+      if (!user || user instanceof Error) {
         throw new ClientError('Invalid credentials')
-      };
+      }
 
 
       const isValid = await bcrypt.compare(password.trim(), user.password)
@@ -99,11 +103,15 @@ export const UserController = {
         password: hash
       }
       const createdUserId = await UserModel.create(user)
-      if (!createdUserId) {
+      if (!createdUserId || createdUserId instanceof Error) {
         throw new ServerError('Finally the user was not be created')
       }
       const createdUser = await UserModel.getById(createdUserId)
-      res.status(201).json({ success: true, createdUser })
+      if (!createdUser || createdUser instanceof Error) {
+        throw new ServerError('The user was not found after creation.')
+      }
+      const { password: userPassword, ...userWithoutPassword } = createdUser
+      res.status(201).json({ success: true, userWithoutPassword })
     } catch (e) {
       handleError(e as Error, res)
     }
@@ -136,10 +144,11 @@ export const UserController = {
       const { id } = req.params
       if (!id) throw new ClientError('Id must be correct')
       const user = await UserModel.getById(id)
-      if (!user) throw new ClientError('User does not exists')
+      if (!user || user instanceof Error) throw new ClientError('User does not exists')
       const erased = await UserModel.delete(id)
-      if (!erased) throw new ServerError('Finally the user was not deleted')
-      res.status(200).json({ success: true, user })
+      if (!erased || erased instanceof Error) throw new ServerError('Finally the user was not deleted')
+      const { password, ...userWithoutPassword } = user
+      res.status(200).json({ success: true, userWithoutPassword })
     } catch (e) {
       handleError(e as Error, res)
     }

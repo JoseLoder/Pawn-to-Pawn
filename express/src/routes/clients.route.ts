@@ -1,6 +1,6 @@
-/* import { Router } from 'express'
-import { ClientController } from '../controllers/clients.controller.js'
-import { protectedRoute } from '../middleware/protectedRoute.js'
+import { Router } from 'express'
+import { ClientController } from '../controllers/clients.controller.ts'
+import { protectedRoute } from '../middleware/protectedRoute.ts'
 
 export const clientsRouter = Router()
 
@@ -13,4 +13,4 @@ clientsRouter.get('/:id', ClientController.getById)
 clientsRouter.get('/dni/:dni', ClientController.getByDni)
 clientsRouter.post('/', ClientController.create)
 clientsRouter.put('/:id', ClientController.update)
-clientsRouter.delete('/:id', ClientController.delete) */
+clientsRouter.delete('/:id', ClientController.delete)
