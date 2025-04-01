@@ -2,6 +2,7 @@ import { ZodError } from 'zod'
 import { Response } from 'express'
 import { ServerError } from './server.error.ts'
 import { ClientError } from './client.error.ts'
+import { JsonWebTokenError } from 'jsonwebtoken'
 
 export const handleError = (e: Error, res: Response) => {
   if (e instanceof ZodError) {
@@ -26,6 +27,17 @@ export const handleError = (e: Error, res: Response) => {
       name: e.name,
       message: e.message
     })
+  } else if (e instanceof JsonWebTokenError) {
+    res.clearCookie('access_token')
+    res.clearCookie('refresh_token')
+
+    res
+      .status(500)
+      .json({
+        success: false,
+        name: e.name,
+        message: e.message
+      })
   } else {
     res.status(500).json({
       success: false,

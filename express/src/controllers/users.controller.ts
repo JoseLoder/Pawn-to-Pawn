@@ -35,7 +35,8 @@ export const UserController = {
 
       const token = jwt.sign(
         {
-          id: user.id
+          id: user.id,
+          role: 'client'
         },
         process.env.SECRET_JWT_KEY ?? 'fallback_secret',
         {
@@ -52,10 +53,15 @@ export const UserController = {
       }
 
       const refreshToken = jwt.sign(
-        { id: user.id },
+        {
+          id: user.id
+        },
         process.env.REFRESH_JWT_KEY ?? 'fallback_refresh_secret',
-        { expiresIn: '7d' }
+        {
+          expiresIn: '7d'
+        }
       )
+
       res
         .status(200)
         .cookie('access_token', token, cookieOptions)

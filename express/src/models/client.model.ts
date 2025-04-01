@@ -22,7 +22,6 @@ export const ClientModel = {
           })
         })
         const { clients } = data
-        console.log(clients)
         resolve(clients)
       })
     })

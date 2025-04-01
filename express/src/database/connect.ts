@@ -46,3 +46,21 @@ DB.run(sql, (err) => {
     throw new TableCreationError('Clould not creating table users')
   }
 })
+
+sql = `
+CREATE TABLE IF NOT EXISTS user_refresh_tokens (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  token TEXT NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  revoked BOOLEAN DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  device_info TEXT,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)
+`
+DB.run(sql, (err) => {
+  if (err) {
+    throw new TableCreationError('Clould not creating table refresh token')
+  }
+})

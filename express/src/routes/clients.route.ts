@@ -1,11 +1,14 @@
 import { Router } from 'express'
 import { ClientController } from '../controllers/clients.controller.ts'
-import { protectedRoute } from '../middleware/protectedRoute.ts'
+import { authClient } from '../middleware/auth.clients.ts'
+import { auth } from '../middleware/auth.middleware.ts'
 
 export const clientsRouter = Router()
 
 // Middleware
-clientsRouter.use('/', protectedRoute)
+
+clientsRouter.use('/', auth)
+clientsRouter.use('/', authClient)
 
 // End-Points
 clientsRouter.get('/', ClientController.getAll)
