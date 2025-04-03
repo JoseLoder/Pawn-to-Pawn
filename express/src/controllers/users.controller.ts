@@ -36,7 +36,7 @@ export const UserController = {
       const token = jwt.sign(
         {
           id: user.id,
-          role: 'client'
+          role: user.role
         },
         process.env.SECRET_JWT_KEY ?? 'fallback_secret',
         {
@@ -84,8 +84,8 @@ export const UserController = {
 
   async register(req: Request, res: Response): Promise<void> {
     try {
-      const { email, name, password } = req.body as RegisterUser
-      const validated = await validateUser({ email, name, password })
+      const { email, name, password, id_number, phone } = req.body as RegisterUser
+      const validated = await validateUser({ email, name, password, id_number, phone })
       if (!validated.success || !validated.data) {
         if (validated.error instanceof ZodError) {
           throw validated.error
@@ -103,9 +103,8 @@ export const UserController = {
         throw new ServerError('Password hashing failed')
       }
       const user = {
-        id: crypto.randomUUID(),
-        email: validated.data.email,
-        name: validated.data.name,
+        id: crypto.randomUUID() as string,
+        ...validated.data,
         password: hash
       }
       const createdUserId = await UserModel.create(user)
@@ -116,7 +115,7 @@ export const UserController = {
       if (!createdUser || createdUser instanceof Error) {
         throw new ServerError('The user was not found after creation.')
       }
-      const { password: userPassword, ...userWithoutPassword } = createdUser
+      const { password: _, ...userWithoutPassword } = createdUser
       res.status(201).json({ success: true, userWithoutPassword })
     } catch (e) {
       handleError(e as Error, res)
@@ -132,14 +131,13 @@ export const UserController = {
         path: '/'
       }
 
-      res
+      res.status(200)
         .clearCookie('access_token', cookieOptions)
         .clearCookie('refresh_token', cookieOptions)
-
-      res.status(200).json({
-        success: true,
-        message: 'Logout successful'
-      })
+        .json({
+          success: true,
+          message: 'Logout successful'
+        })
     } catch (e) {
       handleError(e as Error, res)
     }
@@ -153,7 +151,7 @@ export const UserController = {
       if (!user || user instanceof Error) throw new ClientError('User does not exists')
       const erased = await UserModel.delete(id)
       if (!erased || erased instanceof Error) throw new ServerError('Finally the user was not deleted')
-      const { password, ...userWithoutPassword } = user
+      const { password: _, ...userWithoutPassword } = user
       res.status(200).json({ success: true, userWithoutPassword })
     } catch (e) {
       handleError(e as Error, res)

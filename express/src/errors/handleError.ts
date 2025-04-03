@@ -15,6 +15,16 @@ export const handleError = (e: Error, res: Response) => {
         message: issue.message
       }))
     })
+  } else if (e instanceof JsonWebTokenError) {
+    res
+      .status(500)
+      .clearCookie('access_token')
+      .clearCookie('refresh_token')
+      .json({
+        success: false,
+        name: e.name,
+        message: e.message
+      })
   } else if (e instanceof ClientError) {
     res.status(400).json({
       success: false,
@@ -27,17 +37,6 @@ export const handleError = (e: Error, res: Response) => {
       name: e.name,
       message: e.message
     })
-  } else if (e instanceof JsonWebTokenError) {
-    res.clearCookie('access_token')
-    res.clearCookie('refresh_token')
-
-    res
-      .status(500)
-      .json({
-        success: false,
-        name: e.name,
-        message: e.message
-      })
   } else {
     res.status(500).json({
       success: false,

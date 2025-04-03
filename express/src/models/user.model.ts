@@ -29,11 +29,11 @@ export const UserModel = {
 
   async create(user: User): Promise<string | Error> {
     const sql =
-      'INSERT INTO users(id, name, email, password) VALUES(?, ?, ?, ?)'
+      'INSERT INTO users(id, id_number, name, phone, email, password, role) VALUES(?, ?, ?, ?, ?, ?, ?)'
     return new Promise((resolve, reject: (reason: Error) => void) => {
       DB.run(
         sql,
-        [user.id, user.name, user.email, user.password],
+        [user.id, user.id_number, user.name, user.phone, user.email, user.password, 'client'],
         (err: Error) => {
           if (err) {
             return reject(new QueryError('The user could not be created'))

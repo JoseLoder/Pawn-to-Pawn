@@ -7,6 +7,7 @@ import { ServerError } from '../errors/server.error'
 import { handleError } from '../errors/handleError'
 import { RefreshTokenModel } from '../models/refreshToken.model'
 import { RefreshTokenEncryption } from '../types/tokens.types'
+import { UserModel } from '../models/user.model'
 
 export const RefreshTokenController = {
   async refresh(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -14,7 +15,7 @@ export const RefreshTokenController = {
       // 1. Obtener el refresh token de cookies
       const refreshToken = req.cookies.refresh_token
       if (!refreshToken) {
-        throw new JsonWebTokenError('Refresh token is required')
+        throw new JsonWebTokenError('Refresh token is required, please login again')
       }
 
       // 2. Verificar y decodificar el refresh token
@@ -26,25 +27,29 @@ export const RefreshTokenController = {
       // 3. Validar en base de datos
       const storedToken = await RefreshTokenModel.getByToken(refreshToken)
       if (storedToken instanceof Error || !storedToken) {
-        throw new JsonWebTokenError('Invalid or expired refresh token')
+        throw new JsonWebTokenError('Invalid or expired refresh token, please login again')
       }
+      // 3.5 Traer el rol del usuario.
+      const user = await UserModel.getById(decoded.userId)
+      if (user instanceof Error || !user) throw new JsonWebTokenError('The user associated with the token does not exist, please login again')
 
       // 4. Generar nuevo access token
       const newAccessToken = jwt.sign(
         {
-          userId: decoded.userId,
-          role: 'client'
-          // TODO: role: traer el role del usuario con el userId del refresh token
+          userId: user.id,
+          role: user.role
+
         },
         process.env.SECRET_JWT_KEY ?? 'fallback_secret',
         { expiresIn: '15m' }
       )
 
       // 5. Rotación: Crear nuevo refresh token y revocar el anterior
+      const newIdRefreshToken = crypto.randomUUID()
       const newRefreshToken = jwt.sign(
         {
-          tokenId: decoded.tokenId,
-          userId: decoded.userId
+          tokenId: newIdRefreshToken,
+          userId: user.id
         },
         process.env.REFRESH_JWT_KEY ?? 'fallback_refresh_secret',
         { expiresIn: '7d' }
@@ -52,7 +57,8 @@ export const RefreshTokenController = {
       // 6. Actualizar en base de datos
       await RefreshTokenModel.revoke(refreshToken)
       await RefreshTokenModel.create({
-        user_id: decoded.tokenId,
+        id: newIdRefreshToken,
+        user_id: user.id,
         token: newRefreshToken,
         expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
         revoked: false,
@@ -68,14 +74,15 @@ export const RefreshTokenController = {
       }
 
       // 8. Responder con los nuevos tokens
-      res.cookie('access_token', newAccessToken, {
-        ...cookieOptions,
-        maxAge: 15 * 60 * 1000 // 15 minutos
-      })
-      res.cookie('refresh_token', newRefreshToken, {
-        ...cookieOptions,
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 días
-      })
+      res
+        .cookie('access_token', newAccessToken, {
+          ...cookieOptions,
+          maxAge: 15 * 60 * 1000 // 15 minutos
+        })
+        .cookie('refresh_token', newRefreshToken, {
+          ...cookieOptions,
+          maxAge: 7 * 24 * 60 * 60 * 1000 // 7 días
+        })
 
       next()
     } catch (e) {

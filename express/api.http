@@ -37,6 +37,8 @@ Content-Type: application/json
 
 {
     "name": "Soy test",
+    "id_number": "12345678A",
+    "phone": "633338128",
     "email": "jose@jose.com",
     "password": "tesssst"
 }

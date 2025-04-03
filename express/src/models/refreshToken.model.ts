@@ -6,14 +6,14 @@ export const RefreshTokenModel = {
     // Crear un nuevo refresh token
     async create(token: CreateRefreshToken): Promise<RefreshToken | Error> {
         const sql = `
-      INSERT INTO user_refresh_tokens (user_id, token, expires_at, revoked, device_info)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO user_refresh_tokens (id, user_id, token, expires_at, revoked, device_info)
+      VALUES (?, ?, ?, ?, ?, ?)
       RETURNING *`; //TODO: ¿usar returning en Usuarios y Clientes?
 
         return new Promise((resolve, reject) => {
             DB.get(
                 sql,
-                [token.user_id, token.token, token.expires_at, token.revoked ? 1 : 0, token.device_info],
+                [token.id, token.user_id, token.token, token.expires_at, token.revoked ? 1 : 0, token.device_info],
                 (err, row) => {
                     if (err) return reject(new QueryError('Could not create refresh token'));
                     resolve(row as RefreshToken);
@@ -31,7 +31,6 @@ export const RefreshTokenModel = {
         return new Promise((resolve, reject) => {
             DB.get(sql, [token], (err, row) => {
                 if (err) return reject(new QueryError('Could not fetch refresh token'));
-                if (!row) return reject(new QueryError('Token not found or expired'));
                 resolve(row as RefreshToken);
             });
         });
@@ -79,5 +78,28 @@ export const RefreshTokenModel = {
                 resolve(this.changes); // Número de tokens eliminados
             });
         });
+    },
+
+    async showUsersToken(userId: string): Promise<RefreshToken[] | Error> {
+        const sql = `
+        SELECT * 
+        FROM user_refresh_tokens 
+        WHERE user_id = ? AND revoked = 1 
+        `
+        const data: { tokens: RefreshToken[] } = { tokens: [] }
+
+        return new Promise((resolve, reject: (reason: Error) => void) => {
+            DB.all(sql, [userId], (err, rows) => {
+                if (err) return reject(new QueryError('Could not get all clients'));
+
+                (rows as RefreshToken[]).forEach((row: RefreshToken) => {
+                    data.tokens.push({
+                        ...row
+                    })
+                })
+                const { tokens } = data
+                resolve(tokens)
+            })
+        })
     }
 };

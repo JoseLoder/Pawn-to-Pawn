@@ -1,10 +1,12 @@
-export type RoleUser = "admin" | "professional" | "client"
+export type RoleUser = "admin" | "operator" | "client"
 export interface User {
-  id: string
+  id: string,
+  id_number: string
   email: string
   name: string
-  password: string,
+  phone: string
+  password: string
   role?: RoleUser
 }
 export type LogUser = Pick<User, 'email' | 'password'>
-export type RegisterUser = Omit<User, 'id'>
+export type RegisterUser = Omit<User, 'id' | 'role'>

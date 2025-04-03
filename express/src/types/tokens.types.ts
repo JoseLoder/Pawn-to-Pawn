@@ -10,11 +10,11 @@ export interface RefreshToken {
     device_info?: string;
 }
 
-export type CreateRefreshToken = Omit<RefreshToken, 'id' | 'created_at'>
+export type CreateRefreshToken = Omit<RefreshToken, 'created_at'>
 
 export interface AccessTokenEncryption {
     userId: string
-    role?: RoleUser,
+    role: RoleUser,
 }
 
 export interface RefreshTokenEncryption {

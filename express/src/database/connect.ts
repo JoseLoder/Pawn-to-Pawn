@@ -16,8 +16,27 @@ function connected(err: Error | null) {
     throw new ConnectionDatabaseError('Could not connect to the database')
   }
 }
+let sql = ''
 
-let sql = `
+sql = `
+CREATE TABLE IF NOT EXISTS orders (
+    id UUID PRIMARY KEY,
+    id_client UUID NOT NULL,
+    id_product UUID NOT NULL,
+    id_operator UUID,
+    status TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    processing_at TIMESTAMP,
+    completed_at TIMESTAMP
+)
+`
+DB.run(sql, (err) => {
+  if (err) {
+    throw new TableCreationError('Clould not creating table orders')
+  }
+})
+
+/* sql = `
 CREATE TABLE IF NOT EXISTS clients (
     id UUID PRIMARY KEY,
     dni TEXT UNIQUE NOT NULL,
@@ -30,14 +49,34 @@ DB.run(sql, (err) => {
   if (err) {
     throw new TableCreationError('Clould not creating table clients')
   }
+}) */
+sql = `
+  CREATE TABLE IF NOT EXISTS orders (
+      id UUID PRIMARY KEY,
+      id_client UUID NOT NULL,
+      id_product UUID NOT NULL,
+      id_operator UUID,
+      status TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      processing_at TIMESTAMP,
+      completed_at TIMESTAMP
+  )
+  `
+DB.run(sql, (err) => {
+  if (err) {
+    throw new TableCreationError('Clould not creating table orders')
+  }
 })
 
 sql = `
 CREATE TABLE IF NOT EXISTS users(
     id UUID PRIMARY KEY,
+    id_number TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
+    phone INTEGER UNIQUE,
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
+    role TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 `
@@ -49,7 +88,7 @@ DB.run(sql, (err) => {
 
 sql = `
 CREATE TABLE IF NOT EXISTS user_refresh_tokens (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id UUID PRIMARY KEY,
   user_id INTEGER NOT NULL,
   token TEXT NOT NULL,
   expires_at TIMESTAMP NOT NULL,
