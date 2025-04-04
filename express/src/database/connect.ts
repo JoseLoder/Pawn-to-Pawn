@@ -18,24 +18,6 @@ function connected(err: Error | null) {
 }
 let sql = ''
 
-sql = `
-CREATE TABLE IF NOT EXISTS orders (
-    id UUID PRIMARY KEY,
-    id_client UUID NOT NULL,
-    id_product UUID NOT NULL,
-    id_operator UUID,
-    status TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    processing_at TIMESTAMP,
-    completed_at TIMESTAMP
-)
-`
-DB.run(sql, (err) => {
-  if (err) {
-    throw new TableCreationError('Clould not creating table orders')
-  }
-})
-
 /* sql = `
 CREATE TABLE IF NOT EXISTS clients (
     id UUID PRIMARY KEY,
@@ -56,6 +38,8 @@ sql = `
       id_client UUID NOT NULL,
       id_product UUID NOT NULL,
       id_operator UUID,
+      quantity INTEGER,
+      price REAL,
       status TEXT,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       processing_at TIMESTAMP,
