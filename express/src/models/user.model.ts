@@ -4,7 +4,7 @@ import { User } from '../types/users.types.ts'
 
 export const UserModel = {
 
-  async getById(id: string): Promise<User | Error> {
+  async getById(id: string): Promise<User> {
     const sql = 'SELECT * FROM users WHERE id = ?'
 
     return new Promise((resolve, reject: (reason: Error) => void) => {
@@ -16,7 +16,7 @@ export const UserModel = {
     })
   },
 
-  async getByEmail(email: string): Promise<User | Error> {
+  async getByEmail(email: string): Promise<User> {
     const sql = 'SELECT * FROM users WHERE email = ?'
     return new Promise((resolve, reject: (reason: Error) => void) => {
       DB.get(sql, email, (err, row) => {
@@ -27,7 +27,7 @@ export const UserModel = {
     })
   },
 
-  async create(user: User): Promise<string | Error> {
+  async create(user: User): Promise<string> {
     const sql =
       'INSERT INTO users(id, id_number, name, phone, email, password, role) VALUES(?, ?, ?, ?, ?, ?, ?)'
     return new Promise((resolve, reject: (reason: Error) => void) => {
@@ -45,7 +45,22 @@ export const UserModel = {
     })
   },
 
-  async delete(id: string): Promise<boolean | Error> {
+  async createOperator(id: string): Promise<string> {
+    const sql = `
+      UPDATE users 
+      SET role = operator 
+      WHERE id = ?
+    `
+    return new Promise((resolve, reject: (reason: Error) => void) => {
+      DB.run(sql, id, (err) => {
+        if (err) reject(new QueryError(`Could not update role on id_user ${id}`))
+
+        resolve(id)
+      })
+    })
+  },
+
+  async delete(id: string): Promise<boolean> {
     const sql = 'DELETE FROM users WHERE id = ?'
     return new Promise((resolve, reject: (reason: Error) => void) => {
       DB.run(sql, [id], (err: Error) => {

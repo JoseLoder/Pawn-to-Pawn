@@ -37,12 +37,13 @@ sql = `
   CREATE TABLE IF NOT EXISTS products (
     id UUID PRIMARY KEY,
     id_machine UUID NOT NULL,
-    id_base UUID NOT NULL,
-    id_cover UUID NOT NULL,
+    base UUID NOT NULL,
+    cover UUID NOT NULL,
     id_material UUID NOT NULL,
+    lenght REAL NOT NULL,
     estimated_time TIMESTAMP,
     estimated_weight REAL,
-    size REAL,
+    widht REAL,
     price REAL
   )
 `

@@ -22,6 +22,18 @@ export const ProductModel = {
         })
     },
 
+    async getById(id: string): Promise<Product> {
+        const sql = `SELECT * FROM products WHERE id = ?`
+
+        return new Promise((resolve, reject: (reason: Error) => void) => {
+            DB.get(sql, id, (err, row) => {
+                if (err) reject(new QueryError(`Could not get product by this id ${id}`))
+
+                resolve(row as Product)
+            })
+        })
+    },
+
     async getByMaterial(id_material: string): Promise<Product[]> {
         const sql = `SELECT * FROM products WHERE id_material = ?`
         const data: { product: Product[] } = { product: [] }
@@ -43,14 +55,16 @@ export const ProductModel = {
     },
 
     async createProduct(id: string, product: CreateProduct): Promise<string> {
-        const sql = `INSERT INTO products (id, id_machine, id_base, id_cover, id_material) VALUES( ?,?,?,?,?)`
+        const sql = `INSERT INTO products (id, id_machine, base, cover, id_material,lenght) VALUES( ?,?,?,?,?,?)`
 
         return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.run(sql, [id, product.id_machine, product.id_base, product.id_cover, product.id_material], (err) => {
+            DB.run(sql, [id, product.id_machine, product.base, product.cover, product.id_material, product.lenght], (err) => {
                 if (err) reject(new QueryError('Could not instert new product'))
 
                 resolve(id)
             })
         })
     }
+
+
 }

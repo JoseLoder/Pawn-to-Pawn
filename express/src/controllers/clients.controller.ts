@@ -25,7 +25,7 @@ export const ClientsController = {
   async getById(req: Request, res: Response) {
     try {
       const { id } = req.params
-      if (!req.params) throw new ClientError('The id must be correct')
+      if (!id) throw new ClientError('The id must be correct')
       const client = await ClientModel.getById(id)
       if (!client || client instanceof Error) throw new ClientError('Client does not exist')
       res.status(200).json({ success: true, client })
