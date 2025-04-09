@@ -32,15 +32,36 @@ DB.run(sql, (err) => {
     throw new TableCreationError('Clould not creating table clients')
   }
 }) */
+
+sql = `
+  CREATE TABLE IF NOT EXISTS products (
+    id UUID PRIMARY KEY,
+    id_machine UUID NOT NULL,
+    id_base UUID NOT NULL,
+    id_cover UUID NOT NULL,
+    id_material UUID NOT NULL,
+    estimated_time TIMESTAMP,
+    estimated_weight REAL,
+    size REAL,
+    price REAL
+  )
+`
+
+DB.run(sql, (err) => {
+  if (err) {
+    throw new TableCreationError('Could not creating table products')
+  }
+})
+
 sql = `
   CREATE TABLE IF NOT EXISTS orders (
       id UUID PRIMARY KEY,
       id_client UUID NOT NULL,
       id_product UUID NOT NULL,
       id_operator UUID,
-      quantity INTEGER,
-      price REAL,
-      status TEXT,
+      quantity INTEGER NOT NULL,
+      price REAL NOT NULL,
+      status TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       processing_at TIMESTAMP,
       completed_at TIMESTAMP

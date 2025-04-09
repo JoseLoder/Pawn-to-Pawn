@@ -8,7 +8,7 @@ export const RefreshTokenModel = {
         const sql = `
       INSERT INTO user_refresh_tokens (id, user_id, token, expires_at, revoked, device_info)
       VALUES (?, ?, ?, ?, ?, ?)
-      RETURNING *`; //TODO: ¿usar returning en Usuarios y Clientes?
+      RETURNING *`;
 
         return new Promise((resolve, reject) => {
             DB.get(

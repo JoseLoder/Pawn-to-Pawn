@@ -12,5 +12,5 @@ export interface Order {
     completedAt: TimeRanges
 }
 
-export type CreateOrder = Pick<Order, 'idClient' | 'idProduct' | 'quantity'>
+export type CreateOrder = Pick<Order, 'idClient' | 'idProduct' | 'quantity' | 'price' | 'status'>
 export type UpdateOrder = Omit<Order, 'id' | 'idClient' | 'idProduct' | 'createdAt'>

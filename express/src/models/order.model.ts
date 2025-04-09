@@ -71,14 +71,14 @@ export const orderModel = {
 
     async create(id: string, order: CreateOrder): Promise<string> {
         const sql = `
-            INSERT INTO orders (id, id_client, id_product) 
-            VALUES (?, ?, ?, ?)
+            INSERT INTO orders (id, id_client, id_product, quantity, price, status) 
+            VALUES (?, ?, ?, ?, ?, ?)
         `
 
         const params = [id, order.idClient, order.idProduct, order.quantity]
         return new Promise((resolve, reject: (reason: Error) => void) => {
             DB.get(sql, params, function (err: Error) {
-                if (err) reject(new QueryError(`Could not create order bt this id: ${id}`))
+                if (err) reject(new QueryError(`Could not create order by this id: ${id}`))
 
                 resolve(id)
             })

@@ -9,7 +9,7 @@ import { RefreshTokenModel } from '../models/refreshToken.model'
 import { RefreshTokenEncryption } from '../types/tokens.types'
 import { UserModel } from '../models/user.model'
 
-export const RefreshTokenController = {
+export const RefreshTokensController = {
   async refresh(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       // 1. Obtener el refresh token de cookies

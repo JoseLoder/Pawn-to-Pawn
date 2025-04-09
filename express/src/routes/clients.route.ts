@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { ClientController } from '../controllers/clients.controller.ts'
+import { ClientsController } from '../controllers/clients.controller.ts'
 import { authClient } from '../middleware/auth.clients.ts'
 import { auth } from '../middleware/auth.middleware.ts'
 
@@ -11,9 +11,9 @@ clientsRouter.use('/', auth)
 clientsRouter.use('/', authClient)
 
 // End-Points
-clientsRouter.get('/', ClientController.getAll)
-clientsRouter.get('/:id', ClientController.getById)
-clientsRouter.get('/dni/:dni', ClientController.getByDni)
-clientsRouter.post('/', ClientController.create)
-clientsRouter.put('/:id', ClientController.update)
-clientsRouter.delete('/:id', ClientController.delete)
+clientsRouter.get('/', ClientsController.getAll)
+clientsRouter.get('/:id', ClientsController.getById)
+clientsRouter.get('/dni/:dni', ClientsController.getByDni)
+clientsRouter.post('/', ClientsController.create)
+clientsRouter.put('/:id', ClientsController.update)
+clientsRouter.delete('/:id', ClientsController.delete)

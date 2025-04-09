@@ -10,7 +10,7 @@ import {
 import { handleError } from '../errors/handleError.ts'
 import { Client, CreateClient, UpdateClient } from '../types/clients.types.ts'
 
-export const ClientController = {
+export const ClientsController = {
   async getAll(_: Request, res: Response): Promise<void> {
     try {
       const clients = await ClientModel.getAll()

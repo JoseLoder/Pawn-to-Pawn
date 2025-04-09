@@ -10,7 +10,7 @@ import { ServerError } from '../errors/server.error.ts'
 import { handleError } from '../errors/handleError.ts'
 import { LogUser, RegisterUser } from '../types/users.types.ts'
 
-export const UserController = {
+export const UsersController = {
   async login(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body as LogUser

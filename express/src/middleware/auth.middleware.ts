@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import { AccessTokenEncryption } from '../types/tokens.types'
-import { RefreshTokenController } from '../controllers/refreshTokens.controller'
+import { RefreshTokensController } from '../controllers/refreshTokens.controller'
 // Extend the Request interface to include the session property
 declare global {
     namespace Express {
@@ -25,6 +25,6 @@ export function auth(req: Request, res: Response, next: NextFunction) {
         req.session.userSession = data // Add data in the request for get user any route
         next()
     } catch (e) {
-        RefreshTokenController.refresh(req, res, next)
+        RefreshTokensController.refresh(req, res, next)
     }
 }
