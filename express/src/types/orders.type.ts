@@ -1,9 +1,9 @@
-export type StatusOrder = 'inHold | inProgress | done'
-export interface Order {
+export type StatusOrder = 'eraser' | 'inHold' | 'inProgress' | 'done'
+export type Order = {
     id: string,
-    idClient: string,
-    idProduct: string,
-    idOperator: string,
+    id_client: string,
+    id_product: string,
+    id_operator: string,
     quantity: number,
     price: number,
     status: StatusOrder,
@@ -12,5 +12,5 @@ export interface Order {
     completedAt: TimeRanges
 }
 
-export type CreateOrder = Pick<Order, 'idClient' | 'idProduct' | 'quantity' | 'price' | 'status'>
-export type UpdateOrder = Omit<Order, 'id' | 'idClient' | 'idProduct' | 'createdAt'>
+export type CreateOrder = Pick<Order, 'id_client' | 'id_product' | 'quantity'>
+export type UpdateOrder = Omit<Order, 'id' | 'id_client' | 'id_product' | 'createdAt'>

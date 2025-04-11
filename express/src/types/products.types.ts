@@ -1,13 +1,13 @@
 export type Covers = 'white' | 'black' | 'golden'
 export type Bases = 'iron' | 'pvc' | 'cardboard'
-export interface Product {
+export type Product = {
     id: string,
     id_machine: string,
     id_material: string,
     base: Bases,
     cover: Covers,
     lenght: number,
-    estimated_time: TimeRanges,
+    estimated_time: number,
     estimated_weight: number,
     widht: number,
     price: number

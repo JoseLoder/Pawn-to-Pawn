@@ -3,7 +3,7 @@ import { ClientError } from "../errors/client.error"
 import { QueryError } from "../errors/server.error"
 import { CreateOrder, Order, UpdateOrder } from "../types/orders.type"
 
-export const orderModel = {
+export const OrderModel = {
     async getAll(): Promise<Order[]> {
         const sql = `SELECT * FROM orders`
         const data: { orders: Order[] } = { orders: [] }
@@ -40,7 +40,7 @@ export const orderModel = {
         })
     },
 
-    async getByOperator(idOperator: string): Promise<Order[]> {
+    async getByOperator(idOperator: string | null): Promise<Order[]> {
         const sql = `SELECT * FROM orders WHERE id_operator = ?`
         const data: { orders: Order[] } = { orders: [] }
         return new Promise((resolve, reject: (reason: Error) => void) => {
@@ -75,7 +75,7 @@ export const orderModel = {
             VALUES (?, ?, ?, ?, ?, ?)
         `
 
-        const params = [id, order.idClient, order.idProduct, order.quantity]
+        const params = [id, order.id_client, order.id_product, order.quantity]
         return new Promise((resolve, reject: (reason: Error) => void) => {
             DB.get(sql, params, function (err: Error) {
                 if (err) reject(new QueryError(`Could not create order by this id: ${id}`))
@@ -90,9 +90,9 @@ export const orderModel = {
         const fields: string[] = []
         const values: unknown[] = []
 
-        if (order.idOperator) {
+        if (order.id_operator) {
             fields.push('id_operator = ?')
-            values.push(order.idOperator)
+            values.push(order.id_operator)
         }
         if (order.price) {
             fields.push('price = ?')

@@ -54,15 +54,42 @@ export const ProductModel = {
         })
     },
 
-    async createProduct(id: string, product: CreateProduct): Promise<string> {
-        const sql = `INSERT INTO products (id, id_machine, base, cover, id_material,lenght) VALUES( ?,?,?,?,?,?)`
+    async create(product: Product): Promise<string> {
+        const sql = `
+            INSERT INTO products (
+                id, 
+                id_machine, 
+                id_material, 
+                base, 
+                cover, 
+                lenght,
+                estimated_time,
+                estimated_weight,
+                widht,
+                price
+            ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `
 
         return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.run(sql, [id, product.id_machine, product.base, product.cover, product.id_material, product.lenght], (err) => {
-                if (err) reject(new QueryError('Could not instert new product'))
+            DB.run(
+                sql,
+                [
+                    product.id,
+                    product.id_machine,
+                    product.id_material,
+                    product.base,
+                    product.cover,
+                    product.lenght,
+                    product.estimated_time,
+                    product.estimated_weight,
+                    product.widht,
+                    product.price
+                ],
+                (err) => {
+                    if (err) reject(new QueryError('Could not insert new product'))
 
-                resolve(id)
-            })
+                    resolve(product.id)
+                })
         })
     }
 

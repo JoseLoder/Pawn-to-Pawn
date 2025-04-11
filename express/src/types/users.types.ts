@@ -6,7 +6,7 @@ export interface User {
   name: string
   phone: string
   password: string
-  role?: RoleUser
+  role: RoleUser
 }
 export type LogUser = Pick<User, 'email' | 'password'>
 export type RegisterUser = Omit<User, 'id' | 'role'>
