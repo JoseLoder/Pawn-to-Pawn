@@ -102,17 +102,17 @@ export const UsersController = {
       if (!hash) {
         throw new ServerError('Password hashing failed')
       }
+      const id = crypto.randomUUID() as string
       const user = {
-        id: crypto.randomUUID() as string,
         ...validated.data,
         password: hash
       }
-      const createdUserId = await UserModel.create(user)
-      if (!createdUserId || createdUserId instanceof Error) {
+      const createdUserId = await UserModel.create(id, user)
+      if (!createdUserId) {
         throw new ServerError('Finally the user was not be created')
       }
       const createdUser = await UserModel.getById(createdUserId)
-      if (!createdUser || createdUser instanceof Error) {
+      if (!createdUser) {
         throw new ServerError('The user was not found after creation.')
       }
       const { password: _, ...userWithoutPassword } = createdUser
@@ -150,7 +150,7 @@ export const UsersController = {
       const user = await UserModel.getById(id)
       if (!user || user instanceof Error) throw new ClientError('User does not exists')
       const erased = await UserModel.delete(id)
-      if (!erased || erased instanceof Error) throw new ServerError('Finally the user was not deleted')
+      if (!erased) throw new ServerError('Finally the user was not deleted')
       const { password: _, ...userWithoutPassword } = user
       res.status(200).json({ success: true, userWithoutPassword })
     } catch (e) {

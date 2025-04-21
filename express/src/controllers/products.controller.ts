@@ -127,7 +127,7 @@ export const ProductsController = {
                 throw new ServerError('The product was not found after creation.')
             }
 
-            res.status(200).json({ success: true, createdProduct })
+            res.status(201).json({ success: true, createdProduct })
         } catch (e) {
             handleError(e as Error, res)
         }

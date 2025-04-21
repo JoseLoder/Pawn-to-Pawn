@@ -4,7 +4,7 @@ import { CreateRefreshToken, RefreshToken } from '../types/tokens.types';
 
 export const RefreshTokenModel = {
     // Crear un nuevo refresh token
-    async create(token: CreateRefreshToken): Promise<RefreshToken | Error> {
+    async create(token: CreateRefreshToken): Promise<RefreshToken> {
         const sql = `
       INSERT INTO user_refresh_tokens (id, user_id, token, expires_at, revoked, device_info)
       VALUES (?, ?, ?, ?, ?, ?)
@@ -23,7 +23,7 @@ export const RefreshTokenModel = {
     },
 
     // Buscar por token (para validación)
-    async getByToken(token: string): Promise<RefreshToken | Error> {
+    async getByToken(token: string): Promise<RefreshToken> {
         const sql = `
       SELECT * FROM user_refresh_tokens
       WHERE token = ? AND revoked = 0 AND expires_at > datetime('now')`;
@@ -37,7 +37,7 @@ export const RefreshTokenModel = {
     },
 
     // Revocar un token (logout)
-    async revoke(token: string): Promise<boolean | Error> {
+    async revoke(token: string): Promise<boolean> {
         const sql = `
       UPDATE user_refresh_tokens
       SET revoked = 1
@@ -52,7 +52,7 @@ export const RefreshTokenModel = {
     },
 
     // Revocar todos los tokens de un usuario (logout all devices)
-    async revokeAllForUser(user_id: string): Promise<boolean | Error> {
+    async revokeAllForUser(user_id: string): Promise<boolean> {
         const sql = `
       UPDATE user_refresh_tokens
       SET revoked = 1
@@ -67,7 +67,7 @@ export const RefreshTokenModel = {
     },
 
     // Limpieza de tokens expirados (para ejecutar periódicamente)
-    async cleanupExpiredTokens(): Promise<number | Error> {
+    async cleanupExpiredTokens(): Promise<number> {
         const sql = `
       DELETE FROM user_refresh_tokens
       WHERE expires_at < datetime('now')`;
@@ -80,7 +80,7 @@ export const RefreshTokenModel = {
         });
     },
 
-    async showUsersToken(userId: string): Promise<RefreshToken[] | Error> {
+    async showUsersToken(userId: string): Promise<RefreshToken[]> {
         const sql = `
         SELECT * 
         FROM user_refresh_tokens 

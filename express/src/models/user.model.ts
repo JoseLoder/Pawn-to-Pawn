@@ -1,6 +1,6 @@
 import { DB } from '../database/connect.ts'
 import { QueryError } from '../errors/server.error.ts'
-import { User } from '../types/users.types.ts'
+import { RegisterUser, User } from '../types/users.types.ts'
 
 export const UserModel = {
 
@@ -27,19 +27,19 @@ export const UserModel = {
     })
   },
 
-  async create(user: User): Promise<string> {
+  async create(id: string, user: RegisterUser): Promise<string> {
     const sql =
       'INSERT INTO users(id, id_number, name, phone, email, password, role) VALUES(?, ?, ?, ?, ?, ?, ?)'
     return new Promise((resolve, reject: (reason: Error) => void) => {
       DB.run(
         sql,
-        [user.id, user.id_number, user.name, user.phone, user.email, user.password, 'client'],
+        [id, user.id_number, user.name, user.phone, user.email, user.password, 'client'],
         (err: Error) => {
           if (err) {
             return reject(new QueryError('The user could not be created'))
           }
 
-          resolve(user.id)
+          resolve(id)
         }
       )
     })

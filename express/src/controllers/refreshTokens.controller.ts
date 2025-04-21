@@ -2,8 +2,6 @@ import jwt, { JsonWebTokenError } from 'jsonwebtoken'
 import { NextFunction, Request, Response } from 'express'
 import { CookieOptions } from 'express'
 
-import { ClientError } from '../errors/client.error'
-import { ServerError } from '../errors/server.error'
 import { handleError } from '../errors/handleError'
 import { RefreshTokenModel } from '../models/refreshToken.model'
 import { RefreshTokenEncryption } from '../types/tokens.types'
@@ -26,12 +24,12 @@ export const RefreshTokensController = {
 
       // 3. Validar en base de datos
       const storedToken = await RefreshTokenModel.getByToken(refreshToken)
-      if (storedToken instanceof Error || !storedToken) {
+      if (!storedToken) {
         throw new JsonWebTokenError('Invalid or expired refresh token, please login again')
       }
       // 3.5 Traer el rol del usuario.
       const user = await UserModel.getById(decoded.userId)
-      if (user instanceof Error || !user) throw new JsonWebTokenError('The user associated with the token does not exist, please login again')
+      if (!user) throw new JsonWebTokenError('The user associated with the token does not exist, please login again')
 
       // 4. Generar nuevo access token
       const newAccessToken = jwt.sign(
@@ -54,8 +52,9 @@ export const RefreshTokensController = {
         process.env.REFRESH_JWT_KEY ?? 'fallback_refresh_secret',
         { expiresIn: '7d' }
       )
-      // 6. Actualizar en base de datos
       await RefreshTokenModel.revoke(refreshToken)
+
+      // 6. Actualizar en base de datos
       await RefreshTokenModel.create({
         id: newIdRefreshToken,
         user_id: user.id,
@@ -91,38 +90,35 @@ export const RefreshTokensController = {
     }
   },
 
-  async revokeAll(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params
-      if (!id) throw new ClientError('User ID is required')
-
-      const revoked = await RefreshTokenModel.revokeAllForUser(id)
-      if (revoked instanceof Error || !revoked) {
-        throw new ServerError('Failed to revoke tokens')
+  /*  async revokeAll(req: Request, res: Response): Promise<void> {
+     try {
+       const { id } = req.params
+       if (!id) throw new ClientError('User ID is required')
+ 
+       const revoked = await RefreshTokenModel.revokeAllForUser(id)
+       if (!revoked) {
+         throw new ServerError('Failed to revoke tokens')
+       }
+ 
+       res.status(200).json({
+         success: true,
+         message: 'All refresh tokens revoked successfully'
+       })
+     } catch (e) {
+       handleError(e as Error, res)
+     }
+   }, */
+  /* 
+    async cleanupTokens(_: Request, res: Response): Promise<void> {
+      try {
+        const cleanedCount = await RefreshTokenModel.cleanupExpiredTokens()
+  
+        res.status(200).json({
+          success: true,
+          message: `Cleaned ${cleanedCount} expired tokens`
+        })
+      } catch (e) {
+        handleError(e as Error, res)
       }
-
-      res.status(200).json({
-        success: true,
-        message: 'All refresh tokens revoked successfully'
-      })
-    } catch (e) {
-      handleError(e as Error, res)
-    }
-  },
-
-  async cleanupTokens(_: Request, res: Response): Promise<void> {
-    try {
-      const cleanedCount = await RefreshTokenModel.cleanupExpiredTokens()
-      if (cleanedCount instanceof Error) {
-        throw new ServerError('Failed to clean expired tokens')
-      }
-
-      res.status(200).json({
-        success: true,
-        message: `Cleaned ${cleanedCount} expired tokens`
-      })
-    } catch (e) {
-      handleError(e as Error, res)
-    }
-  }
+      } */
 }

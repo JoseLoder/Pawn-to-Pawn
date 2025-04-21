@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CreateOrder } from "../types/orders.type";
+
 
 const OrderRegisterSchema = z.object({
     id_client: z.string(),
@@ -7,6 +7,6 @@ const OrderRegisterSchema = z.object({
     quantity: z.number().min(1)
 })
 
-export function validateOrder({ id_client, id_product, quantity }: CreateOrder) {
+export function validateOrder(id_client: unknown, id_product: unknown, quantity: unknown) {
     return OrderRegisterSchema.safeParseAsync({ id_client, id_product, quantity })
 }

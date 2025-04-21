@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { ClientsController } from '../controllers/clients.controller.ts'
-import { authClient } from '../middleware/auth.clients.ts'
-import { auth } from '../middleware/auth.middleware.ts'
+import { authClient } from '../middlewares/auth.middleware.ts'
+import { auth } from '../middlewares/auth.middleware.ts'
 
 export const clientsRouter = Router()
 
@@ -10,7 +10,7 @@ export const clientsRouter = Router()
 clientsRouter.use('/', auth)
 clientsRouter.use('/', authClient)
 
-// End-Points
+// End-Points Clients
 clientsRouter.get('/', ClientsController.getAll)
 clientsRouter.get('/:id', ClientsController.getById)
 clientsRouter.get('/dni/:dni', ClientsController.getByDni)

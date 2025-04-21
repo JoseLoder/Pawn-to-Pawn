@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import { ClientError, UnauthorizedError } from "../errors/client.error";
 import { handleError } from "../errors/handleError";
 import { OrderModel } from "../models/order.model";
-import { CreateOrder, Order } from "../types/orders.type";
+import { Order } from "../types/orders.type";
 import { UserModel } from "../models/user.model";
 import { validateOrder } from "../schema/orders.schema";
-import { ZodError } from "zod";
 import { ProductModel } from "../models/product.model";
+import { ServerError } from "../errors/server.error";
+import { ZodError } from "zod";
 
 export const OrdersController = {
 
@@ -113,8 +114,8 @@ export const OrdersController = {
     // To client actions and admin too
     async create(req: Request, res: Response) {
         try {
-            const { id_client, id_product, quantity } = req.body as CreateOrder
-            const validated = await validateOrder({ id_client, id_product, quantity })
+            const { id_client, id_product, quantity } = req.body
+            const validated = await validateOrder(id_client, id_product, quantity)
             if (!validated.success || !validated.data) {
                 if (validated.error instanceof ZodError) {
                     throw validated.error
@@ -127,12 +128,34 @@ export const OrdersController = {
             //Calculate price
             const price = quantity * product.price
 
+            const id = crypto.randomUUID as unknown
+            const createdId = await OrderModel.create(id as string, { id_client, id_product, quantity, createdAt: Date.now().toString(), status: 'eraser', price })
+            if (!createdId) throw new ServerError('Finally could not been created order')
 
-            const createdId = await OrderModel.create()
+            const createdOrder = await OrderModel.getById(createdId)
+            if (!createdOrder) throw new ServerError('The order was not found after creation')
+
+            res.status(201).json({ success: true, createdOrder })
         } catch (e) {
             handleError(e as Error, res)
         }
     },
 
-    async getByClient(req: Request, res: Response) { }
+    async getByClient(req: Request, res: Response) {
+        try {
+            const { id } = req.params
+            if (!id) throw new ClientError('The id must be correct')
+
+            const user = await UserModel.getById(id)
+            if (!user) throw new ClientError('Probably the user id is not correct')
+            if (user.role !== 'client' && user.role !== 'admin') throw new ClientError('The user must be Client or Admin.')
+
+            const orders = await OrderModel.getByClient(id)
+            if (!orders) throw new ServerError('The orders was not found')
+
+            res.status(200).json({ success: true, orders })
+        } catch (e) {
+            handleError(e as Error, res)
+        }
+    }
 }

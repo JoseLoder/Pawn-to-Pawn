@@ -1,5 +1,4 @@
 import {
-  ConnectionDatabaseError,
   TableCreationError
 } from '../errors/server.error.ts'
 import sqlite3 from 'sqlite3'
@@ -13,7 +12,8 @@ export const DB = new sqlite3Verbose.Database(dbPath, OPEN_READWRITE, connected)
 
 function connected(err: Error | null) {
   if (err) {
-    throw new ConnectionDatabaseError('Could not connect to the database')
+    console.log('Could not connect to the database')
+    process.exit(1)
   }
 }
 let sql = ''
