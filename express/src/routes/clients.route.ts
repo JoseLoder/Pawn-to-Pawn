@@ -3,17 +3,17 @@ import { ClientsController } from '../controllers/clients.controller.ts'
 import { authClient } from '../middlewares/auth.middleware.ts'
 import { auth } from '../middlewares/auth.middleware.ts'
 
-export const clientsRouter = Router()
+export const ClientsRouter = Router()
 
 // Middleware
 
-clientsRouter.use('/', auth)
-clientsRouter.use('/', authClient)
+ClientsRouter.use('/', auth)
+ClientsRouter.use('/', authClient)
 
 // End-Points Clients
-clientsRouter.get('/', ClientsController.getAll)
-clientsRouter.get('/:id', ClientsController.getById)
-clientsRouter.get('/dni/:dni', ClientsController.getByDni)
-clientsRouter.post('/', ClientsController.create)
-clientsRouter.put('/:id', ClientsController.update)
-clientsRouter.delete('/:id', ClientsController.delete)
+ClientsRouter.get('/', ClientsController.getAll)
+ClientsRouter.get('/:id', ClientsController.getById)
+ClientsRouter.get('/dni/:dni', ClientsController.getByDni)
+ClientsRouter.post('/', ClientsController.create)
+ClientsRouter.put('/:id', ClientsController.update)
+ClientsRouter.delete('/:id', ClientsController.delete)

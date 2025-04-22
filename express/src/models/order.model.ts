@@ -75,7 +75,14 @@ export const OrderModel = {
             VALUES (?, ?, ?, ?, ?, ?)
         `
 
-        const params = [id, order.id_client, order.id_product, order.quantity, order.price, order.status]
+        const params = [
+            id,
+            order.id_client,
+            order.id_product,
+            order.quantity,
+            order.price,
+            order.status
+        ]
         return new Promise((resolve, reject: (reason: Error) => void) => {
             DB.get(sql, params, function (err: Error) {
                 if (err) reject(new QueryError(`Could not create order by this id: ${id}`))

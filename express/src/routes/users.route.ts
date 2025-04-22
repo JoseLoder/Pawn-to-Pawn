@@ -1,16 +1,16 @@
 import { Router } from 'express'
 import { UsersController } from '../controllers/users.controller.ts'
 import { auth, authClient } from '../middlewares/auth.middleware.ts'
-export const usersRouter = Router()
 
+export const UsersRouter = Router()
 
 // Middleware
 
-usersRouter.use('/', auth)
-usersRouter.use('/', authClient)
+UsersRouter.use('/', auth)
+UsersRouter.use('/', authClient)
 
 
-usersRouter.post('/login', UsersController.login)
-usersRouter.post('/register', UsersController.register)
-usersRouter.post('/logout', UsersController.logout)
-usersRouter.delete('/:id', UsersController.delete)
+UsersRouter.post('/login', UsersController.login)
+UsersRouter.post('/register', UsersController.register)
+UsersRouter.post('/logout', UsersController.logout)
+UsersRouter.delete('/:id', UsersController.delete)

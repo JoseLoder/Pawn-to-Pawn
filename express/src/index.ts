@@ -2,8 +2,8 @@ import express, { json } from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
-import { clientsRouter } from './routes/clients.route.ts'
-import { usersRouter } from './routes/users.route.ts'
+import { ClientsRouter } from './routes/clients.route.ts'
+import { UsersRouter } from './routes/users.route.ts'
 
 const port = process.env.PORT ?? 3000
 const app = express()
@@ -21,8 +21,8 @@ app.use(json())
 app.use(cookieParser())
 
 // Endpoints
-app.use('/clients', clientsRouter)
-app.use('/users', usersRouter)
+app.use('/clients', ClientsRouter)
+app.use('/users', UsersRouter)
 
 // 404 Not Found
 app.use((_, res) => {

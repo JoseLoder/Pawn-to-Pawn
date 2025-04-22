@@ -43,7 +43,7 @@ sql = `
 `
 DB.run(sql, (err) => {
   if (err) {
-    throw new TableCreationError('Could not creating table products')
+    throw new TableCreationError('Could not creating table materials')
   }
 })
 sql = `
@@ -57,7 +57,7 @@ sql = `
 `
 DB.run(sql, (err) => {
   if (err) {
-    throw new TableCreationError('Could not creating table products')
+    throw new TableCreationError('Could not creating table machines')
   }
 })
 
