@@ -1,3 +1,30 @@
+### USER REGISTER
+POST http://localhost:3000/users/register
+Content-Type: application/json
+
+{
+    "name": "Soy test",
+    "id_number": "12345678A",
+    "phone": "633338128",
+    "email": "jose@jose.com",
+    "password": "tesssst"
+}
+
+### USER LOGIN
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+    "email": "jose@jose.com",
+    "password": "tesssst"
+}
+
+### USER LOGOUT 
+POST http://localhost:3000/users/logout
+
+### DELETE USER
+DELETE http://localhost:3000/users/4a91b19f-75eb-4343-8a84-d0e268f27479
+
 ### GET CLIENTS
 GET http://localhost:3000/clients
 
@@ -30,30 +57,3 @@ Content-Type: application/json
 
 ### DELETE CLIENT
 DELETE http://localhost:3000/clients/fc1dce25-3c7e-4e48-b805-baf2c2439432
-
-### USER REGISTER
-POST http://localhost:3000/users/register
-Content-Type: application/json
-
-{
-    "name": "Soy test",
-    "id_number": "12345678A",
-    "phone": "633338128",
-    "email": "jose@jose.com",
-    "password": "tesssst"
-}
-
-### USER LOGIN
-POST http://localhost:3000/users/login
-Content-Type: application/json
-
-{
-    "email": "jose@jose.com",
-    "password": "tesssst"
-}
-
-### USER LOGOUT 
-POST http://localhost:3000/users/logout
-
-### DELETE USER
-DELETE http://localhost:3000/users/4a91b19f-75eb-4343-8a84-d0e268f27479

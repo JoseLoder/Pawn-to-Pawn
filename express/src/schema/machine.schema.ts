@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { CreateMaterial } from "../types/materials.types";
 import { CreateMachine } from "../types/machines.types";
 
 const MachineRegisterSchema = z.object({

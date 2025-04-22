@@ -2,7 +2,7 @@ import { Router } from "express";
 import { auth, authAdmin } from "../middlewares/auth.middleware";
 import { MachinesController } from "../controllers/machines.controller";
 
-const MachinesRoute = Router()
+export const MachinesRoute = Router()
 
 // Middleware
 MachinesRoute.use(auth)

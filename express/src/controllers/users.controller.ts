@@ -142,6 +142,23 @@ export const UsersController = {
       handleError(e as Error, res)
     }
   },
+  async setAsWorker(req: Request, res: Response) {
+    try {
+      const { id } = req.params
+      if (!id) throw new ClientError('The id must be correct')
+      const user = await UserModel.getById(id)
+      if (!user) throw new ClientError('This user not exists')
+      if (user.role !== 'client') throw new ClientError('This user must be a client')
+      const operatorUserId = await UserModel.createOperator(user.id)
+      if (!operatorUserId) throw new ServerError('Could not be created a new worker')
+      const operatorUser = await UserModel.getById(operatorUserId)
+      if (operatorUser.role != 'operator') throw new ServerError('Unknow Error: The client user can not be convert to operator user')
+      const { password: _, ...userWithoutPassword } = operatorUser
+      res.status(200).json({ success: true, userWithoutPassword })
+    } catch (e) {
+      handleError(e as Error, res)
+    }
+  },
 
   async delete(req: Request, res: Response) {
     try {
