@@ -8,9 +8,89 @@ import { ClientError } from '../errors/client.error.ts'
 import { validateLogin, validateUser } from '../schema/users.schema.ts'
 import { ServerError } from '../errors/server.error.ts'
 import { handleError } from '../errors/handleError.ts'
-import { LogUser, RegisterUser } from '../types/users.types.ts'
+import { LogUser, PublicUser, RegisterUser } from '../types/users.types.ts'
 
 export const UsersController = {
+  async getById(req: Request, res: Response): Promise<void> {
+    try {
+      const { id } = req.params
+      if (!id) throw new ClientError('The id must be correct')
+
+      const user = await UserModel.getById(id)
+      if (!user) throw new ClientError('User does not exist')
+      const { password: _, ...userWithoutPassword } = user
+      res.status(200).json({ success: true, userWithoutPassword })
+    } catch (e) {
+      handleError(e as Error, res)
+    }
+  },
+
+  async getByEmail(req: Request, res: Response): Promise<void> {
+    try {
+      const { email } = req.params
+      if (!email) throw new ClientError('The email must be correct')
+
+      const user = await UserModel.getByEmail(email)
+      if (!user) throw new ClientError('User does not exist')
+      const { password: _, ...userWithoutPassword } = user
+      res.status(200).json({ success: true, userWithoutPassword })
+    } catch (e) {
+      handleError(e as Error, res)
+    }
+  },
+
+  async getAll(_: Request, res: Response): Promise<void> {
+    try {
+      let usersWithoutPassword: PublicUser[] = []
+      const users = await UserModel.getAll()
+      if (!users[0]) throw new ClientError('There are not users right now.')
+      users.forEach((user) => {
+        const { password: _, ...userWithoutPassword } = user
+        usersWithoutPassword.push(userWithoutPassword)
+      })
+
+      res.status(200).json({ success: true, usersWithoutPassword })
+    } catch (e) {
+      handleError(e as Error, res)
+    }
+  },
+
+  async getClients(_: Request, res: Response): Promise<void> {
+    try {
+      let clientsWithoutPassword: PublicUser[] = []
+      const users = await UserModel.getAll()
+      if (!users[0]) throw new ClientError('There are not users right now.')
+      users.forEach((user) => {
+        if (user.role === 'client') {
+          const { password: _, ...clientWithoutPassword } = user
+          clientsWithoutPassword.push(clientWithoutPassword)
+        }
+      })
+
+      res.status(200).json({ success: true, clientsWithoutPassword })
+    } catch (e) {
+      handleError(e as Error, res)
+    }
+  },
+
+  async getOperators(_: Request, res: Response): Promise<void> {
+    try {
+      let operatorsWithoutPassword: PublicUser[] = []
+      const users = await UserModel.getAll()
+      if (!users[0]) throw new ClientError('There are not users right now.')
+      users.forEach((user) => {
+        if (user.role === 'operator') {
+          const { password: _, ...operatorWithoutPassword } = user
+          operatorsWithoutPassword.push(operatorWithoutPassword)
+        }
+      })
+
+      res.status(200).json({ success: true, operatorsWithoutPassword })
+    } catch (e) {
+      handleError(e as Error, res)
+    }
+  },
+
   async login(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body as LogUser
@@ -23,7 +103,7 @@ export const UsersController = {
       }
 
       const user = await UserModel.getByEmail(validated.data.email);
-      if (!user || user instanceof Error) {
+      if (!user) {
         throw new ClientError('Invalid credentials')
       }
 
@@ -165,7 +245,8 @@ export const UsersController = {
       const { id } = req.params
       if (!id) throw new ClientError('Id must be correct')
       const user = await UserModel.getById(id)
-      if (!user || user instanceof Error) throw new ClientError('User does not exists')
+      if (!user) throw new ClientError('User does not exists')
+      if (user.role === 'admin') throw new ClientError('The administrator user cannot be deleted')
       const erased = await UserModel.delete(id)
       if (!erased) throw new ServerError('Finally the user was not deleted')
       const { password: _, ...userWithoutPassword } = user

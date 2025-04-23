@@ -8,7 +8,7 @@ const ADMIN_CONFIG = {
     ID_NUMBER: process.env.ADMIN_ID_NUMBER || '00000000',
     NAME: process.env.ADMIN_NAME || 'Admin',
     EMAIL: process.env.ADMIN_EMAIL || 'admin@example.com',
-    DEFAULT_PASSWORD: process.env.ADMIN_DEFAULT_PASSWORD || crypto.randomBytes(16).toString('hex'),
+    DEFAULT_PASSWORD: process.env.ADMIN_DEFAULT_PASSWORD || 'admin1234',
     ROLE: 'admin'
 };
 

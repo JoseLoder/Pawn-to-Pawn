@@ -32,7 +32,7 @@ export const OrdersController = {
     async getAll(_: Request, res: Response) {
         try {
             const orders = await OrderModel.getAll()
-            if (!orders) throw new ClientError('There are no orders right now.')
+            if (!orders[0]) throw new ClientError('There are not orders right now.')
             res.status(200).json({ success: true, orders })
         } catch (e) {
             handleError(e as Error, res)

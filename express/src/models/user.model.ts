@@ -4,6 +4,24 @@ import { RegisterUser, User } from '../types/users.types.ts'
 
 export const UserModel = {
 
+  async getAll(): Promise<User[]> {
+    const sql = 'SELECT * FROM users'
+    const data: { users: User[] } = { users: [] }
+
+    return new Promise((resolve, reject: (reason: Error) => void) => {
+      DB.all(sql, [], (err, rows) => {
+        if (err) return reject(new QueryError('Could not get all users'));
+
+        (rows as User[]).forEach((row: User) => {
+          data.users.push({
+            ...row
+          })
+        })
+        resolve(data.users)
+      })
+    })
+  },
+
   async getById(id: string): Promise<User> {
     const sql = 'SELECT * FROM users WHERE id = ?'
 
@@ -48,17 +66,22 @@ export const UserModel = {
   async createOperator(id: string): Promise<string> {
     const sql = `
       UPDATE users 
-      SET role = operator 
+      SET role = 'operator' 
       WHERE id = ?
-    `
+    `;
     return new Promise((resolve, reject: (reason: Error) => void) => {
-      DB.run(sql, id, (err) => {
-        if (err) reject(new QueryError(`Could not update role on id_user ${id}`))
-
-        resolve(id)
-      })
-    })
+      DB.run(sql, [id], function (err) {
+        if (err) {
+          return reject(new QueryError(`Could not update role on id_user ${id}`));
+        }
+        if (this.changes === 0) {
+          return reject(new QueryError(`No user found with id ${id}`));
+        }
+        resolve(id);
+      });
+    });
   },
+
 
   async delete(id: string): Promise<boolean> {
     const sql = 'DELETE FROM users WHERE id = ?'

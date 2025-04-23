@@ -1,59 +1,84 @@
-### USER REGISTER
+### USER CLIENT REGISTER (ACCESS: ALL)
 POST http://localhost:3000/users/register
 Content-Type: application/json
 
 {
-    "name": "Soy test",
+    "name": "client",
     "id_number": "12345678A",
-    "phone": "633338128",
-    "email": "jose@jose.com",
-    "password": "tesssst"
+    "phone": "111222333",
+    "email": "client@example.com",
+    "password": "client1234"
 }
 
-### USER LOGIN
+### USER OPERATOR REGISTER (ACCESS: ALL)
+POST http://localhost:3000/users/register
+Content-Type: application/json
+
+{
+    "name": "operator",
+    "id_number": "87654321A",
+    "phone": "333222111",
+    "email": "operator@example.com",
+    "password": "operator1234"
+}
+
+
+
+### USER CLIENT LOGIN (ACCESS: ALL)
 POST http://localhost:3000/users/login
 Content-Type: application/json
 
 {
-    "email": "jose@jose.com",
-    "password": "tesssst"
+    "email": "client@example.com",
+    "password": "client1234"
 }
 
-### USER LOGOUT 
+### USER OPERATOR LOGIN (ACCESS: ALL)
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+    "email": "operator@example.com",
+    "password": "operator1234"
+}
+
+### USER ADMIN LOGIN (ACCESS: ALL)
+POST http://localhost:3000/users/login
+Content-Type: application/json
+
+{
+    "email": "admin@example.com",
+    "password": "admin1234"
+}
+
+
+
+### GET USER BY ID (ACCESS: CLIENTS | OPERATOR | ADMIN)
+// GET http://localhost:3000/users/1d04076f-c3a1-4d17-af52-dcd1a2adce9c
+
+### GET USER BY EMAIL (ACCESS: CLIENTS | OPERATOR | ADMIN)
+//GET http://localhost:3000/users/email/operator@example.com
+
+### GET ALL USERS (ACCESS: ONLY ADMIN)
+GET http://localhost:3000/users
+
+### GET CLIENTS (ACCESS: OPERATOR | ADMIN)
+GET http://localhost:3000/users/clients
+
+### GET OPERATORS (ACCESS: ONLY ADMIN)
+GET http://localhost:3000/users/operators
+
+
+
+### ASCEND USER CLIENT TO OPERATOR (ACCESS: ONLY ADMIN)
+PATCH http://localhost:3000/users/1d04076f-c3a1-4d17-af52-dcd1a2adce9c
+
+
+
+### USER LOGOUT (ACCESS: ALL)
 POST http://localhost:3000/users/logout
 
-### DELETE USER
-DELETE http://localhost:3000/users/4a91b19f-75eb-4343-8a84-d0e268f27479
 
-### GET CLIENTS
-GET http://localhost:3000/clients
 
-### GET CLIENT BY ID
-GET http://localhost:3000/clients/5f7123dd-885d-41a7-87cf-d4612cc0e490
-
-### GET CLIENT BY DNI
-GET http://localhost:3000/clients/dni/12345678A
-
-### CREATE CLIENT
-POST http://localhost:3000/clients
-Content-Type: application/json
-
-{
-    "dni": "12345678A",
-    "name": "jose",
-    "email": "jose@jose.com",
-    "phone": "633338128"
-}
-
-### UPDATE CLIENT
-PUT http://localhost:3000/clients/5f7123dd-885d-41a7-87cf-d4612cc0e490
-Content-Type: application/json
-
-{
-    "name": "josh",
-    "email": "jose@jose.com",
-    "phone": "633338128"
-}
-
-### DELETE CLIENT
-DELETE http://localhost:3000/clients/fc1dce25-3c7e-4e48-b805-baf2c2439432
+### DELETE USER (ACCESS: ONLY ADMIN)
+DELETE http://localhost:3000/users/1934ab9b-a8ff-4161-a152-8cb9af52a924

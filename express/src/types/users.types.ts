@@ -10,3 +10,4 @@ export interface User {
 }
 export type LogUser = Pick<User, 'email' | 'password'>
 export type RegisterUser = Omit<User, 'id' | 'role'>
+export type PublicUser = Omit<User, 'password'>
