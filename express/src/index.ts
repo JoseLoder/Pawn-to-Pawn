@@ -37,7 +37,7 @@ app.use('/machines', MachinesRoute)
 app.use((_, res) => {
   res.status(404).send('404 Not Found')
 })
-
+//TODO: The first time be not create admin 
 initializeAdminUser()
 
 app.listen(port, () => {

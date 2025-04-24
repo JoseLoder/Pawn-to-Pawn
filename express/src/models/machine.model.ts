@@ -5,7 +5,7 @@ import { CreateMachine, Machine, UpdateMachine } from "../types/machines.types"
 
 export const MachineModel = {
     async getAll(): Promise<Machine[]> {
-        const sql = `SELECT * FROM orders`
+        const sql = `SELECT * FROM machines`
         const data: { machines: Machine[] } = { machines: [] }
 
         return new Promise((resolve, reject: (reason: Error) => void) => {
@@ -37,7 +37,7 @@ export const MachineModel = {
 
     async create(id: string, machine: CreateMachine): Promise<string> {
         const sql = `
-            INSERT INTO machines (id, max_widht, max_weight, max_valocity, price)
+            INSERT INTO machines (id, max_widht, max_weight, max_velocity, price)
             VALUES (?, ?, ?, ?, ?)
         `
 
@@ -50,6 +50,7 @@ export const MachineModel = {
         ]
         return new Promise((resolve, reject: (reason: Error) => void) => {
             DB.run(sql, params, (err: Error) => {
+                console.log(err)
                 if (err) reject(new QueryError('Could not create machine'))
 
                 resolve(id)

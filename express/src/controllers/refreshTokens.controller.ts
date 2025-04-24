@@ -31,7 +31,6 @@ export const RefreshTokensController = {
       }
       // 3.5 Traer el rol del usuario.
       const user = await UserModel.getById(decoded.id_user)
-      console.log(user)
       if (!user) throw new JsonWebTokenError('The user associated with the token does not exist, please login again')
 
       // 4. Generar nuevo access token

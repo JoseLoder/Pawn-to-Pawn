@@ -36,8 +36,8 @@ export const MaterialModel = {
 
     async create(id: string, material: CreateMaterial): Promise<string> {
         const sql = `
-            INSERT INTO material (id, type, weight, price)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO materials (id, type, weight, price)
+            VALUES (?, ?, ?, ?)
         `
 
         const params = [
@@ -48,7 +48,7 @@ export const MaterialModel = {
         ]
         return new Promise((resolve, reject: (reason: Error) => void) => {
             DB.run(sql, params, (err: Error) => {
-                if (err) reject(new QueryError('Could not create machine'))
+                if (err) reject(new QueryError('Could not create material',))
 
                 resolve(id)
             })

@@ -52,7 +52,7 @@ sql = `
     max_widht INTEGER NOT NULL,
     max_weight INTEGER NOT NULL,
     max_velocity INTEGER NOT NULL,
-    prices INTEGER NOT NULL
+    price INTEGER NOT NULL
   )
 `
 DB.run(sql, (err) => {

@@ -82,3 +82,25 @@ POST http://localhost:3000/users/logout
 
 ### DELETE USER (ACCESS: ONLY ADMIN)
 DELETE http://localhost:3000/users/1934ab9b-a8ff-4161-a152-8cb9af52a924
+
+
+
+### CREATE MATERIALS (ACCESS: ONLY ADMIN)
+POST http://localhost:3000/materials/
+Content-Type: application/json
+
+{
+    "price":1.5,
+    "type":"test", 
+    "weight":1500
+}
+### CREATE MACHINES (ACCESS: ONLY ADMIN)
+POST http://localhost:3000/machines/
+Content-Type: application/json
+
+{
+    "max_velocity":1000,
+    "max_weight":100000000,
+    "max_widht":3000,
+    "price":1.5
+}

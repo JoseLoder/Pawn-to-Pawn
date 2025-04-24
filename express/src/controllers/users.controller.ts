@@ -121,7 +121,7 @@ export const UsersController = {
         },
         process.env.SECRET_JWT_KEY ?? 'fallback_secret',
         {
-          expiresIn: '1s'
+          expiresIn: '15m'
         }
       )
 
@@ -195,12 +195,15 @@ export const UsersController = {
     }
   },
 
-  async logout(req: Request, res: Response) {
+  async logout(_: Request, res: Response) {
     try {
-      const refreshToken = req.cookies.refresh_token
-      const refreshTokenDB = await RefreshTokensController.getByToken(refreshToken)
-      await RefreshTokensController.revoke(refreshTokenDB.token)
-      await RefreshTokensController.revokeAllForUserDevice(refreshTokenDB.id_user, req.headers['user-agent'])
+      /*   const refreshToken = req.cookies.refresh_token
+        console.log(refreshToken)
+        if (refreshToken) {
+          const refreshTokenDB = await RefreshTokensController.getByToken(refreshToken)
+          await RefreshTokensController.revoke(refreshTokenDB.token)
+          await RefreshTokensController.revokeAllForUserDevice(refreshTokenDB.id_user, req.headers['user-agent'])
+        } */
 
       const cookieOptions: CookieOptions = {
         httpOnly: true,
