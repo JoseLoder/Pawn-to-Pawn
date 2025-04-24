@@ -6,10 +6,10 @@ const ProductRegisterSchema = z.object({
     id_material: z.string(),
     base: z.enum(['iron', 'pvc', 'cardboard']),
     cover: z.enum(['black', 'white', 'golden']),
-    length: z.number().int(),
-    widht: z.number()
+    length: z.number().min(5),
+    widht: z.number().min(500)
 })
 
-export function validateProduct({ id_machine, id_material, base, cover, lenght, widht }: CreateProduct) {
-    return ProductRegisterSchema.safeParseAsync({ id_machine, id_material, base, cover, lenght, widht })
+export function validateProduct({ id_machine, id_material, base, cover, length, widht }: CreateProduct) {
+    return ProductRegisterSchema.safeParseAsync({ id_machine, id_material, base, cover, length, widht })
 }

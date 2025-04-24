@@ -49,10 +49,10 @@ export const ProductsController = {
     },
 
     async create(req: Request, res: Response): Promise<void> {
-        const { base, cover, id_machine, id_material, lenght, widht } = req.body as CreateProduct
+        const { base, cover, id_machine, id_material, length, widht } = req.body as CreateProduct
         try {
             // validate all by Zod
-            const validated = await validateProduct({ id_machine, id_material, base, cover, lenght, widht })
+            const validated = await validateProduct({ id_machine, id_material, base, cover, length, widht })
             if (!validated.success || !validated.data) {
                 if (validated.error instanceof ZodError) {
                     throw validated.error
@@ -66,7 +66,7 @@ export const ProductsController = {
             }
             // get lenght(meters) * Material.weight(g) = estimated_weight(g)
             // Example: 40m * 500g = 20000g
-            const estimated_weight = material.weight * lenght
+            const estimated_weight = material.weight * length
 
             //search id_machine to get: Max_widht,Max_velocity,Max_weight
             const machine = await MachineModel.getById(id_machine)
@@ -95,7 +95,7 @@ export const ProductsController = {
 
             // Calculate price Material, lenght(meters) * Material.Price(euros). (Calculated by the transportation of the material, its cost, handling and benefits)
             // Example: 40(m) * 1.5(euros) = 60(euros)
-            const priceMaterial = lenght * material.price
+            const priceMaterial = length * material.price
 
             // Calculate price machine, estimated_time(minutes) * Machine.Price(euros). (Calculated by the maintenance of the machine and the personnel working on it and benefits)
             // Example: 20(minutes) * 1.5 = 30(euros)
@@ -112,7 +112,7 @@ export const ProductsController = {
                 base,
                 cover,
                 widht,
-                lenght,
+                length,
                 estimated_time,
                 estimated_weight,
                 price

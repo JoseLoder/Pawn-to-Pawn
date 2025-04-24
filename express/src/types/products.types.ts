@@ -6,11 +6,11 @@ export type Product = {
     id_material: string,
     base: Bases,
     cover: Covers,
-    lenght: number,
+    length: number,
     estimated_time: number,
     estimated_weight: number,
     widht: number,
     price: number
 }
 
-export type CreateProduct = Pick<Product, 'id_machine' | 'base' | 'cover' | 'id_material' | 'lenght' | 'widht'>
+export type CreateProduct = Pick<Product, 'id_machine' | 'base' | 'cover' | 'id_material' | 'length' | 'widht'>

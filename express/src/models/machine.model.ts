@@ -50,7 +50,6 @@ export const MachineModel = {
         ]
         return new Promise((resolve, reject: (reason: Error) => void) => {
             DB.run(sql, params, (err: Error) => {
-                console.log(err)
                 if (err) reject(new QueryError('Could not create machine'))
 
                 resolve(id)
