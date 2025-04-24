@@ -9,6 +9,7 @@ import { validateLogin, validateUser } from '../schema/users.schema.ts'
 import { ServerError } from '../errors/server.error.ts'
 import { handleError } from '../errors/handleError.ts'
 import { LogUser, PublicUser, RegisterUser } from '../types/users.types.ts'
+import { RefreshTokensController } from './refreshTokens.controller.ts'
 
 export const UsersController = {
   async getById(req: Request, res: Response): Promise<void> {
@@ -120,7 +121,7 @@ export const UsersController = {
         },
         process.env.SECRET_JWT_KEY ?? 'fallback_secret',
         {
-          expiresIn: '15m'
+          expiresIn: '1s'
         }
       )
 
@@ -132,15 +133,7 @@ export const UsersController = {
         path: '/'
       }
 
-      const refreshToken = jwt.sign(
-        {
-          id: user.id
-        },
-        process.env.REFRESH_JWT_KEY ?? 'fallback_refresh_secret',
-        {
-          expiresIn: '7d'
-        }
-      )
+      const refreshToken = await RefreshTokensController.create(user.id, req.headers['user-agent'])
 
       res
         .status(200)
@@ -202,8 +195,13 @@ export const UsersController = {
     }
   },
 
-  async logout(_: Request, res: Response) {
+  async logout(req: Request, res: Response) {
     try {
+      const refreshToken = req.cookies.refresh_token
+      const refreshTokenDB = await RefreshTokensController.getByToken(refreshToken)
+      await RefreshTokensController.revoke(refreshTokenDB.token)
+      await RefreshTokensController.revokeAllForUserDevice(refreshTokenDB.id_user, req.headers['user-agent'])
+
       const cookieOptions: CookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

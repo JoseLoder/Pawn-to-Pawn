@@ -4,19 +4,20 @@ import { CreateRefreshToken, RefreshToken } from '../types/tokens.types';
 
 export const RefreshTokenModel = {
     // Crear un nuevo refresh token
-    async create(token: CreateRefreshToken): Promise<RefreshToken> {
+    async create(token: CreateRefreshToken): Promise<string> {
         const sql = `
-      INSERT INTO user_refresh_tokens (id, user_id, token, expires_at, revoked, device_info)
-      VALUES (?, ?, ?, ?, ?, ?)
-      RETURNING *`;
+      INSERT INTO user_refresh_tokens (id, id_user, token, expires_at, revoked, device_info)
+      VALUES (?, ?, ?, ?, ?, ?)`;
 
         return new Promise((resolve, reject) => {
-            DB.get(
+            DB.run(
                 sql,
-                [token.id, token.user_id, token.token, token.expires_at, token.revoked ? 1 : 0, token.device_info],
-                (err, row) => {
-                    if (err) return reject(new QueryError('Could not create refresh token'));
-                    resolve(row as RefreshToken);
+                [token.id, token.id_user, token.token, token.expires_at, token.revoked ? 1 : 0, token.device_info],
+                (err) => {
+                    if (err) {
+                        return reject(new QueryError(`Could not create refresh token: ${err.message}`));
+                    }
+                    resolve(token.token);
                 }
             );
         });
@@ -65,17 +66,31 @@ export const RefreshTokenModel = {
             });
         });
     },
-
-    // Limpieza de tokens expirados (para ejecutar periódicamente)
-    async cleanupExpiredTokens(): Promise<number> {
+    // Revocar todos los tokens del mismo dispositivo de un usuario (logout one devices)
+    async revokeAllForUserDevice(id_user: string, headers: string): Promise<boolean> {
         const sql = `
-      DELETE FROM user_refresh_tokens
-      WHERE expires_at < datetime('now')`;
+          UPDATE user_refresh_tokens
+          SET revoked = 1
+          WHERE user_id = ? AND revoked = 0 AND device_info = ?`;
 
         return new Promise((resolve, reject) => {
-            DB.run(sql, [], function (err) {
+            DB.run(sql, [id_user, headers], function (err) {
+                if (err) return reject(new QueryError('Could not revoke tokens'));
+                resolve(true);
+            });
+        });
+    },
+
+    // Limpieza de tokens expirados (para ejecutar periódicamente)
+    async cleanupExpiredTokens(id_user: string): Promise<Boolean> {
+        const sql = `
+      DELETE FROM user_refresh_tokens
+      WHERE id_user = ? AND (revoked = 1 OR expires_at < datetime('now'))`;
+
+        return new Promise((resolve, reject) => {
+            DB.run(sql, [id_user], function (err) {
                 if (err) return reject(new QueryError('Could not clean tokens'));
-                resolve(this.changes); // Número de tokens eliminados
+                resolve(true);
             });
         });
     },

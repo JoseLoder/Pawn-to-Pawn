@@ -2,7 +2,7 @@ import { RoleUser } from "./users.types";
 
 export interface RefreshToken {
     id: string;
-    user_id: string;
+    id_user: string;
     token: string;
     expires_at: string;
     revoked: boolean;
@@ -12,12 +12,12 @@ export interface RefreshToken {
 
 export type CreateRefreshToken = Omit<RefreshToken, 'created_at'>
 
-export interface AccessTokenEncryption {
-    userId: string
+export type AccessTokenEncryption = {
+    id_user: string
     role: RoleUser,
 }
 
-export interface RefreshTokenEncryption {
-    tokenId: string,
-    userId: string,
+export type RefreshTokenEncryption = {
+    id_token: string,
+    id_user: string,
 }

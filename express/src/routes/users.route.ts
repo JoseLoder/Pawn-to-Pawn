@@ -24,4 +24,3 @@ UsersRouter.get('/', UsersController.getAll)
 UsersRouter.get('/operators', UsersController.getOperators)
 UsersRouter.patch('/:id', UsersController.setAsWorker)
 UsersRouter.delete('/:id', UsersController.delete)
-
