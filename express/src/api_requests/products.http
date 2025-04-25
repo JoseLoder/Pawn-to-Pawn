@@ -1,0 +1,18 @@
+### GET PRODUCTS (ACCESS: CLIENTS | OPERATORS | ADMIN)
+GET http://localhost:3000/products/
+
+### GET PRODUCTS BY ID (ACCESS: CLIENTS | OPERATORS | ADMIN)
+GET http://localhost:3000/products/3b3b4b56-dc34-4afc-8c4b-83b97810cc3c
+
+### CREATE PRODUCTS (ACCESS: ADMIN | OPERATOR)
+POST http://localhost:3000/products/
+Content-Type: application/json
+
+{
+    "base": "cardboard",
+    "cover": "white",
+    "id_machine": "d7f8d633-20d0-4c87-9b13-cd6df0f64ecf",
+    "id_material": "16057750-5564-443a-b6f3-723dbb8cb942",
+    "length": 100,
+    "widht":1500
+}

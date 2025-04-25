@@ -5,7 +5,7 @@ import { CreateMaterial, Material, UpdateMaterial } from "../types/materials.typ
 
 export const MaterialModel = {
     async getAll(): Promise<Material[]> {
-        const sql = `SELECT * FROM orders`
+        const sql = `SELECT * FROM materials`
         const data: { materials: Material[] } = { materials: [] }
 
         return new Promise((resolve, reject: (reason: Error) => void) => {

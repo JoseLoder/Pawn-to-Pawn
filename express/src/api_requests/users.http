@@ -53,8 +53,8 @@ Content-Type: application/json
 
 
 
-### GET USER BY ID (ACCESS: CLIENTS | OPERATOR | ADMIN)
-// GET http://localhost:3000/users/1d04076f-c3a1-4d17-af52-dcd1a2adce9c
+### GET MY USER BY ID (ACCESS: CLIENTS | OPERATOR | ADMIN)
+GET http://localhost:3000/users/me
 
 ### GET USER BY EMAIL (ACCESS: CLIENTS | OPERATOR | ADMIN)
 //GET http://localhost:3000/users/email/operator@example.com
@@ -82,39 +82,3 @@ POST http://localhost:3000/users/logout
 
 ### DELETE USER (ACCESS: ONLY ADMIN)
 DELETE http://localhost:3000/users/1934ab9b-a8ff-4161-a152-8cb9af52a924
-
-
-
-### CREATE MATERIALS (ACCESS: ONLY ADMIN)
-POST http://localhost:3000/materials/
-Content-Type: application/json
-
-{
-    "price":1.5,
-    "type":"test", 
-    "weight":1500
-}
-
-### CREATE MACHINES (ACCESS: ONLY ADMIN)
-POST http://localhost:3000/machines/
-Content-Type: application/json
-
-{
-    "max_velocity":1000,
-    "max_weight":100000000,
-    "max_widht":3000,
-    "price":1.5
-}
-
-### CREATE PRODUCTS (ACCESS: ADMIN | OPERATOR)
-POST http://localhost:3000/products/
-Content-Type: application/json
-
-{
-    "base": "cardboard",
-    "cover": "white",
-    "id_machine": "d7f8d633-20d0-4c87-9b13-cd6df0f64ecf",
-    "id_material": "16057750-5564-443a-b6f3-723dbb8cb942",
-    "length": 100,
-    "widht":1500
-}

@@ -14,10 +14,10 @@ export const MaterialsController = {
 
             const { id } = req.params
             if (!id) throw new ClientError('The id must be correct')
-            const order = await MaterialModel.getById(id)
-            if (!order) throw new ClientError('This material already not exists')
+            const materials = await MaterialModel.getById(id)
+            if (!materials) throw new ClientError('This material already not exists')
 
-            res.status(200).json({ success: true, order })
+            res.status(200).json({ success: true, materials })
 
         } catch (e) {
             handleError(e as Error, res)
@@ -27,9 +27,9 @@ export const MaterialsController = {
 
     async getAll(_: Request, res: Response) {
         try {
-            const orders = await MaterialModel.getAll()
-            if (!orders) throw new ClientError('There are no orders right now.')
-            res.status(200).json({ success: true, orders })
+            const materials = await MaterialModel.getAll()
+            if (!materials) throw new ClientError('There are no orders right now.')
+            res.status(200).json({ success: true, materials })
         } catch (e) {
             handleError(e as Error, res)
         }

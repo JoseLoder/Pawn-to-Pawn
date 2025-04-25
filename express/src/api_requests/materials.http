@@ -1,0 +1,15 @@
+### GET MATERIALS (ACCESS: CLIENTS | OPERATORS | ADMIN)
+GET http://localhost:3000/materials/
+
+### GET MATERIAL BY ID (ACCESS: CLIENTS | OPERATORS | ADMIN)
+GET http://localhost:3000/materials/16057750-5564-443a-b6f3-723dbb8cb942
+
+### CREATE MATERIALS (ACCESS: ONLY ADMIN)
+POST http://localhost:3000/materials/
+Content-Type: application/json
+
+{
+    "price":1.5,
+    "type":"test", 
+    "weight":1500
+}

@@ -11,7 +11,7 @@ UsersRouter.post('/logout', UsersController.logout)
 
 // Endpoints for clients | operator | admin
 UsersRouter.use(auth)
-// UsersRouter.get('/:id', UsersController.getById)
+UsersRouter.get('/me', UsersController.getMyUser)
 // UsersRouter.get('/email/:email', UsersController.getByEmail)
 
 // Endpoint for admin | operator

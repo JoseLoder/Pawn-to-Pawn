@@ -1,0 +1,16 @@
+### GET MACHINES (ACCESS: CLIENTS | OPERATORS | ADMIN)
+GET http://localhost:3000/machines/
+
+### GET MACHINE BY ID (ACCESS: CLIENTS | OPERATORS | ADMIN)
+GET http://localhost:3000/machines/d7f8d633-20d0-4c87-9b13-cd6df0f64ecf
+
+### CREATE MACHINES (ACCESS: ONLY ADMIN)
+POST http://localhost:3000/machines/
+Content-Type: application/json
+
+{
+    "max_velocity":1000,
+    "max_weight":100000000,
+    "max_widht":3000,
+    "price":1.5
+}

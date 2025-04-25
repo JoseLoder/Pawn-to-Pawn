@@ -10,8 +10,34 @@ import { ServerError } from '../errors/server.error.ts'
 import { handleError } from '../errors/handleError.ts'
 import { LogUser, PublicUser, RegisterUser } from '../types/users.types.ts'
 import { RefreshTokensController } from './refreshTokens.controller.ts'
-
+import { AccessTokenEncryption } from '../types/tokens.types.ts'
+declare global {
+  namespace Express {
+    interface Request {
+      session?: { userSession: AccessTokenEncryption | null }
+    }
+  }
+}
 export const UsersController = {
+  async getMyUser(req: Request, res: Response): Promise<void> {
+    try {
+      console.log(req.session)
+      console.log(req.session?.userSession)
+      if (!req.session) throw new ClientError('User does not login')
+      const id_user = req.session.userSession?.id_user
+      if (!id_user) throw new ClientError('User does not login')
+      const user = await UserModel.getById(id_user)
+      if (!user) throw new ClientError('User does not exist')
+
+      const { password: _, ...userWithoutPassword } = user
+      res.status(200).json({ success: true, userWithoutPassword })
+
+    } catch (e) {
+      handleError(e as Error, res)
+    }
+
+  },
+
   async getById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params
@@ -116,7 +142,7 @@ export const UsersController = {
 
       const token = jwt.sign(
         {
-          id: user.id,
+          id_user: user.id,
           role: user.role
         },
         process.env.SECRET_JWT_KEY ?? 'fallback_secret',
