@@ -111,7 +111,42 @@ export const OrdersController = {
         }
     },
 
-    // To client actions and admin too
+    // To client actions and operator | admin too
+    async getMyOrder(req: Request, res: Response) {
+        try {
+            const { id } = req.params
+            if (!id) throw new ClientError('The operator id must be correct')
+            if (!req.session?.userSession) throw new ClientError('User does not login')
+            const id_user = req.session.userSession.id_user
+            if (!id_user) throw new ClientError('User does not login')
+            const order = await OrderModel.getById(id)
+            if (!order) throw new ClientError('Order does not exist')
+            if (order.id_client !== id_user) throw new ClientError('The order must be yours')
+
+            res.status(200).json({ success: true, order })
+
+        } catch (e) {
+            handleError(e as Error, res)
+        }
+
+    },
+
+    async getMyOrders(req: Request, res: Response) {
+        try {
+            if (!req.session?.userSession) throw new ClientError('User does not login')
+            const id_user = req.session.userSession.id_user
+            if (!id_user) throw new ClientError('User does not login')
+            const orders = await OrderModel.getByClient(id_user)
+            if (!orders) throw new ClientError('User does not exist')
+
+            res.status(200).json({ success: true, orders })
+
+        } catch (e) {
+            handleError(e as Error, res)
+        }
+
+    },
+
     async create(req: Request, res: Response) {
         try {
             const { id_client, id_product, quantity } = req.body as PublicCreateOrder
@@ -145,22 +180,22 @@ export const OrdersController = {
             handleError(e as Error, res)
         }
     },
-
-    async getByClient(req: Request, res: Response) {
-        try {
-            const { id } = req.params
-            if (!id) throw new ClientError('The id must be correct')
-
-            const user = await UserModel.getById(id)
-            if (!user) throw new ClientError('Probably the user id is not correct')
-            if (user.role !== 'client' && user.role !== 'admin') throw new ClientError('The user must be Client or Admin.')
-
-            const orders = await OrderModel.getByClient(id)
-            if (!orders) throw new ServerError('The orders was not found')
-
-            res.status(200).json({ success: true, orders })
-        } catch (e) {
-            handleError(e as Error, res)
-        }
-    }
+    /* 
+        async getByClient(req: Request, res: Response) {
+            try {
+                const { id } = req.params
+                if (!id) throw new ClientError('The id must be correct')
+    
+                const user = await UserModel.getById(id)
+                if (!user) throw new ClientError('Probably the user id is not correct')
+                if (user.role !== 'client' && user.role !== 'admin') throw new ClientError('The user must be Client or Admin.')
+    
+                const orders = await OrderModel.getByClient(id)
+                if (!orders) throw new ServerError('The orders was not found')
+    
+                res.status(200).json({ success: true, orders })
+            } catch (e) {
+                handleError(e as Error, res)
+            }
+        } */
 }

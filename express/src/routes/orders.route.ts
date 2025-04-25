@@ -9,12 +9,11 @@ export const OrdersRouter = Router()
 OrdersRouter.use(auth)
 
 // Endpoints
-console.log('estoy en orders')
 // Routes for clients
 OrdersRouter.use(authClient)
 OrdersRouter.post('/', OrdersController.create)
-OrdersRouter.get("/client/:id", OrdersController.getById)
-OrdersRouter.get("/client/all/:id", OrdersController.getByClient)
+OrdersRouter.get("/me/:id", OrdersController.getMyOrder)
+OrdersRouter.get("/all/me", OrdersController.getMyOrders)
 // Routes for operators
 OrdersRouter.use(authOperator)
 OrdersRouter.get("/operator/pending", OrdersController.getPending)
@@ -25,3 +24,5 @@ OrdersRouter.get("/operator/completed/:id", OrdersController.setCompleted)
 //Endpoints for Admin
 OrdersRouter.use(authAdmin)
 OrdersRouter.get("/", OrdersController.getAll)
+OrdersRouter.get("/:id", OrdersController.getById)
+

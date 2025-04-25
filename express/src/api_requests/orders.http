@@ -8,5 +8,11 @@ Content-Type: application/json
 "quantity": 10
 }
 
+### GET MY ORDERS (ACCESS: CLIENT | OPERATOR | ADMIN)
+GET http://localhost:3000/orders/all/me
+
+### GET MY ORDER (ACCESS: CLIENT | OPERATOR | ADMIN)
+GET http://localhost:3000/orders/me/5fee4086-fa0a-4518-9ca9-56d3bb8739be
+
 ### GET ORDERS (ACCESS: ADMIN)
 GET http://localhost:3000/orders/
