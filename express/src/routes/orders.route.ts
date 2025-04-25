@@ -14,12 +14,15 @@ OrdersRouter.use(authClient)
 OrdersRouter.post('/', OrdersController.create)
 OrdersRouter.get("/me/:id", OrdersController.getMyOrder)
 OrdersRouter.get("/all/me", OrdersController.getMyOrders)
+OrdersRouter.patch("/set/pending/:id", OrdersController.setPending)
+
 // Routes for operators
 OrdersRouter.use(authOperator)
-OrdersRouter.get("/operator/pending", OrdersController.getPending)
+OrdersRouter.get("/pending", OrdersController.getPending)
+OrdersRouter.get("/preparation/:id", OrdersController.getPreparation)
 OrdersRouter.get("/operator/orders/:id", OrdersController.getByOperator)
-OrdersRouter.get("/operator/assing/:id_operator&:id_order", OrdersController.setOperator)
-OrdersRouter.get("/operator/completed/:id", OrdersController.setCompleted)
+OrdersRouter.patch("/set/operator/:id", OrdersController.setOperator)
+OrdersRouter.patch("/set/complete/:id", OrdersController.setComplete)
 
 //Endpoints for Admin
 OrdersRouter.use(authAdmin)

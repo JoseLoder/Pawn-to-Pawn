@@ -8,7 +8,15 @@ import { validateOrder } from "../schema/orders.schema";
 import { ProductModel } from "../models/product.model";
 import { ServerError } from "../errors/server.error";
 import { ZodError } from "zod";
-
+import { AccessTokenEncryption } from "../types/tokens.types";
+import { PreparationOrder } from "../types/products.types";
+declare global {
+    namespace Express {
+        interface Request {
+            session?: { userSession: AccessTokenEncryption | null }
+        }
+    }
+}
 export const OrdersController = {
 
     // To admin actions
@@ -43,7 +51,7 @@ export const OrdersController = {
     async getPending(_: Request, res: Response) {
 
         try {
-            const pending = await OrderModel.getByOperator(null)
+            const pending = await OrderModel.getOrderPending()
             if (!pending) throw new ClientError('There are no pending orders right now.')
             res.status(200).json({ success: true, pending })
         } catch (e) {
@@ -54,38 +62,77 @@ export const OrdersController = {
     async setOperator(req: Request, res: Response) {
 
         try {
-            const { id_operator, id_order } = req.params
-            if (!id_operator || !id_order) throw new ClientError('the id must be correct')
+            if (!req.session?.userSession) throw new ClientError('User does not login')
+            const id_user = req.session.userSession.id_user
+            const { id } = req.params
+            if (!id_user || !id) throw new ClientError('the ids must be correct')
 
-            const operator = await UserModel.getById(id_operator)
-            const order = await OrderModel.getById(id_order)
-            if (!operator || !order) throw new ClientError('This Operator or Order not exists')
+            const user = await UserModel.getById(id_user)
+            const order = await OrderModel.getById(id)
+            if (!user || !order) throw new ClientError('This Operator or Order not exists')
             if (order.id_operator) throw new ClientError('This order already has an operator assigned')
-            if (operator.role != 'operator') throw new UnauthorizedError('This User no be Operator User')
+            if (user.role != 'operator') throw new UnauthorizedError('This User no be Operator User')
             const updated: Order = {
                 ...order,
-                id_operator: id_operator,
-                status: 'inProgress'
+                id_operator: user.id,
+                status: 'inProgress',
+                processingAt: Date.now().toString()
             }
 
-            const idUpdated = await OrderModel.update(id_order, updated)
+            const idUpdated = await OrderModel.update(id, updated)
             const orderUpdated = await OrderModel.getById(idUpdated)
-            res.status(200).json({ success: true, orderUpdated })
+            const product = await ProductModel.getById(orderUpdated.id_product)
+
+            const preparation: PreparationOrder = {
+                base: product.base,
+                amount_base: order.quantity,
+                cover: product.cover,
+                amount_cover: order.quantity,
+                estimated_time_product: product.estimated_time,
+                estimated_time_order: product.estimated_time * order.quantity,
+                estimated_weight_product: product.estimated_weight,
+                estimated_weight_order: product.estimated_weight * order.quantity,
+            }
+            res.status(200).json({ success: true, orderUpdated, preparation })
         } catch (e) {
             handleError(e as Error, res)
         }
     },
 
-    async setCompleted(req: Request, res: Response) {
+    async getPreparation(req: Request, res: Response) {
+        try {
+            const { id } = req.params
+            const order = await OrderModel.getById(id)
+            const product = await ProductModel.getById(order.id_product)
+
+            const preparation: PreparationOrder = {
+                base: product.base,
+                amount_base: order.quantity,
+                cover: product.cover,
+                amount_cover: order.quantity,
+                estimated_time_product: product.estimated_time,
+                estimated_time_order: product.estimated_time * order.quantity,
+                estimated_weight_product: product.estimated_weight,
+                estimated_weight_order: product.estimated_weight * order.quantity,
+            }
+            res.status(200).json({ success: true, order, preparation })
+        } catch (e) {
+            handleError(e as Error, res)
+        }
+    },
+
+
+    async setComplete(req: Request, res: Response) {
         try {
             const { id } = req.params
             if (!id) throw new ClientError('The order id must be correct')
             const order = await OrderModel.getById(id)
             if (!order) throw new ClientError('This order not exists')
-            if (order.status != 'inHold') throw new ClientError('The order must be inHold before to be completed')
+            if (order.status != 'inProgress') throw new ClientError('The order must be inProgress before to be completed')
             const updated: Order = {
                 ...order,
-                status: 'done'
+                status: 'done',
+                completedAt: Date.now().toString()
             }
             const idUpdated = await OrderModel.update(id, updated)
             const orderUpdated = await OrderModel.getById(idUpdated)
@@ -112,6 +159,26 @@ export const OrdersController = {
     },
 
     // To client actions and operator | admin too
+    async setPending(req: Request, res: Response) {
+        try {
+            const { id } = req.params
+            if (!id) throw new ClientError('The order id must be correct')
+            const order = await OrderModel.getById(id)
+            if (!order) throw new ClientError('This order not exists')
+            if (order.status != 'eraser') throw new ClientError('The order must be eraser before to be completed')
+            const updated: Order = {
+                ...order,
+                status: 'inHold'
+            }
+            const idUpdated = await OrderModel.update(id, updated)
+            const orderUpdated = await OrderModel.getById(idUpdated)
+            res.status(200).json({ success: true, orderUpdated })
+        } catch (e) {
+            handleError(e as Error, res)
+        }
+
+    },
+
     async getMyOrder(req: Request, res: Response) {
         try {
             const { id } = req.params

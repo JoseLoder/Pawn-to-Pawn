@@ -23,6 +23,24 @@ export const OrderModel = {
         })
     },
 
+    async getOrderPending(): Promise<Order[]> {
+        const sql = `SELECT * FROM orders WHERE status = 'inHold'`
+        const data: { orders: Order[] } = { orders: [] }
+        return new Promise((resolve, reject: (reason: Error) => void) => {
+            DB.all(sql, [], (err: Error, rows: Order[]) => {
+                if (err) reject(new QueryError(`Could not get all orders pending`));
+
+                (rows as Order[]).forEach((row: Order) => {
+                    data.orders.push({
+                        ...row
+                    })
+                })
+                resolve(data.orders)
+            })
+        })
+
+    },
+
     async getByClient(idClient: string): Promise<Order[]> {
         const sql = `SELECT * FROM orders WHERE id_client = ?`
         const data: { orders: Order[] } = { orders: [] }
@@ -57,7 +75,7 @@ export const OrderModel = {
         })
     },
 
-    async getById(idProduct: string): Promise<Order | undefined> {
+    async getById(idProduct: string): Promise<Order> {
         const sql = `SELECT * FROM orders WHERE id = ?`
 
         return new Promise((resolve, reject: (reason: Error) => void) => {
@@ -114,11 +132,11 @@ export const OrderModel = {
             values.push(order.status)
         }
         if (order.processingAt) {
-            fields.push('processingAt = ?')
+            fields.push('processing_at = ?')
             values.push(order.processingAt)
         }
         if (order.completedAt) {
-            fields.push('completedAt = ?')
+            fields.push('completed_at = ?')
             values.push(order.completedAt)
         }
 
@@ -136,6 +154,8 @@ export const OrderModel = {
 
         return new Promise((resolve, reject: (reason: Error) => void) => {
             DB.run(sql, values, (err: Error) => {
+
+                console.log(err)
                 if (err) reject(new QueryError(`Could not update order by this id: ${id}`))
 
                 resolve(id)

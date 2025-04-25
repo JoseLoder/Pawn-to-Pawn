@@ -23,7 +23,6 @@ export const UsersController = {
     try {
       if (!req.session?.userSession) throw new ClientError('User does not login')
       const id_user = req.session.userSession.id_user
-      console.log(req.session.userSession?.role)
       if (!id_user) throw new ClientError('User does not login')
       const user = await UserModel.getById(id_user)
       if (!user) throw new ClientError('User does not exist')
