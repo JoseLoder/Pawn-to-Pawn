@@ -53,6 +53,7 @@ export function authOperator(req: Request, res: Response, next: NextFunction) {
         ) {
             throw new UnauthorizedError(`Unauthorized access as a operator`)
         }
+        console.log(req.session.userSession.role)
         next()
     } catch (e) {
         handleError(e as Error, res)

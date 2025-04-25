@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ClientError, UnauthorizedError } from "../errors/client.error";
 import { handleError } from "../errors/handleError";
 import { OrderModel } from "../models/order.model";
-import { Order } from "../types/orders.type";
+import { Order, PublicCreateOrder } from "../types/orders.type";
 import { UserModel } from "../models/user.model";
 import { validateOrder } from "../schema/orders.schema";
 import { ProductModel } from "../models/product.model";
@@ -114,7 +114,7 @@ export const OrdersController = {
     // To client actions and admin too
     async create(req: Request, res: Response) {
         try {
-            const { id_client, id_product, quantity } = req.body
+            const { id_client, id_product, quantity } = req.body as PublicCreateOrder
             const validated = await validateOrder(id_client, id_product, quantity)
             if (!validated.success || !validated.data) {
                 if (validated.error instanceof ZodError) {
@@ -125,11 +125,16 @@ export const OrdersController = {
             //Get product
             const product = await ProductModel.getById(id_product)
             if (!product) throw new ClientError('The product not exists')
+
+            //Get client
+            const client = await UserModel.getById(id_client)
+            if (!client) throw new ClientError('The client not exists')
+
             //Calculate price
             const price = quantity * product.price
 
-            const id = crypto.randomUUID as unknown
-            const createdId = await OrderModel.create(id as string, { id_client, id_product, quantity, createdAt: Date.now().toString(), status: 'eraser', price })
+            const id = crypto.randomUUID()
+            const createdId = await OrderModel.create(id, { id_client, id_product, quantity, createdAt: Date.now().toString(), status: 'eraser', price })
             if (!createdId) throw new ServerError('Finally could not been created order')
 
             const createdOrder = await OrderModel.getById(createdId)

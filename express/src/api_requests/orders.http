@@ -1,0 +1,11 @@
+### CREATE ORDERS (ACCESS: CLIENTS | OPERATORS | ADMIN)
+POST http://localhost:3000/orders
+Content-Type: application/json
+
+{
+"id_client": "55259777-196f-425b-a716-310e97bd52b0",
+"id_product": "3b3b4b56-dc34-4afc-8c4b-83b97810cc3c",
+"quantity": 10
+}
+
+### GET ORDERS (ACCESS: ADMIN)

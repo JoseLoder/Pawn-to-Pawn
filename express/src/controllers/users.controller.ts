@@ -21,10 +21,9 @@ declare global {
 export const UsersController = {
   async getMyUser(req: Request, res: Response): Promise<void> {
     try {
-      console.log(req.session)
-      console.log(req.session?.userSession)
-      if (!req.session) throw new ClientError('User does not login')
-      const id_user = req.session.userSession?.id_user
+      if (!req.session?.userSession) throw new ClientError('User does not login')
+      const id_user = req.session.userSession.id_user
+      console.log(req.session.userSession?.role)
       if (!id_user) throw new ClientError('User does not login')
       const user = await UserModel.getById(id_user)
       if (!user) throw new ClientError('User does not exist')
@@ -120,6 +119,8 @@ export const UsersController = {
 
   async login(req: Request, res: Response): Promise<void> {
     try {
+      req.session = { userSession: null }
+
       const { email, password } = req.body as LogUser
       const validated = await validateLogin({ email, password })
       if (!validated.success || !validated.data) {
@@ -140,7 +141,7 @@ export const UsersController = {
         throw new ClientError('Invalid credentials')
       }
 
-      const token = jwt.sign(
+      const accessToken = jwt.sign(
         {
           id_user: user.id,
           role: user.role
@@ -159,11 +160,17 @@ export const UsersController = {
         path: '/'
       }
 
+      req.session = {
+        userSession: {
+          id_user: user.id,
+          role: user.role
+        }
+      }
       const refreshToken = await RefreshTokensController.create(user.id, req.headers['user-agent'])
 
       res
         .status(200)
-        .cookie('access_token', token, cookieOptions)
+        .cookie('access_token', accessToken, cookieOptions)
         .cookie('refresh_token', refreshToken, {
           ...cookieOptions,
           maxAge: 7 * 24 * 60 * 60 * 1000
@@ -221,7 +228,7 @@ export const UsersController = {
     }
   },
 
-  async logout(_: Request, res: Response) {
+  async logout(req: Request, res: Response) {
     try {
       /*   const refreshToken = req.cookies.refresh_token
         console.log(refreshToken)
@@ -230,6 +237,10 @@ export const UsersController = {
           await RefreshTokensController.revoke(refreshTokenDB.token)
           await RefreshTokensController.revokeAllForUserDevice(refreshTokenDB.id_user, req.headers['user-agent'])
         } */
+
+      //Remove user session
+      req.session = { userSession: null }
+
 
       const cookieOptions: CookieOptions = {
         httpOnly: true,
