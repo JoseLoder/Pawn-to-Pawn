@@ -9,3 +9,4 @@ Content-Type: application/json
 }
 
 ### GET ORDERS (ACCESS: ADMIN)
+GET http://localhost:3000/orders/

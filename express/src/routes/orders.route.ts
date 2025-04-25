@@ -8,12 +8,12 @@ export const OrdersRouter = Router()
 
 OrdersRouter.use(auth)
 
-//Endpoints
-OrdersRouter.post('/', OrdersController.create)
-OrdersRouter.get("/client/:id", OrdersController.getById)
-
+// Endpoints
+console.log('estoy en orders')
 // Routes for clients
 OrdersRouter.use(authClient)
+OrdersRouter.post('/', OrdersController.create)
+OrdersRouter.get("/client/:id", OrdersController.getById)
 OrdersRouter.get("/client/all/:id", OrdersController.getByClient)
 // Routes for operators
 OrdersRouter.use(authOperator)
@@ -24,4 +24,4 @@ OrdersRouter.get("/operator/completed/:id", OrdersController.setCompleted)
 
 //Endpoints for Admin
 OrdersRouter.use(authAdmin)
-OrdersRouter.get("/admin/all", OrdersController.getAll)
+OrdersRouter.get("/", OrdersController.getAll)
