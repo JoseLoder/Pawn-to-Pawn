@@ -1,3 +1,5 @@
+// DEPRECATED FILE
+
 import { ZodError } from 'zod'
 import { Request, Response } from 'express'
 import { ClientError } from '../errors/client.error.ts'

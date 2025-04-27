@@ -1,3 +1,5 @@
+// DEPRECATED FILE
+
 import { DB } from '../database/connect.ts'
 import { QueryError } from '../errors/server.error.ts'
 import { Client, UpdateClient } from '../types/clients.types.ts'

@@ -1,3 +1,5 @@
+// DEPRECATED FILE
+
 import axios from "axios";
 import { LogUser, RegisterUser } from "../types/Users";
 

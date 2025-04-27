@@ -23,10 +23,10 @@ GET http://localhost:3000/orders/pending
 ### SET ORDER TO OPERATOR (ACCESS: OPERATOR)
 GET http://localhost:3000/orders/set/operator/5fee4086-fa0a-4518-9ca9-56d3bb8739be
 
-### GET PREPARATION ORDER 
+### GET PREPARATION ORDER (ACCESS: OPERATOR | ADMIN)
 GET http://localhost:3000/orders/preparation/5fee4086-fa0a-4518-9ca9-56d3bb8739be
 
-### GET ORDERS TO OPERATOR
+### GET ORDERS TO OPERATOR (ACCESS: OPERATOR | ADMIN)
 GET http://localhost:3000/orders/operator/orders/2d44410a-ae35-496d-9ac9-ebedd73cd2b8
 
 ### SET COMPLETE (ACCESS: OPERATOR | ADMIN)
