@@ -1,9 +1,9 @@
 import { Nav } from './components/semantic/Nav'
 function App() {
-const linksToShow = [
+  const linksToShow = [
     { to: "professional", text: "Professional" },
     { to: "client", text: "Client" },
-    { to: "home", text: "Test New Home"}
+    { to: "home", text: "Test New Home" }
   ]
 
   return (

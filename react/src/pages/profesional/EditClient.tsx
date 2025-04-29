@@ -13,12 +13,12 @@ import { clientSchema } from "../../schema/clients";
 export function EditClient() {
 
   const navigate = useNavigate();
-  const { 
+  const {
     setValue,
     register,
     handleSubmit,
-    formState: {errors}
-  } = useForm<RegisterClient>({resolver: zodResolver(clientSchema)})
+    formState: { errors }
+  } = useForm<RegisterClient>({ resolver: zodResolver(clientSchema) })
 
   // Get clients
   const {
@@ -39,7 +39,7 @@ export function EditClient() {
         if (axiosError.response?.status == 401) {
           alert(axiosError.response.data); //Access unauthorized
           // TODO hacer un logout para limpiar el user del localstorage y el estado del contexto
-          navigate("/home/login");
+          navigate("/login");
         } else if (axiosError.status == 400) {
           const errorMessage = (
             axiosError.response?.data as { message: string }
@@ -71,7 +71,7 @@ export function EditClient() {
         if (axiosError.status == 401) {
           alert(axiosError.response?.data); //Access not authorized
           // TODO hacer un logout para limpiar el user del localstorage y el estado del contexto
-          navigate("/home/login");
+          navigate("/login");
         } else if (axiosError.status == 400) {
           const errorMessage = (
             axiosError.response?.data as { message: string }
@@ -82,19 +82,19 @@ export function EditClient() {
     },
   });
 
-    // Get client context
-    const professionalClientContext = useContext(ProfessionalContext);
-    if (!professionalClientContext) {
-      throw new Error(
-        "ProfessionalContext must be used within a ProfessionalProvider"
-      );
-    }
-    const { setClientContext, getClientContext } = professionalClientContext;
-  
-    const clientContext = getClientContext();
+  // Get client context
+  const professionalClientContext = useContext(ProfessionalContext);
+  if (!professionalClientContext) {
+    throw new Error(
+      "ProfessionalContext must be used within a ProfessionalProvider"
+    );
+  }
+  const { setClientContext, getClientContext } = professionalClientContext;
+
+  const clientContext = getClientContext();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target
+    const { name, value } = e.target
     setClientContext({
       ...clientContext,
       [name]: value
@@ -137,15 +137,15 @@ export function EditClient() {
           Seleccione un cliente
         </option>
         {clients?.data.map((client: Client) => (
-          <option 
+          <option
             key={client.id}
             value={client.id}
-            >
+          >
             {client.dni}
           </option>
         ))}
       </select>
-      
+
       <label htmlFor="name">Name</label>
       <input
         type="text"

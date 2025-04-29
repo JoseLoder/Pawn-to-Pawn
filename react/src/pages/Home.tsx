@@ -1,7 +1,9 @@
-import { Outlet } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import { Header } from "../components/semantic/Header";
 import { Nav } from "../components/semantic/Nav";
 import styled from "@emotion/styled";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../contexts/UserContext";
 
 const StyledMain = styled.main`
 form {
@@ -13,9 +15,30 @@ form {
 input {
   margin-bottom: 10px;
 }
-
 `
 export function Home() {
+
+  const navigate = useNavigate();
+  const userContextProvider = useContext(UserContext);
+  if (!userContextProvider) {
+    throw new Error("UserContext must be used within a UserProvider");
+  }
+  const { getUserContext } = userContextProvider;
+  const userAlreadyLogged = getUserContext();
+
+  useEffect(() => {
+    // Check if user is already logged in and redirect
+    if (userAlreadyLogged) {
+      if (userAlreadyLogged.role === 'client') {
+        navigate('/client');
+      } else if (userAlreadyLogged.role === 'operator') {
+        navigate('/professional');
+      } else if (userAlreadyLogged.role === 'admin') {
+        navigate('/admin');
+      }
+    }
+  }, [userAlreadyLogged, navigate]);
+
   const linksToShow = [
     { to: "login", text: "Login" },
     { to: "register", text: "Register" },

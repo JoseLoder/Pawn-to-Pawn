@@ -1,5 +1,5 @@
 import React, { ReactNode, useState, useCallback, useMemo } from 'react';
-import { User } from '../types/Users';
+import { PublicUser } from '../types/users.types';
 import { UserContext } from './UserContext'
 
 interface UserContextProps {
@@ -8,12 +8,12 @@ interface UserContextProps {
 
 export const UserContextProvider: React.FC<UserContextProps> = ({ children }) => {
 
-    const [user, setUser] = useState<User | undefined>(undefined);
+    const [user, setUser] = useState<PublicUser | undefined>(undefined);
     // Setter function to set the user in the context and in the localStorage
-    const setUserContext = useCallback((user: User | undefined) => {
+    const setUserContext = useCallback((user: PublicUser | undefined) => {
         if (user) {
-          const stringUser = JSON.stringify(user)
-          localStorage.setItem('user', stringUser)
+            const stringUser = JSON.stringify(user)
+            localStorage.setItem('user', stringUser)
         }
         setUser(user);
     }, [])
@@ -21,18 +21,18 @@ export const UserContextProvider: React.FC<UserContextProps> = ({ children }) =>
     // Login mutation, only login sets the user in the context.
     // How do I verify the token if I don't have access?
     //TODO Esto tiene que hacerse con un refresh token y de esa manera tenemos token
-/*     const loginMutation = useMutation({
-        mutationKey: ["Login"],
-        mutationFn: login,
-        onSuccess: (data: User) => {
-            setUser(data)
-            console.log("login")
-        },
-        onError: (e) => {
-            console.error(e)
-        }
-    }); */
-    
+    /*     const loginMutation = useMutation({
+            mutationKey: ["Login"],
+            mutationFn: login,
+            onSuccess: (data: User) => {
+                setUser(data)
+                console.log("login")
+            },
+            onError: (e) => {
+                console.error(e)
+            }
+        }); */
+
     // Getter function to get the user from the context or from the localStorage
     const getUserContext = useCallback(() => {
         let userStorage = localStorage.getItem('user');
@@ -41,7 +41,7 @@ export const UserContextProvider: React.FC<UserContextProps> = ({ children }) =>
         }
         const parsedUser = userStorage ? JSON.parse(userStorage) : null;
 
-        if(user) { //This.user 
+        if (user) { //This.user 
             console.log("usuario del contexto", user);
             return user;
         }
@@ -51,7 +51,7 @@ export const UserContextProvider: React.FC<UserContextProps> = ({ children }) =>
             console.log("usuario del Storage", parsedUser);
             return parsedUser;
         }
-        return undefined
+        return null
     }, [user]);
 
     const memoizedUserContextValue = useMemo(() => {
@@ -62,7 +62,7 @@ export const UserContextProvider: React.FC<UserContextProps> = ({ children }) =>
     }, [getUserContext, setUserContext]);
 
     return (
-        <UserContext.Provider value={ memoizedUserContextValue }>
+        <UserContext.Provider value={memoizedUserContextValue}>
             {children}
         </UserContext.Provider>
     );

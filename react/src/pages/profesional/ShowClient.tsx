@@ -15,9 +15,9 @@ export function ShowClient() {
     isError,
     error,
   } = useQuery({
-    queryKey: ["clients"], 
-    queryFn: getClients, 
-    retry: false 
+    queryKey: ["clients"],
+    queryFn: getClients,
+    retry: false
   });
 
   useEffect(() => {
@@ -28,11 +28,11 @@ export function ShowClient() {
         if (axiosError.response?.status == 401) {
           alert(axiosError.response.data); //Access unauthorized
           // TODO hacer un logout para limpiar el user del localstorage y el estado del contexto
-          navigate("/home/login");
-        }else if (axiosError.status == 400) {
+          navigate("/login");
+        } else if (axiosError.status == 400) {
           const errorMessage = (axiosError.response?.data as { message: string }).message;
           alert(errorMessage)
-      }
+        }
       }
     }
   }, [isError]);

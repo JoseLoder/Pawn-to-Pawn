@@ -18,33 +18,31 @@ export function Professional() {
 
   useEffect(() => {
     const user = getUserContext();
-    if (user) {
+    if (user && user.role === "operator") {
+
       setIsActivated(true);
     } else {
       setIsActivated(false);
-      navigate("/home/login");
+      navigate("/login");
     }
   }, []);
 
-const linksToShow = [
-  { to: "add-client", text: "Add Client" },
-  { to: "show-client", text: "Show Client" },
-  { to: "edit-client", text: "Edit Client" },
-];
+  const linksToShow = [
+    { to: "add-client", text: "Add Client" },
+    { to: "show-client", text: "Show Client" },
+    { to: "edit-client", text: "Edit Client" },
+  ];
 
-return isActivated ? (
-  <>
-  <button onClick={() => getUserContext()}>context</button>
-    <Header title="Hello Profesional">
-      <Nav links={linksToShow} />
-      <Logout />
-    </Header>
-    <ProfesionalContextProvider>
-      <Outlet />
-    </ProfesionalContextProvider>
-  </>
-) : (
-  //TODO Create Error page 
-  <h1>something has gone wrong</h1>
-);
+  return isActivated ? (
+    <>
+      <button onClick={() => getUserContext()}>context</button>
+      <Header title="Hello Profesional">
+        <Nav links={linksToShow} />
+        <Logout />
+      </Header>
+      <ProfesionalContextProvider>
+        <Outlet />
+      </ProfesionalContextProvider>
+    </>
+  ) : null;
 }

@@ -8,13 +8,14 @@ import "./styles.css";
 import { Professional } from "./pages/Professional.tsx";
 import { Home } from "./pages/Home.tsx";
 import { Client } from "./pages/Client.tsx";
+import { Admin } from "./pages/Admin.tsx";
 import { ShowClient } from "./pages/profesional/ShowClient.tsx";
-import App from "./App.tsx";
 import { AddClient } from "./pages/profesional/AddClient.tsx";
 import { Login } from "./pages/home/Login.tsx";
 import { Register } from "./pages/home/Register.tsx";
 import { EditClient } from "./pages/profesional/EditClient.tsx";
 import { UserContextProvider } from "./contexts/UserContextProvider.tsx";
+import ErrorPage from "./pages/ErrorPage.tsx";
 
 const StyledRoot = styled.div`
   min-height: 100vh;
@@ -39,8 +40,7 @@ createRoot(document.getElementById("root")!).render(
         <BrowserRouter>
           <ReactQueryDevtools />
           <Routes>
-            <Route path="/" element={<App />} />
-            <Route path="Home" element={<Home />}>
+            <Route path="/" element={<Home />}>
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
             </Route>
@@ -52,9 +52,15 @@ createRoot(document.getElementById("root")!).render(
             <Route path="client" element={<Client />}>
               {/* Routes from client */}
             </Route>
+            <Route path="admin" element={<Admin />}>
+              {/* Routes from client */}
+            </Route>
+            <Route path="*" element={<ErrorPage />} />
           </Routes>
         </BrowserRouter>
       </UserContextProvider>
     </QueryClientProvider>
   </StyledRoot>
 );
+
+

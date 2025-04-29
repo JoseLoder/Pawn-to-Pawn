@@ -7,10 +7,8 @@ import { JsonWebTokenError } from 'jsonwebtoken'
 export const handleError = (e: Error, res: Response) => {
   if (e instanceof ZodError) {
     res.status(400).json({
-      success: false,
-      message: 'Validation error',
+      name: 'ValidationError',
       errors: e.issues.map((issue) => ({
-        code: issue.code,
         path: issue.path.join('.'),
         message: issue.message
       }))
@@ -21,25 +19,21 @@ export const handleError = (e: Error, res: Response) => {
       .clearCookie('access_token')
       .clearCookie('refresh_token')
       .json({
-        success: false,
         name: e.name,
         message: e.message
       })
   } else if (e instanceof ClientError) {
     res.status(400).json({
-      success: false,
       name: e.name,
       message: e.message
     })
   } else if (e instanceof ServerError) {
     res.status(500).json({
-      success: false,
       name: e.name,
       message: e.message
     })
   } else {
     res.status(500).json({
-      success: false,
       name: 'UnexpectedError',
       message: 'An unexpected error occurred',
       ...(process.env.NODE_ENV === 'development' && {

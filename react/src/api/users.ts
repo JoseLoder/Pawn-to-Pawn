@@ -1,7 +1,7 @@
 // DEPRECATED FILE
 
 import axios from "axios";
-import { LogUser, RegisterUser } from "../types/Users";
+import { LoginUser, RegisterUser } from "../types/users.types";
 
 
 const userApi = axios.create({
@@ -9,7 +9,7 @@ const userApi = axios.create({
     withCredentials: true
 })
 
-export const login = (user: LogUser) => {
+export const login = (user: LoginUser) => {
     return userApi.post('/login', user)
 }
 

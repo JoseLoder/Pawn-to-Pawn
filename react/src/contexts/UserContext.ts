@@ -1,9 +1,9 @@
 import { createContext } from "react";
-import { User } from "../types/Users";
+import { PublicUser } from "../types/users.types";
 
 export interface UserContextValue {
-    getUserContext: () => User | undefined;
-    setUserContext: (user: User | undefined) => void;
+    getUserContext: () => PublicUser | undefined;
+    setUserContext: (user: PublicUser | undefined) => void;
 }
 
 export const UserContext = createContext<UserContextValue | undefined>(undefined);

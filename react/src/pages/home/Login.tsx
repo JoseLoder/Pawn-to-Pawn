@@ -2,15 +2,12 @@ import { useNavigate } from "react-router"
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../../api/users";
 import { UserContext } from "../../contexts/UserContext";
-import { useContext } from "react";
-import { User } from "../../types/Users";
+import { useContext, useState } from "react";
 import { AxiosError } from "axios";
-type Login = {
-  username: string,
-  password: string
-}
+import { LoginUser, PublicUser } from "../../types/users.types";
+import { AxiosErrorData, AxiosValidationErrorData } from "../../types/axios.type";
 
-export function Login () {
+export function Login() {
 
   const navigate = useNavigate();
 
@@ -19,37 +16,86 @@ export function Login () {
   if (!userContextProvider) {
     throw new Error("UserContext must be used within a UserProvider");
   }
-  const { setUserContext } = userContextProvider;
+  const { setUserContext, getUserContext } = userContextProvider;
+
+  const userAlreadyLogged = getUserContext()
+  // Check if user is already logged in and redirect too
+  if (userAlreadyLogged) {
+    if (userAlreadyLogged.role === 'client') {
+      navigate('/client')
+    } else if (userAlreadyLogged.role === 'operator') {
+      navigate('/professional')
+    } else if (userAlreadyLogged.role === 'admin') {
+      navigate('/admin')
+    }
+  }
+
+  // State for error messages 
+  const [errorMessage, setErrorMessage] = useState<AxiosValidationErrorData | AxiosErrorData | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
 
   // Login mutation
   const loginMutation = useMutation({
-    mutationKey: ["Login"],
+    mutationKey: ["login"],
     mutationFn: login,
-    onSuccess: (data: User) => {
-      setUserContext(data)
-      navigate('/professional')
+    onMutate: () => {
+      setLoading(true),
+        setErrorMessage(null)
     },
-    onError: (e) =>{
-      if (e.name === 'AxiosError') {
-        const axiosError = e as AxiosError
-        if (axiosError.response) {
-          console.log(axiosError.response.data)
+    onSuccess: (data) => {
+      console.log(data.data)
+      setUserContext(data.data as PublicUser)
+      navigate('/login')
+    },
+    onError: (e) => {
+      setLoading(false);
+      if (e instanceof AxiosError) {
+
+        if (e.response?.data.name === "ValidationError") {
+          setErrorMessage(e.response.data as AxiosValidationErrorData)
+        }
+        else if (e.response?.data.name === "ClientError") {
+          setErrorMessage(e.response.data as AxiosErrorData)
+
         }
       }
-
     }
-  });
-  
+  })
+
+  const showError = () => {
+    if (!errorMessage) return;
+    console.log(errorMessage)
+    if (errorMessage.name === "ValidationError") {
+      return <div>
+        <p>{errorMessage.name}</p>
+        <ul>
+          {(errorMessage as AxiosValidationErrorData).errors.map((error, index) => (
+            <li key={index}>
+              {error.path}: {error.message}
+            </li>
+          ))}
+        </ul>
+      </div>
+    } else if (errorMessage.name === "ClientError") {
+      return <div>
+        <p>{errorMessage.name}</p>
+        <p>{(errorMessage as AxiosErrorData).message}</p>
+      </div>;
+    } else {
+      return <p>Something went wrong</p>;
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     loginMutation.mutate(getFields())
   }
-  const getFields = () : Login => {
-    const username = (document.getElementById('username') as HTMLInputElement).value
+  const getFields = (): LoginUser => {
+    const email = (document.getElementById('email') as HTMLInputElement).value
     const password = (document.getElementById('password') as HTMLInputElement).value
-    
+
     return {
-      username,
+      email,
       password
     }
   }
@@ -57,12 +103,15 @@ export function Login () {
   return (
     <section>
       <h2>Welcome to login</h2>
+      {errorMessage && showError()}
       <form>
-        <label htmlFor="username">Username</label>
-        <input type="text" id="username"/>
+        <label htmlFor="email">Username</label>
+        <input type="email" id="email" />
         <label htmlFor="password">Password</label>
-        <input type="password" id="password"/>
-        <button onClick={handleSubmit}>Login</button>
+        <input type="password" id="password" />
+        <button onClick={handleSubmit} disabled={loading}>
+          {loading ? "Cargando..." : "Login"}
+        </button>
       </form>
     </section>
 
