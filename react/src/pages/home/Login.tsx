@@ -5,7 +5,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { useContext, useState } from "react";
 import { AxiosError } from "axios";
 import { LoginUser, PublicUser } from "../../types/users.types";
-import { AxiosErrorData, AxiosValidationErrorData } from "../../types/axios.type";
+import { AxiosErrorData, AxiosValidationErrorData } from "../../types/errors/axios.type";
 
 export function Login() {
 

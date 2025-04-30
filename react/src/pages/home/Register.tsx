@@ -1,49 +1,179 @@
-import axios from "axios"
+import { Axios, AxiosError } from "axios";
+import { RegisterUser } from "../../types/users.types";
+import { useMutation } from "@tanstack/react-query";
+import { registerUser } from "../../api/users.api";
+import { useNavigate } from "react-router";
+import { useState } from "react";
+import { handleError } from "../../errors/handleError";
+import { HandledError } from "../../types/errors/handle_error.type";
+import {
+  AxiosValidationErrorData,
+  AxiosErrorData,
+  CustomAxiosError,
+} from "../../types/errors/axios.type";
+import {
+  UnexpectedError,
+  UnexpectedResponseError,
+} from "../../types/errors/unexpected.type";
 
-type Register = {
-name: string,
-username: string,
-password: string
-}
-export function Register () {
-  const handleSubmit = (e: React.FormEvent)  => {
-    e.preventDefault()
-    const newUser = getFields()
-    axios.post('http://localhost:3000/users/login', newUser)
-      .then((response) => {
-        if (response.status === 201) {
-          console.log(response.data.message)
+export function Register() {
+  const navigate = useNavigate();
+
+  const userEmpty = {
+    name: "",
+    email: "",
+    password: "",
+    id_number: "",
+    phone: "",
+  };
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [newUser, setNewUser] = useState<RegisterUser>(userEmpty);
+
+  const registerMutation = useMutation({
+    mutationKey: ["register"],
+    mutationFn: registerUser,
+    onMutate: () => {
+      setLoading(true);
+      setError(null);
+    },
+    onSuccess: () => {
+      alert("User created, will be redirected to login");
+      navigate("/login");
+    },
+    onError: (e) => {
+      setLoading(false);
+      setError(e);
+      console.log(e);
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    registerMutation.mutate(newUser);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
+
+  const showError = () => {
+    if (!error) return;
+
+    if (error instanceof AxiosError) {
+      const axiosError = error as CustomAxiosError;
+      // Handle Axios errors
+      if (axiosError.response) {
+        if (axiosError.response.data.name === "ValidationError") {
+          const data = axiosError.response.data as AxiosValidationErrorData;
+          return (
+            <div>
+              <p>{data.name}</p>
+              <ul>
+                {data.errors.map((error, index) => (
+                  <li key={index}>
+                    {error.path}: {error.message}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        } else if (
+          axiosError.response.data.name === "ClientError" ||
+          axiosError.response.data.name === "ServerError"
+        ) {
+          const data = axiosError.response.data as AxiosErrorData;
+          return (
+            <div>
+              <p>{data.name}</p>
+              <p>{data.message}</p>
+            </div>
+          );
+        } else {
+          // Handle other types of responses with a generic error object
+          const data = axiosError.response.data as AxiosErrorData;
+          console.log(axiosError.response);
+          return (
+            <div>
+              <p>{data.name}</p>
+              <p>{data.message}</p>
+            </div>
+          );
         }
-      })
-      .catch((error) => {
-        console.error('Error:', error)
-    })
-  }
-  const getFields = () : Register => {
-    const name = (document.getElementById('name') as HTMLInputElement).value
-    const username = (document.getElementById('username') as HTMLInputElement).value
-    const password = (document.getElementById('password') as HTMLInputElement).value
-
-    return {
-      name: name,
-      username: username,
-      password: password
+      } else {
+        // Handle cases where there's no response
+        return (
+          <div>
+            <p>"NetworkError"</p>
+            <p>A network error occurred.</p>
+          </div>
+        );
+      }
+    } else {
+      // Handle non-Axios errors
+      console.log(error);
+      return (
+        <div>
+          <p>{error.name}</p>
+          <p>{error.message}</p>
+        </div>
+      );
     }
-  }
+  };
 
-    return (
-      <section>
-        <h2>Welcome to register</h2>
-        <form>
-          <label htmlFor="name">Name</label>
-          <input type="text" id="name"/>
-          <label htmlFor="username">Username</label>
-          <input type="text" id="username"/>
-          <label htmlFor="password">Password</label>
-          <input type="password" id="password"/>
-          <button onClick={handleSubmit}>Register</button>
-        </form>
-      </section>
-  
-    )
-  }
+  return (
+    <section>
+      <h2>Welcome to register</h2>
+      {error && showError()}
+      <form>
+        <label htmlFor="name">Name</label>
+        <input
+          type="text"
+          id="name"
+          name="name" // Added name attribute
+          value={newUser.name}
+          onChange={handleChange}
+        />
+        <label htmlFor="email">Email</label>
+        <input
+          type="text"
+          id="email"
+          name="email" // Added name attribute
+          value={newUser.email}
+          onChange={handleChange}
+        />
+        <label htmlFor="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password" // Added name attribute
+          value={newUser.password}
+          onChange={handleChange}
+        />
+        <label htmlFor="id_number">ID Number</label>
+        <input
+          type="text"
+          id="id_number"
+          name="id_number" // Added name attribute
+          value={newUser.id_number}
+          onChange={handleChange}
+        />
+        <label htmlFor="phone">Phone</label>
+        <input
+          type="text"
+          id="phone"
+          name="phone" // Added name attribute
+          value={newUser.phone}
+          onChange={handleChange}
+        />
+        <button onClick={handleSubmit}>
+          {loading ? "Cargando..." : "Register"}
+        </button>
+      </form>
+    </section>
+  );
+}
