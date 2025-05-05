@@ -17,6 +17,7 @@ declare global {
         }
     }
 }
+//TODO: All requests that return an order must include the name of the users involved and the name of the product.
 export const OrdersController = {
 
     // To admin actions
@@ -29,7 +30,7 @@ export const OrdersController = {
             const order = await OrderModel.getById(id)
             if (!order) throw new ClientError('This order already not exists')
 
-            res.status(200).json({ success: true, order })
+            res.status(200).json(order)
 
         } catch (e) {
             handleError(e as Error, res)
@@ -41,7 +42,7 @@ export const OrdersController = {
         try {
             const orders = await OrderModel.getAll()
             if (!orders[0]) throw new ClientError('There are not orders right now.')
-            res.status(200).json({ success: true, orders })
+            res.status(200).json(orders)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -53,7 +54,7 @@ export const OrdersController = {
         try {
             const pending = await OrderModel.getOrderPending()
             if (!pending) throw new ClientError('There are no pending orders right now.')
-            res.status(200).json({ success: true, pending })
+            res.status(200).json(pending)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -72,6 +73,7 @@ export const OrdersController = {
             if (!user || !order) throw new ClientError('This Operator or Order not exists')
             if (order.id_operator) throw new ClientError('This order already has an operator assigned')
             if (user.role != 'operator') throw new UnauthorizedError('This User no be Operator User')
+            //TODO: the operator only must has one order assing
             const updated: Order = {
                 ...order,
                 id_operator: user.id,
@@ -81,19 +83,8 @@ export const OrdersController = {
 
             const idUpdated = await OrderModel.update(id, updated)
             const orderUpdated = await OrderModel.getById(idUpdated)
-            const product = await ProductModel.getById(orderUpdated.id_product)
 
-            const preparation: PreparationOrder = {
-                base: product.base,
-                amount_base: order.quantity,
-                cover: product.cover,
-                amount_cover: order.quantity,
-                estimated_time_product: product.estimated_time,
-                estimated_time_order: product.estimated_time * order.quantity,
-                estimated_weight_product: product.estimated_weight,
-                estimated_weight_order: product.estimated_weight * order.quantity,
-            }
-            res.status(200).json({ success: true, orderUpdated, preparation })
+            res.status(200).json(orderUpdated)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -115,7 +106,7 @@ export const OrdersController = {
                 estimated_weight_product: product.estimated_weight,
                 estimated_weight_order: product.estimated_weight * order.quantity,
             }
-            res.status(200).json({ success: true, order, preparation })
+            res.status(200).json(preparation)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -136,7 +127,7 @@ export const OrdersController = {
             }
             const idUpdated = await OrderModel.update(id, updated)
             const orderUpdated = await OrderModel.getById(idUpdated)
-            res.status(200).json({ success: true, orderUpdated })
+            res.status(200).json(orderUpdated)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -152,7 +143,7 @@ export const OrdersController = {
             if (operator.role != 'operator') throw new ClientError('This user must be Operator User')
             const orders = await OrderModel.getByOperator(operator.id)
             if (!orders) throw new ClientError('Not exists order by this operator')
-            res.status(200).json({ success: true, orders })
+            res.status(200).json(orders)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -172,7 +163,7 @@ export const OrdersController = {
             }
             const idUpdated = await OrderModel.update(id, updated)
             const orderUpdated = await OrderModel.getById(idUpdated)
-            res.status(200).json({ success: true, orderUpdated })
+            res.status(200).json(orderUpdated)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -190,7 +181,7 @@ export const OrdersController = {
             if (!order) throw new ClientError('Order does not exist')
             if (order.id_client !== id_user) throw new ClientError('The order must be yours')
 
-            res.status(200).json({ success: true, order })
+            res.status(200).json(order)
 
         } catch (e) {
             handleError(e as Error, res)
@@ -206,7 +197,7 @@ export const OrdersController = {
             const orders = await OrderModel.getByClient(id_user)
             if (!orders) throw new ClientError('User does not exist')
 
-            res.status(200).json({ success: true, orders })
+            res.status(200).json(orders)
 
         } catch (e) {
             handleError(e as Error, res)
@@ -242,7 +233,7 @@ export const OrdersController = {
             const createdOrder = await OrderModel.getById(createdId)
             if (!createdOrder) throw new ServerError('The order was not found after creation')
 
-            res.status(201).json({ success: true, createdOrder })
+            res.status(201).json(createdOrder)
         } catch (e) {
             handleError(e as Error, res)
         }
