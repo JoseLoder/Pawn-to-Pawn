@@ -3,9 +3,8 @@ import { useMutation } from "@tanstack/react-query";
 import { login } from "../../api/users";
 import { UserContext } from "../../contexts/UserContext";
 import { useContext, useState } from "react";
-import { AxiosError } from "axios";
 import { LoginUser, PublicUser } from "../../types/users.types";
-import { AxiosErrorData, AxiosValidationErrorData } from "../../types/errors/axios.type";
+import { BackEndError } from "../../errors/BackEndError";
 
 export function Login() {
 
@@ -31,7 +30,7 @@ export function Login() {
   }
 
   // State for error messages 
-  const [errorMessage, setErrorMessage] = useState<AxiosValidationErrorData | AxiosErrorData | null>(null)
+  const [error, setError] = useState<Error | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
 
   // Login mutation
@@ -40,7 +39,7 @@ export function Login() {
     mutationFn: login,
     onMutate: () => {
       setLoading(true),
-        setErrorMessage(null)
+        setError(null)
     },
     onSuccess: (data) => {
       console.log(data.data)
@@ -49,42 +48,9 @@ export function Login() {
     },
     onError: (e) => {
       setLoading(false);
-      if (e instanceof AxiosError) {
-
-        if (e.response?.data.name === "ValidationError") {
-          setErrorMessage(e.response.data as AxiosValidationErrorData)
-        }
-        else if (e.response?.data.name === "ClientError") {
-          setErrorMessage(e.response.data as AxiosErrorData)
-
-        }
-      }
+      setError(e)
     }
   })
-
-  const showError = () => {
-    if (!errorMessage) return;
-    console.log(errorMessage)
-    if (errorMessage.name === "ValidationError") {
-      return <div>
-        <p>{errorMessage.name}</p>
-        <ul>
-          {(errorMessage as AxiosValidationErrorData).errors.map((error, index) => (
-            <li key={index}>
-              {error.path}: {error.message}
-            </li>
-          ))}
-        </ul>
-      </div>
-    } else if (errorMessage.name === "ClientError") {
-      return <div>
-        <p>{errorMessage.name}</p>
-        <p>{(errorMessage as AxiosErrorData).message}</p>
-      </div>;
-    } else {
-      return <p>Something went wrong</p>;
-    }
-  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -103,7 +69,7 @@ export function Login() {
   return (
     <section>
       <h2>Welcome to login</h2>
-      {errorMessage && showError()}
+      {error && <BackEndError inputError={error} />}
       <form>
         <label htmlFor="email">Username</label>
         <input type="email" id="email" />

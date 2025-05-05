@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { AxiosErrorData, AxiosValidationErrorData, CustomAxiosError } from "../types/errors/axios.type";
 import { UnexpectedError, UnexpectedResponseError } from "../types/errors/unexpected.type";
 import { useEffect, useState } from "react";
-export const BackEndError = ({ inputError }: { inputError: Error | undefined }) => {
+export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
 
     const [errorMessage, setErrorMessage] = useState<AxiosValidationErrorData | AxiosErrorData | null>(null)
 

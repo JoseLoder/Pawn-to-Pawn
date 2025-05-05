@@ -1,21 +1,9 @@
-import { Axios, AxiosError } from "axios";
 import { RegisterUser } from "../../types/users.types";
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../../api/users.api";
 import { useNavigate } from "react-router";
 import { useState } from "react";
-import { handleError } from "../../errors/handleError";
-import { HandledError } from "../../types/errors/handle_error.type";
-import {
-  AxiosValidationErrorData,
-  AxiosErrorData,
-  CustomAxiosError,
-} from "../../types/errors/axios.type";
-import {
-  UnexpectedError,
-  UnexpectedResponseError,
-} from "../../types/errors/unexpected.type";
-
+import { BackEndError } from "../../errors/BackEndError";
 export function Register() {
   const navigate = useNavigate();
 
@@ -44,7 +32,6 @@ export function Register() {
     onError: (e) => {
       setLoading(false);
       setError(e);
-      console.log(e);
     },
   });
 
@@ -61,80 +48,17 @@ export function Register() {
     }));
   };
 
-  const showError = () => {
-    if (!error) return;
-
-    if (error instanceof AxiosError) {
-      const axiosError = error as CustomAxiosError;
-      // Handle Axios errors
-      if (axiosError.response) {
-        if (axiosError.response.data.name === "ValidationError") {
-          const data = axiosError.response.data as AxiosValidationErrorData;
-          return (
-            <div>
-              <p>{data.name}</p>
-              <ul>
-                {data.errors.map((error, index) => (
-                  <li key={index}>
-                    {error.path}: {error.message}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          );
-        } else if (
-          axiosError.response.data.name === "ClientError" ||
-          axiosError.response.data.name === "ServerError"
-        ) {
-          const data = axiosError.response.data as AxiosErrorData;
-          return (
-            <div>
-              <p>{data.name}</p>
-              <p>{data.message}</p>
-            </div>
-          );
-        } else {
-          // Handle other types of responses with a generic error object
-          const data = axiosError.response.data as AxiosErrorData;
-          console.log(axiosError.response);
-          return (
-            <div>
-              <p>{data.name}</p>
-              <p>{data.message}</p>
-            </div>
-          );
-        }
-      } else {
-        // Handle cases where there's no response
-        return (
-          <div>
-            <p>"NetworkError"</p>
-            <p>A network error occurred.</p>
-          </div>
-        );
-      }
-    } else {
-      // Handle non-Axios errors
-      console.log(error);
-      return (
-        <div>
-          <p>{error.name}</p>
-          <p>{error.message}</p>
-        </div>
-      );
-    }
-  };
 
   return (
     <section>
       <h2>Welcome to register</h2>
-      {error && showError()}
+      {error && <BackEndError inputError={error} />}
       <form>
         <label htmlFor="name">Name</label>
         <input
           type="text"
           id="name"
-          name="name" // Added name attribute
+          name="name"
           value={newUser.name}
           onChange={handleChange}
         />
@@ -142,7 +66,7 @@ export function Register() {
         <input
           type="text"
           id="email"
-          name="email" // Added name attribute
+          name="email"
           value={newUser.email}
           onChange={handleChange}
         />
@@ -150,7 +74,7 @@ export function Register() {
         <input
           type="password"
           id="password"
-          name="password" // Added name attribute
+          name="password"
           value={newUser.password}
           onChange={handleChange}
         />
@@ -158,7 +82,7 @@ export function Register() {
         <input
           type="text"
           id="id_number"
-          name="id_number" // Added name attribute
+          name="id_number"
           value={newUser.id_number}
           onChange={handleChange}
         />
@@ -166,7 +90,7 @@ export function Register() {
         <input
           type="text"
           id="phone"
-          name="phone" // Added name attribute
+          name="phone"
           value={newUser.phone}
           onChange={handleChange}
         />
