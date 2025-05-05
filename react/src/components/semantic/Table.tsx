@@ -1,19 +1,6 @@
-type Columns = {
-  path: string;
-  name: string;
-};
-interface IncomingStructureData {
-  columns: Columns[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  items: any[];
-  actions?: {
-    name: string;
-    action: (id: string) => void;
-    icon?: string;
-  }[];
-}
+import { TableInputs } from "../../types/table.types";
 
-export function Table({ columns, items, actions }: Readonly<IncomingStructureData>) {
+export function Table({ columns, items, actions }: TableInputs) {
   return (
     <table>
       <thead>
@@ -24,7 +11,7 @@ export function Table({ columns, items, actions }: Readonly<IncomingStructureDat
         </tr>
       </thead>
       <tbody>
-        {items.map((item) => (
+        {items ? items.map((item) => (
           <tr key={item.id}>
             {columns.map((column) => (
               <td key={column.path}>
@@ -42,7 +29,11 @@ export function Table({ columns, items, actions }: Readonly<IncomingStructureDat
               </td>
             ))}
           </tr>
-        ))}
+        )) :
+          <tr>
+            <td colSpan={columns.length}>No data</td>
+          </tr>
+        }
       </tbody>
     </table>
   );
