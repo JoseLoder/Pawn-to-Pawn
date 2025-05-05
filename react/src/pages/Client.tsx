@@ -2,14 +2,14 @@ import { useContext, useEffect, useState } from "react";
 import { Header } from "../components/semantic/Header"
 import { Logout } from "./home/Logout"
 import { UserContext } from "../contexts/UserContext";
-import { useNavigate } from "react-router";
+import { Outlet, useNavigate } from "react-router";
+import { Nav } from "../components/semantic/Nav";
 
 export function Client() {
-
-
     const navigate = useNavigate();
-    const [isActivated, setIsActivated] = useState(false);
     const userContextProvider = useContext(UserContext);
+    const [isActivated, setIsActivated] = useState(false);
+
     if (!userContextProvider) {
         throw new Error("UserContext must be used within a UserProvider");
     }
@@ -25,12 +25,20 @@ export function Client() {
         }
     }, []);
 
+    const linksToShow = [
+        { to: "create-order", text: "Create Order" },
+        { to: "show-order", text: "Show Order" },
+        { to: "me", text: "Profile" }
+    ];
 
-    return isActivated ?
-        (<>
-            <Header title="Hello Client" />
-            <Logout />
-        </>) : null;
-
-
+    return isActivated ? (
+        <>
+            <button onClick={() => getUserContext()}>context</button>
+            <Header title="Hello Client">
+                <Nav links={linksToShow} />
+                <Logout />
+            </Header>
+            <Outlet />
+        </>
+    ) : null;
 }
