@@ -30,7 +30,7 @@ Content-Type: application/json
 
 {
     "email": "client@example.com",
-    "password": "client123434"
+    "password": "client1234"
 }
 
 ### USER OPERATOR LOGIN (ACCESS: ALL)
