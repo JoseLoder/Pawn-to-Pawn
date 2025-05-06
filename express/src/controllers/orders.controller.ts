@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ClientError, UnauthorizedError } from "../errors/client.error";
 import { handleError } from "../errors/handleError";
 import { OrderModel } from "../models/order.model";
-import { Order, PublicCreateOrder } from "../types/orders.type";
+import { Order, OrderReturn, PublicCreateOrder } from "../types/orders.type";
 import { UserModel } from "../models/user.model";
 import { validateOrder } from "../schema/orders.schema";
 import { ProductModel } from "../models/product.model";
@@ -10,6 +10,8 @@ import { ServerError } from "../errors/server.error";
 import { ZodError } from "zod";
 import { AccessTokenEncryption } from "../types/tokens.types";
 import { PreparationOrder } from "../types/products.types";
+import { MaterialModel } from "../models/material.model";
+import { User } from "../types/users.types";
 declare global {
     namespace Express {
         interface Request {
@@ -17,7 +19,6 @@ declare global {
         }
     }
 }
-//TODO: All requests that return an order must include the name of the users involved and the name of the product.
 export const OrdersController = {
 
     // To admin actions
@@ -30,7 +31,8 @@ export const OrdersController = {
             const order = await OrderModel.getById(id)
             if (!order) throw new ClientError('This order already not exists')
 
-            res.status(200).json(order)
+            const orderReturn = await this.orderReturn(order)
+            res.status(200).json(orderReturn)
 
         } catch (e) {
             handleError(e as Error, res)
@@ -42,7 +44,9 @@ export const OrdersController = {
         try {
             const orders = await OrderModel.getAll()
             if (!orders[0]) throw new ClientError('There are not orders right now.')
-            res.status(200).json(orders)
+
+            const ordersReturn = await OrdersController.ordersReturn(orders)
+            res.status(200).json(ordersReturn)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -54,7 +58,9 @@ export const OrdersController = {
         try {
             const pending = await OrderModel.getOrderPending()
             if (!pending) throw new ClientError('There are no pending orders right now.')
-            res.status(200).json(pending)
+
+            const pendingReturn = await OrdersController.ordersReturn(pending)
+            res.status(200).json(pendingReturn)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -73,7 +79,7 @@ export const OrdersController = {
             if (!user || !order) throw new ClientError('This Operator or Order not exists')
             if (order.id_operator) throw new ClientError('This order already has an operator assigned')
             if (user.role != 'operator') throw new UnauthorizedError('This User no be Operator User')
-            //TODO: the operator only must has one order assing
+            await this.verifyOrderAssing(user);
             const updated: Order = {
                 ...order,
                 id_operator: user.id,
@@ -84,7 +90,8 @@ export const OrdersController = {
             const idUpdated = await OrderModel.update(id, updated)
             const orderUpdated = await OrderModel.getById(idUpdated)
 
-            res.status(200).json(orderUpdated)
+            const orderReturn = await this.orderReturn(orderUpdated)
+            res.status(200).json(orderReturn)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -127,7 +134,10 @@ export const OrdersController = {
             }
             const idUpdated = await OrderModel.update(id, updated)
             const orderUpdated = await OrderModel.getById(idUpdated)
-            res.status(200).json(orderUpdated)
+
+
+            const orderReturn = await this.orderReturn(orderUpdated)
+            res.status(200).json(orderReturn)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -143,7 +153,10 @@ export const OrdersController = {
             if (operator.role != 'operator') throw new ClientError('This user must be Operator User')
             const orders = await OrderModel.getByOperator(operator.id)
             if (!orders) throw new ClientError('Not exists order by this operator')
-            res.status(200).json(orders)
+
+
+            const ordersReturn = await OrdersController.ordersReturn(orders)
+            res.status(200).json(ordersReturn)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -163,7 +176,9 @@ export const OrdersController = {
             }
             const idUpdated = await OrderModel.update(id, updated)
             const orderUpdated = await OrderModel.getById(idUpdated)
-            res.status(200).json(orderUpdated)
+
+            const orderReturn = await this.orderReturn(orderUpdated)
+            res.status(200).json(orderReturn)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -181,7 +196,9 @@ export const OrdersController = {
             if (!order) throw new ClientError('Order does not exist')
             if (order.id_client !== id_user) throw new ClientError('The order must be yours')
 
-            res.status(200).json(order)
+
+            const orderReturn = await OrdersController.orderReturn(order)
+            res.status(200).json(orderReturn)
 
         } catch (e) {
             handleError(e as Error, res)
@@ -197,7 +214,9 @@ export const OrdersController = {
             const orders = await OrderModel.getByClient(id_user)
             if (!orders) throw new ClientError('User does not exist')
 
-            res.status(200).json(orders)
+            const ordersReturn = await OrdersController.ordersReturn(orders)
+
+            res.status(200).json(ordersReturn)
 
         } catch (e) {
             handleError(e as Error, res)
@@ -233,11 +252,58 @@ export const OrdersController = {
             const createdOrder = await OrderModel.getById(createdId)
             if (!createdOrder) throw new ServerError('The order was not found after creation')
 
-            res.status(201).json(createdOrder)
+
+            const orderReturn = await this.orderReturn(createdOrder)
+            res.status(201).json(orderReturn)
         } catch (e) {
             handleError(e as Error, res)
         }
     },
+
+    // SERVICES FUNCTION
+
+    // All requests that return an order must include the name of the users involved and the name of the product.
+    async orderReturn(order: Order): Promise<OrderReturn> {
+
+        const product = await ProductModel.getById(order.id_product)
+        if (!product) throw new ClientError('The product not exists')
+        const material = await MaterialModel.getById(product.id_material)
+        if (!material) throw new ClientError('The material not exists')
+        const client = await UserModel.getById(order.id_client)
+        if (!client) throw new ClientError('The client not exists')
+        const operator = order.id_operator ? await UserModel.getById(order.id_operator) : null
+
+        const orderReturn: OrderReturn = {
+            ...order,
+            product_name: material.type,
+            client_name: client?.name || 'Unknown Client', // Use optional chaining and a default value
+            operator_name: operator?.name || null // Use optional chaining and a default value
+        }
+
+        return orderReturn
+    },
+
+    async ordersReturn(orders: Order[]): Promise<OrderReturn[]> {
+        return await Promise.all(
+            orders.map(async (order) => {
+                return await OrdersController.orderReturn(order);
+            })
+        );
+    },
+    // The operator only must has one order assing
+    async verifyOrderAssing(user: User): Promise<void> {
+
+        const orders = await OrderModel.getByOperator(user.id)
+        orders.forEach(order => {
+            if (order.status === 'inProgress') {
+                throw new ClientError('The operator only must has one order assing')
+            }
+        })
+
+    },
+
+    // DEPRECATED FUNCTION
+
     /* 
         async getByClient(req: Request, res: Response) {
             try {
