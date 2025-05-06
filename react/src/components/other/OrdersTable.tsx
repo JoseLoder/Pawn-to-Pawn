@@ -71,7 +71,6 @@ export function OrdersTable({ tableFor }: { tableFor: TableFor }) {
             setError(error);
         },
         onSuccess: (response) => {
-            console.log(response.data);
             setItems(response.data);
         }
     })

@@ -42,13 +42,12 @@ export const UserContextProvider: React.FC<UserContextProps> = ({ children }) =>
         const parsedUser = userStorage ? JSON.parse(userStorage) : null;
 
         if (user) { //This.user 
-            console.log("usuario del contexto", user);
+
             return user;
         }
         else if (parsedUser) { //LocalStorage User
             /* loginMutation.mutate(parsedUser) */
             setUser(parsedUser)
-            console.log("usuario del Storage", parsedUser);
             return parsedUser;
         }
         return null
