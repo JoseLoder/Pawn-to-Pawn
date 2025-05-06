@@ -13,7 +13,7 @@ import { AddClient } from './pages/profesional/AddClient'
 import { EditClient } from './pages/profesional/EditClient'
 import { Admin } from './pages/Admin'
 import { UserContext } from './contexts/UserContext'
-import { useContext } from 'react'
+import { JSX, useContext, useEffect, useState } from 'react'
 
 const RouterMap = {
   "client":
@@ -41,8 +41,21 @@ function App() {
   }
   const { getUserContext } = userContextProvider;
 
-  const userAlreadyLogged = getUserContext()
-  const role = userAlreadyLogged?.role
+  const [role, setRole] = useState<string | null>(null);
+  useEffect(() => {
+    const userAlreadyLogged = getUserContext()
+    if (userAlreadyLogged) {
+      setRole(userAlreadyLogged.role)
+    }
+  }, [])
+
+  const showRoute = (role: string | null): JSX.Element | null => {
+    if (role === "client" || role === "operator" || role === "admin") {
+      return RouterMap[role]
+    }
+    return null
+  }
+
 
   return (
     <Routes>
@@ -50,7 +63,7 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
       </Route>
-      {role && RouterMap[role]}
+      {role ? showRoute(role) : null}
       <Route path="*" element={<ErrorPage />} />
     </Routes>
   )
