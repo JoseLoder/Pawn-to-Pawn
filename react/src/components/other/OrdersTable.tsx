@@ -9,17 +9,17 @@ import { BackEndError } from "../../errors/BackEndError";
 const columns = [
     {
         id: "id_client",
-        path: "name_client", //TODO: it needs to be returned by the API
+        path: "client_name", //TODO: it needs to be returned by the API
         name: "Client"
     },
     {
         id: "id_product",
-        path: "name_product", //TODO: it needs to be returned by the API
+        path: "product_name", //TODO: it needs to be returned by the API
         name: "Product"
     },
     {
         id: "id_operator",
-        path: "name_operator", //TODO: it needs to be returned by the API
+        path: "operator_name", //TODO: it needs to be returned by the API
         name: "Proffessional"
     },
     {
@@ -34,15 +34,15 @@ const columns = [
         name: "Status"
     },
     {
-        path: "createdAt",
+        path: "created_at",
         name: "Created At"
     },
     {
-        path: "processingAt",
+        path: "processing_at",
         name: "Processing At"
     },
     {
-        path: "completedAt",
+        path: "completed_at",
         name: "Completed At"
 
     }
