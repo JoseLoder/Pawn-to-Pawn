@@ -68,7 +68,7 @@ sql = `
     id_material UUID NOT NULL,
     base TEXT NOT NULL,
     cover TEXT NOT NULL,
-    lenght REAL NOT NULL,
+    length REAL NOT NULL,
     estimated_time TIMESTAMP,
     estimated_weight REAL,
     widht REAL,
