@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API } from "../config";
-import { CreateOrder } from "../types/orders.type";
+import { PublicCreateOrder } from "../types/orders.type";
 
 const ordersApi = axios.create({
     baseURL: API + '/orders',
@@ -8,7 +8,7 @@ const ordersApi = axios.create({
 })
 
 // CREATE ORDERS (ACCESS: CLIENTS | OPERATORS | ADMIN)
-export const createOrder = (order: CreateOrder) => {
+export const createOrder = (order: PublicCreateOrder) => {
     return ordersApi.post('', order)
 }
 

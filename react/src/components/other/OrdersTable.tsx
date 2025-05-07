@@ -9,17 +9,17 @@ import { BackEndError } from "../../errors/BackEndError";
 const columns = [
     {
         id: "id_client",
-        path: "client_name", //TODO: it needs to be returned by the API
+        path: "client_name",
         name: "Client"
     },
     {
         id: "id_product",
-        path: "product_name", //TODO: it needs to be returned by the API
+        path: "product_name",
         name: "Product"
     },
     {
         id: "id_operator",
-        path: "operator_name", //TODO: it needs to be returned by the API
+        path: "operator_name",
         name: "Proffessional"
     },
     {

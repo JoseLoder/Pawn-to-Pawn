@@ -96,7 +96,7 @@ export function Register() {
           onChange={handleChange}
         />
         <button onClick={handleSubmit}>
-          {loading ? "Cargando..." : "Register"}
+          {loading ? "Loaging.." : "Register"}
         </button>
       </form>
     </section>
