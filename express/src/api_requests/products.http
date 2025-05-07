@@ -9,10 +9,10 @@ POST http://localhost:3000/products/
 Content-Type: application/json
 
 {
-    "base": "cardboard",
-    "cover": "white",
-    "id_machine": "d7f8d633-20d0-4c87-9b13-cd6df0f64ecf",
-    "id_material": "16057750-5564-443a-b6f3-723dbb8cb942",
+    "base": "iron",
+    "cover": "black",
+    "id_machine": "3a5876ec-57fc-476e-9e73-d144947a0f0f",
+    "id_material": "2182cd23-6133-4152-ab46-3b5f59bfb30d",
     "length": 100,
     "widht":1500
 }

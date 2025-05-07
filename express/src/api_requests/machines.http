@@ -2,7 +2,7 @@
 GET http://localhost:3000/machines/
 
 ### GET MACHINE BY ID (ACCESS: CLIENTS | OPERATORS | ADMIN)
-GET http://localhost:3000/machines/d7f8d633-20d0-4c87-9b13-cd6df0f64ecf
+GET http://localhost:3000/machines/3a5876ec-57fc-476e-9e73-d144947a0f0f
 
 ### CREATE MACHINES (ACCESS: ONLY ADMIN)
 POST http://localhost:3000/machines/

@@ -71,7 +71,7 @@ GET http://localhost:3000/users/operators
 
 
 ### ASCEND USER CLIENT TO OPERATOR (ACCESS: ONLY ADMIN)
-PATCH http://localhost:3000/users/2d44410a-ae35-496d-9ac9-ebedd73cd2b8
+PATCH http://localhost:3000/users/eb49988e-bb23-49a3-9416-df536e680f22
 
 
 

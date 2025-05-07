@@ -62,7 +62,7 @@ export const ProductModel = {
                 id_material, 
                 base, 
                 cover, 
-                lenght,
+                length,
                 estimated_time,
                 estimated_weight,
                 widht,
