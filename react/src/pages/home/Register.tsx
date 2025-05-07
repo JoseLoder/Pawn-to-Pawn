@@ -26,6 +26,7 @@ export function Register() {
       setError(null);
     },
     onSuccess: () => {
+      setLoading(false)
       alert("User created, will be redirected to login");
       navigate("/login");
     },
