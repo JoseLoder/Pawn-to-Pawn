@@ -25,3 +25,7 @@ export type PreparationOrder = {
 
 
 export type CreateProduct = Pick<Product, 'id_machine' | 'base' | 'cover' | 'id_material' | 'length' | 'widht'>
+
+export type ProductReturn = Product & {
+    product_name: string
+}

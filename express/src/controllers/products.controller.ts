@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { handleError } from "../errors/handleError";
 import { ProductModel } from "../models/product.model";
 import { ClientError } from "../errors/client.error";
-import { CreateProduct, Product } from "../types/products.types";
+import { CreateProduct, Product, ProductReturn } from "../types/products.types";
 import { validateProduct } from "../schema/products.schema";
 import { ZodError } from "zod";
 import { MaterialModel } from "../models/material.model";
@@ -17,7 +17,9 @@ export const ProductsController = {
             if (!products) {
                 throw new ClientError('Products does not exists')
             }
-            res.status(200).json({ success: true, products })
+
+            const productsReturn = await ProductsController.productsReturn(products)
+            res.status(200).json(productsReturn)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -30,7 +32,9 @@ export const ProductsController = {
 
             const product = await ProductModel.getById(id)
             if (!product) throw new ClientError(`The product by this id ${id} not exists`)
-            res.status(200).json({ success: true, product })
+
+            const productReturn = await ProductsController.productReturn(product)
+            res.status(200).json(productReturn)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -42,7 +46,9 @@ export const ProductsController = {
             if (!id_material) throw new ClientError('The id_material must be correct')
             const products = await ProductModel.getByMaterial(id_material)
             if (!products) throw new ClientError('Products does not exists')
-            res.status(200).json({ success: true, products })
+
+            const productsReturn = await ProductsController.productsReturn(products)
+            res.status(200).json(productsReturn)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -127,9 +133,35 @@ export const ProductsController = {
                 throw new ServerError('The product was not found after creation.')
             }
 
-            res.status(201).json({ success: true, createdProduct })
+            const productReturn = await ProductsController.productReturn(createdProduct)
+            res.status(200).json(productReturn)
         } catch (e) {
             handleError(e as Error, res)
         }
+    },
+
+
+    // SERVICES FUNCTION 
+
+    productReturn: async (product: Product): Promise<ProductReturn> => {
+        const material = await MaterialModel.getById(product.id_material)
+        if (!material) throw new ClientError('The material not exists')
+
+        const productReturn = {
+            ...product,
+            product_name: material.type
+        } as ProductReturn
+
+        return productReturn;
+    },
+
+    productsReturn: async (products: Product[]): Promise<ProductReturn[]> => {
+
+        return await Promise.all(
+            products.map(async (product) => {
+                return await ProductsController.productReturn(product)
+            })
+        )
+
     }
 }
