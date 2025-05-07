@@ -226,8 +226,11 @@ export const OrdersController = {
 
     async create(req: Request, res: Response) {
         try {
-            const { id_client, id_product, quantity } = req.body as PublicCreateOrder
-            const validated = await validateOrder(id_client, id_product, quantity)
+            const { id_product, quantity } = req.body as PublicCreateOrder
+            if (!req.session?.userSession) throw new ClientError('User does not login')
+            const id_user = req.session.userSession.id_user
+            if (!id_user) throw new ClientError('User does not login')
+            const validated = await validateOrder(id_user, id_product, quantity)
             if (!validated.success || !validated.data) {
                 if (validated.error instanceof ZodError) {
                     throw validated.error
@@ -239,21 +242,21 @@ export const OrdersController = {
             if (!product) throw new ClientError('The product not exists')
 
             //Get client
-            const client = await UserModel.getById(id_client)
+            const client = await UserModel.getById(id_user)
             if (!client) throw new ClientError('The client not exists')
 
             //Calculate price
             const price = quantity * product.price
 
             const id = crypto.randomUUID()
-            const createdId = await OrderModel.create(id, { id_client, id_product, quantity, createdAt: Date.now().toString(), status: 'eraser', price })
+            const createdId = await OrderModel.create(id, { id_client: id_user, id_product, quantity, createdAt: Date.now().toString(), status: 'eraser', price })
             if (!createdId) throw new ServerError('Finally could not been created order')
 
             const createdOrder = await OrderModel.getById(createdId)
             if (!createdOrder) throw new ServerError('The order was not found after creation')
 
 
-            const orderReturn = await this.orderReturn(createdOrder)
+            const orderReturn = await OrdersController.orderReturn(createdOrder)
             res.status(201).json(orderReturn)
         } catch (e) {
             handleError(e as Error, res)
