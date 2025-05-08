@@ -77,14 +77,16 @@ export function OrdersTable({ tableFor, actions }: { tableFor: TableFor, actions
 
     useEffect(() => {
         getOrderMutation.mutate()
-
+        if (columns.find(column => column.path === 'actions')) {
+            return
+        }
         if (actions && actions[0]) {
             columns.push({
                 path: 'actions',
                 name: 'Actions'
             })
         }
-    }, [tableFor])
+    }, [])
 
 
 
