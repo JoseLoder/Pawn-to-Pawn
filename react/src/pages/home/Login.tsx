@@ -44,7 +44,7 @@ export function Login() {
     onSuccess: (data) => {
       console.log(data.data)
       setUserContext(data.data as PublicUser)
-      navigate('/login')
+      navigate('/home')
     },
     onError: (e) => {
       setLoading(false);
