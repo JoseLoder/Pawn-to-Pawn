@@ -44,12 +44,12 @@ export const getPendingOrders = () => {
 
 // SET ORDER TO OPERATOR (ACCESS: OPERATOR)
 export const setOrderToOperator = (id: string) => {
-    return ordersApi.get(`/set/operator/${id}`)
+    return ordersApi.patch(`/set/operator/${id}`)
 }
 
 // GET PREPARATION ORDER (ACCESS: OPERATOR | ADMIN)
-export const getPreparationOrder = (id: string) => {
-    return ordersApi.get(`/preparation/${id}`)
+export const getPreparationOrder = () => {
+    return ordersApi.get(`/preparation`)
 }
 
 // GET ORDERS TO OPERATOR (ACCESS: OPERATOR | ADMIN)
