@@ -14,16 +14,16 @@ GET http://localhost:3000/orders/all/me
 GET http://localhost:3000/orders/me/5fee4086-fa0a-4518-9ca9-56d3bb8739be
 
 ### SET PENDING ORDER (ACCESS: CLIENT | OPERATOR | ADMIN)
-PATCH http://localhost:3000/orders/set/pending/5fee4086-fa0a-4518-9ca9-56d3bb8739be
+PATCH http://localhost:3000/orders/set/pending/efd0c940-bd75-4807-8941-2bf3be8ccf1f
 
 ### GET PENDING ORDER (ACCESS: OPERATOR | ADMIN)
 GET http://localhost:3000/orders/pending
 
 ### SET ORDER TO OPERATOR (ACCESS: OPERATOR)
-GET http://localhost:3000/orders/set/operator/5fee4086-fa0a-4518-9ca9-56d3bb8739be
+PATCH http://localhost:3000/orders/set/operator/efd0c940-bd75-4807-8941-2bf3be8ccf1f
 
 ### GET PREPARATION ORDER (ACCESS: OPERATOR | ADMIN)
-GET http://localhost:3000/orders/preparation/5fee4086-fa0a-4518-9ca9-56d3bb8739be
+GET http://localhost:3000/orders/preparation/efd0c940-bd75-4807-8941-2bf3be8ccf1f
 
 ### GET ORDERS TO OPERATOR (ACCESS: OPERATOR | ADMIN)
 GET http://localhost:3000/orders/operator/orders/2d44410a-ae35-496d-9ac9-ebedd73cd2b8

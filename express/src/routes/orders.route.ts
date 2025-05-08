@@ -19,7 +19,7 @@ OrdersRouter.patch("/set/pending/:id", OrdersController.setPending)
 // Routes for operators
 OrdersRouter.use(authOperator)
 OrdersRouter.get("/pending", OrdersController.getPending)
-OrdersRouter.get("/preparation/:id", OrdersController.getPreparation)
+OrdersRouter.get("/preparation", OrdersController.getPreparation)
 OrdersRouter.get("/operator/orders/:id", OrdersController.getByOperator)
 OrdersRouter.patch("/set/operator/:id", OrdersController.setOperator)
 OrdersRouter.patch("/set/complete/:id", OrdersController.setComplete)

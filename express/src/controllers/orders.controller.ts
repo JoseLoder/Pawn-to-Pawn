@@ -78,8 +78,8 @@ export const OrdersController = {
             const order = await OrderModel.getById(id)
             if (!user || !order) throw new ClientError('This Operator or Order not exists')
             if (order.id_operator) throw new ClientError('This order already has an operator assigned')
-            if (user.role != 'operator') throw new UnauthorizedError('This User no be Operator User')
-            await this.verifyOrderAssing(user);
+            if (user.role != 'operator') throw new UnauthorizedError('This User not be Operator User')
+            await OrdersController.verifyOrderAssing(user);
             const updated: Order = {
                 ...order,
                 id_operator: user.id,
@@ -90,7 +90,7 @@ export const OrdersController = {
             const idUpdated = await OrderModel.update(id, updated)
             const orderUpdated = await OrderModel.getById(idUpdated)
 
-            const orderReturn = await this.orderReturn(orderUpdated)
+            const orderReturn = await OrdersController.orderReturn(orderUpdated)
             res.status(200).json(orderReturn)
         } catch (e) {
             handleError(e as Error, res)
@@ -99,8 +99,14 @@ export const OrdersController = {
 
     async getPreparation(req: Request, res: Response) {
         try {
-            const { id } = req.params
-            const order = await OrderModel.getById(id)
+            if (!req.session?.userSession) throw new ClientError('User does not login')
+            const id_user = req.session.userSession.id_user
+            if (!id_user) throw new ClientError('The id must be correct')
+            const orders = await OrderModel.getByOperator(id_user)
+
+            const order = orders.find(order => order.status === 'inProgress')
+            if (!order) throw new ClientError('The operator has not been assigned any order')
+
             const product = await ProductModel.getById(order.id_product)
 
             const preparation: PreparationOrder = {
