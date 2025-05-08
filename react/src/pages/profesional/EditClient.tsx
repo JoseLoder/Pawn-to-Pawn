@@ -1,3 +1,5 @@
+// DEPRECATED
+
 import { useContext, useEffect } from "react";
 import { AxiosError } from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
