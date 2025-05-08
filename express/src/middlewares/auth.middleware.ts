@@ -53,7 +53,6 @@ export function authOperator(req: Request, res: Response, next: NextFunction) {
         ) {
             throw new UnauthorizedError(`Unauthorized access as a operator`)
         }
-        console.log(req.session.userSession.role)
         next()
     } catch (e) {
         handleError(e as Error, res)
@@ -71,14 +70,3 @@ export function authAdmin(req: Request, res: Response, next: NextFunction) {
         handleError(e as Error, res)
     }
 }
-// Auth Role (impossible)
-/* export function authByRole(req: Request, res: Response, next: NextFunction, role: RoleUser) {
-    try {
-        if (!req.session?.userSession || req.session.userSession.role !== role) {
-            throw new UnauthorizedError(`Unauthorized access as a ${role}`)
-        }
-        next()
-    } catch (e) {
-        handleError(e as Error, res)
-    }
-} */

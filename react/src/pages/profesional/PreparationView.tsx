@@ -42,10 +42,10 @@ export function PreparationView() {
                         <li>Amount base: {order.amount_base}</li>
                         <li>Cover: {order.cover}</li>
                         <li>Amount cover: {order.amount_cover}</li>
-                        <li>Estimated time product: {order.estimated_time_product} </li>
-                        <li>Estimated time order: {order.estimated_time_order}</li>
-                        <li>Estimated weight product: {order.estimated_weight_product}</li>
-                        <li>Estimated weight order: {order.estimated_weight_order}</li>
+                        <li>Estimated time product: {order.estimated_time_product} minutes </li>
+                        <li>Estimated time order: {order.estimated_time_order} minutes</li>
+                        <li>Estimated weight product: {order.estimated_weight_product / 1000} Kg</li>
+                        <li>Estimated weight order: {order.estimated_weight_order / 1000} Kg</li>
                     </ul>
                 }
             </section>

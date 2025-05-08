@@ -27,7 +27,7 @@ export function Client() {
 
     const linksToShow = [
         { to: "create-order", text: "Create Order" },
-        { to: "show-order", text: "Show Order" },
+        { to: "show-orders", text: "Show Order" },
         { to: "me", text: "Profile" }
     ];
 

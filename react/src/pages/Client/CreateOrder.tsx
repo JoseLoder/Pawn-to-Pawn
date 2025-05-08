@@ -32,8 +32,7 @@ export function CreateOrder() {
         onSuccess: () => {
             setLoading(false)
             alert("Order created, got to show order page");
-            // TODO: navigate must be redirect by role.
-            navigate('clients/show-order')
+            navigate('/client/show-orders')
         },
         onError: (e) => {
             setLoading(false)
@@ -59,8 +58,11 @@ export function CreateOrder() {
     const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedProduct = products?.find(product => product.id === e.target.value)
         if (selectedProduct) {
-            console.log(selectedProduct)
             setProduct(selectedProduct)
+            setNewOrder((prevNewOrder) => ({
+                ...prevNewOrder,
+                id_product: selectedProduct.id
+            }))
         }
     }
 
@@ -74,10 +76,6 @@ export function CreateOrder() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        product && setNewOrder((prevNewOrder) => ({
-            ...prevNewOrder,
-            id_product: product.id
-        }))
         createOrderMutation.mutate(newOrder)
     }
 

@@ -175,7 +175,7 @@ export const OrdersController = {
             if (!id) throw new ClientError('The order id must be correct')
             const order = await OrderModel.getById(id)
             if (!order) throw new ClientError('This order not exists')
-            if (order.status != 'eraser') throw new ClientError('The order must be eraser before to be completed')
+            if (order.status != 'eraser') throw new ClientError('The order must first be a draft to be manufactured.')
             const updated: Order = {
                 ...order,
                 status: 'inHold'
@@ -183,7 +183,7 @@ export const OrdersController = {
             const idUpdated = await OrderModel.update(id, updated)
             const orderUpdated = await OrderModel.getById(idUpdated)
 
-            const orderReturn = await this.orderReturn(orderUpdated)
+            const orderReturn = await OrdersController.orderReturn(orderUpdated)
             res.status(200).json(orderReturn)
         } catch (e) {
             handleError(e as Error, res)

@@ -5,9 +5,8 @@ import { Register } from './pages/home/Register'
 import ErrorPage from './pages/ErrorPage'
 import { Client } from './pages/Client'
 import { CreateOrder } from './pages/Client/CreateOrder'
-import { Profile } from './pages/Client/Profile'
+import { Profile } from './components/semantic/Profile'
 import { Professional } from './pages/Professional'
-import { AddClient } from './pages/profesional/AddClient'
 import { Admin } from './pages/Admin'
 import { UserContext } from './contexts/UserContext'
 import { JSX, useContext, useEffect, useState } from 'react'
@@ -19,15 +18,15 @@ const RouterMap = {
   "client":
     <Route path="client" element={<Client />}>
       <Route path="create-order" element={<CreateOrder />} />
-      <Route path="show-order" element={<ShowClientOrders />} />
+      <Route path="show-orders" element={<ShowClientOrders />} />
       <Route path="me" element={<Profile />} />
     </Route>
   ,
   "operator":
     <Route path="professional" element={<Professional />}>
-      <Route path="show-client" element={<ShowOperatorOrders />} />
-      <Route path="add-client" element={<AddClient />} />
+      <Route path="show-orders" element={<ShowOperatorOrders />} />
       <Route path="preparation" element={<PreparationView />} />
+      <Route path="me" element={<Profile />} />
     </Route>,
   "admin":
     <Route path="admin" element={<Admin />}>

@@ -27,9 +27,9 @@ export function Professional() {
   }, []);
 
   const linksToShow = [
-    { to: "add-client", text: "Add Client" },
-    { to: "show-client", text: "Show Client" },
+    { to: "show-orders", text: "Show Orders" },
     { to: "preparation", text: "Order Preparation" },
+    { to: "me", text: "Profile" },
   ];
 
   return isActivated ? (
