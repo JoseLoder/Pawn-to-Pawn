@@ -1,6 +1,5 @@
 import { Header } from "../components/semantic/Header";
 import { Nav } from "../components/semantic/Nav";
-import { ProfesionalContextProvider } from "../contexts/ProfessionalContextProvider";
 import { Logout } from "./home/Logout";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/UserContext";
@@ -30,19 +29,17 @@ export function Professional() {
   const linksToShow = [
     { to: "add-client", text: "Add Client" },
     { to: "show-client", text: "Show Client" },
-    { to: "edit-client", text: "Edit Client" },
+    { to: "preparation", text: "Order Preparation" },
   ];
 
   return isActivated ? (
     <>
       <button onClick={() => getUserContext()}>context</button>
-      <Header title="Hello Profesional">
+      <Header title="Hello Professional">
         <Nav links={linksToShow} />
         <Logout />
       </Header>
-      <ProfesionalContextProvider>
-        <Outlet />
-      </ProfesionalContextProvider>
+      <Outlet />
     </>
   ) : null;
 }

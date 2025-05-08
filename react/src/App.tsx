@@ -5,29 +5,29 @@ import { Register } from './pages/home/Register'
 import ErrorPage from './pages/ErrorPage'
 import { Client } from './pages/Client'
 import { CreateOrder } from './pages/Client/CreateOrder'
-import { ShowOrders } from './pages/Client/ShowOrders'
 import { Profile } from './pages/Client/Profile'
 import { Professional } from './pages/Professional'
-import { ShowClient } from './pages/profesional/ShowClient'
 import { AddClient } from './pages/profesional/AddClient'
-import { EditClient } from './pages/profesional/EditClient'
 import { Admin } from './pages/Admin'
 import { UserContext } from './contexts/UserContext'
 import { JSX, useContext, useEffect, useState } from 'react'
+import { ShowOperatorOrders } from './pages/profesional/ShowOperatorOrders'
+import { ShowClientOrders } from './pages/Client/ShowClientOrders'
+import { PreparationView } from './pages/profesional/PreparationView'
 
 const RouterMap = {
   "client":
     <Route path="client" element={<Client />}>
       <Route path="create-order" element={<CreateOrder />} />
-      <Route path="show-order" element={<ShowOrders />} />
+      <Route path="show-order" element={<ShowClientOrders />} />
       <Route path="me" element={<Profile />} />
     </Route>
   ,
   "operator":
     <Route path="professional" element={<Professional />}>
-      <Route path="show-client" element={<ShowClient />} />
+      <Route path="show-client" element={<ShowOperatorOrders />} />
       <Route path="add-client" element={<AddClient />} />
-      <Route path="edit-client/" element={<EditClient />} />
+      <Route path="preparation" element={<PreparationView />} />
     </Route>,
   "admin":
     <Route path="admin" element={<Admin />}>
