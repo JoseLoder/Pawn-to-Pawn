@@ -3,7 +3,7 @@ import { Order } from "../../types/orders.type";
 import { Table } from "../semantic/Table";
 import { getMyOrders, getOrders, getPendingOrders } from "../../api/orders.api";
 import { useMutation } from "@tanstack/react-query";
-import { Columns, Items, TableFor } from "../../types/table.types";
+import { Actions, Columns, Items, TableFor } from "../../types/table.types";
 import { BackEndError } from "../../errors/BackEndError";
 
 const columns = [
@@ -48,7 +48,7 @@ const columns = [
     }
 ] as Columns[]
 
-export function OrdersTable({ tableFor }: { tableFor: TableFor }) {
+export function OrdersTable({ tableFor, actions }: { tableFor: TableFor, actions?: Actions[] }) {
 
     const [items, setItems] = useState<Order[]>();
     const [error, setError] = useState<Error | null>(null);
@@ -77,14 +77,22 @@ export function OrdersTable({ tableFor }: { tableFor: TableFor }) {
 
     useEffect(() => {
         getOrderMutation.mutate()
+
+        if (actions && actions[0]) {
+            columns.push({
+                path: 'actions',
+                name: 'Actions'
+            })
+        }
     }, [tableFor])
+
 
 
 
     return (
         <section>
             {error && <BackEndError inputError={error} />}
-            <Table columns={columns} items={items as Items[]}></Table>
+            <Table columns={columns} items={items as Items[]} actions={actions}></Table>
         </section>
     )
 } 
