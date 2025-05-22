@@ -13,6 +13,7 @@ export type Product = {
     price: number
 }
 export type PreparationOrder = {
+    id: string,
     cover: Covers,
     amount_cover: number,
     base: Bases,

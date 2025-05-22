@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { BackEndError } from "../../errors/BackEndError";
 import { PreparationOrder } from "../../types/products.types";
 import { useMutation } from "@tanstack/react-query";
-import { getPreparationOrder } from "../../api/orders.api";
+import { getPreparationOrder, setCompleteOrder } from "../../api/orders.api";
 
 export function PreparationView() {
 
@@ -18,7 +18,23 @@ export function PreparationView() {
         },
         onSuccess: (response) => {
             setOrder(response.data)
+            console.log(response.data)
             setLoading(false)
+        },
+        onError: (error) => {
+            setError(error)
+            setLoading(false)
+        }
+    })
+    const setCompleteOrderMutation = useMutation({
+        mutationKey: ['Get Preparation'],
+        mutationFn: setCompleteOrder,
+        onMutate: () => {
+            setLoading(true)
+        },
+        onSuccess: () => {
+            setLoading(false)
+            alert('Order Complete, go to get new orders')
         },
         onError: (error) => {
             setError(error)
@@ -29,6 +45,7 @@ export function PreparationView() {
     useEffect(() => {
         getPreparationOrderMutation.mutate()
     }, [])
+
 
     return (
         <main>
@@ -48,6 +65,11 @@ export function PreparationView() {
                         <li>Estimated weight order: {order.estimated_weight_order / 1000} Kg</li>
                     </ul>
                 }
+                {order && 
+                    <button onClick={() => {setCompleteOrderMutation.mutate(order.id)
+                    }}>
+                    Set complete
+                </button>}
             </section>
         </main>
     )
