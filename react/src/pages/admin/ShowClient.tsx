@@ -1,15 +1,13 @@
 //DEPRECATED
 
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 
 import { ClientsTable } from "../../components/other/ClientsTable";
-import { getClients } from "../../api/clients";
-import { useEffect } from "react";
-import { AxiosError } from "axios";
+import { getUsers } from "../../api/users.api";
+import { BackEndError } from "../../errors/BackEndError";
 
 export function ShowClient() {
-  const navigate = useNavigate();
 
   const {
     data: clients,
@@ -18,11 +16,11 @@ export function ShowClient() {
     error,
   } = useQuery({
     queryKey: ["clients"],
-    queryFn: getClients,
+    queryFn: getUsers,
     retry: false
   });
 
-  useEffect(() => {
+/*   useEffect(() => {
     //lanzamos un efecto cuando la variable isError cambia para redirigir al login
     if (isError) {
       if (error.name == "AxiosError") {
@@ -37,27 +35,20 @@ export function ShowClient() {
         }
       }
     }
-  }, [isError]);
+  }, [isError]); */
 
   return (
     <>
-      <button>
-        <Link to="/professional">Back</Link>
-      </button>
       {isLoading ? (
         <div>Loading...</div>
+      ) : isError ? (
+        <BackEndError inputError={error} />
       ) : (
-        <>
-          {isError ? (
-            <h1>Something has gone wrong</h1>
-          ) : (
-            <section>
-              <h3>Clients table</h3>
-              <div>Result {clients?.data.length} clients</div>
-              <ClientsTable clients={clients?.data} />
-            </section>
-          )}
-        </>
+        <section>
+          <h3>Clients table</h3>
+          <div>Result {clients?.data?.length ?? 0} clients</div>
+          <ClientsTable clients={clients?.data || []} />
+        </section>
       )}
     </>
   );

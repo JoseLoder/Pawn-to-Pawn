@@ -1,11 +1,9 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Client } from "../../types/Clients";
 import { Table } from "../semantic/Table";
-
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { getClientsById, removeClient } from "../../api/clients";
-import { useNavigate } from "react-router";
-import { useCallback, useContext } from "react";
-import { ProfessionalContext } from "../../contexts/ProfessionalContext";
+import { ascendUserToOperator } from "../../api/users.api";
+import { useState } from "react";
+import { BackEndError } from "../../errors/BackEndError";
 
 const columns = [
   {
@@ -21,13 +19,17 @@ const columns = [
     name: "Phone",
   },
   {
+    path: "role",
+    name: "Role",
+  },
+  {
     path: "actions",
     name: "Actions",
   },
 ];
 
 export function ClientsTable({ clients }: Readonly<{ clients: Client[] }>) {
-  // Remove client
+/*   // Remove client
   const queryClient = useQueryClient();
 
   const deleteClientMutation = useMutation({
@@ -89,6 +91,37 @@ export function ClientsTable({ clients }: Readonly<{ clients: Client[] }>) {
       },
     },
   ];
+ */
 
-  return <Table columns={columns} items={clients} actions={actions} />;
+  const [error, setError] = useState<Error | null>(null)
+  const QueryClient = useQueryClient()
+  const ascendUserToOperatorMutation = useMutation({
+    mutationKey: ["Ascend User"],
+    mutationFn: ascendUserToOperator,
+    onError: (error) => {
+      setError(error)
+    },
+    onSuccess: () => {
+      QueryClient.invalidateQueries({ queryKey: ["clients"] });
+    },
+  });
+
+  const ascendUser = (id:string) => {
+    ascendUserToOperatorMutation.mutate(id)
+  }
+
+  const actions = [
+    {
+      name: "Ascend User",
+      action: (id: string) => {
+        ascendUser(id);
+      },
+    }]
+
+  return (
+    <>
+    <BackEndError inputError={error}/>
+    <Table columns={columns} items={clients} actions={actions}/>
+    </>
+  )
 }

@@ -13,6 +13,7 @@ import { JSX, useContext, useEffect, useState } from 'react'
 import { ShowOperatorOrders } from './pages/profesional/ShowOperatorOrders'
 import { ShowClientOrders } from './pages/Client/ShowClientOrders'
 import { PreparationView } from './pages/profesional/PreparationView'
+import { ShowClient } from './pages/admin/ShowClient'
 
 const RouterMap = {
   "client":
@@ -30,6 +31,8 @@ const RouterMap = {
     </Route>,
   "admin":
     <Route path="admin" element={<Admin />}>
+      <Route path="show-clients" element={<ShowClient />} />
+      <Route path="me" element={<Profile />} />
     </Route>
 }
 
