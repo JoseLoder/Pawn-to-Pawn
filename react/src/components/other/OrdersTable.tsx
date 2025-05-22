@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
-import { Order } from "../../types/orders.type";
+import { useCallback, useEffect } from "react";
 import { Table } from "../semantic/Table";
 import { getMyOrders, getOrders, getPendingOrders } from "../../api/orders.api";
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Actions, Columns, Items, TableFor } from "../../types/table.types";
 import { BackEndError } from "../../errors/BackEndError";
 
@@ -50,33 +49,29 @@ const columns = [
 
 export function OrdersTable({ tableFor, actions }: { tableFor: TableFor, actions?: Actions[] }) {
 
-    const [items, setItems] = useState<Order[]>();
-    const [error, setError] = useState<Error | null>(null);
     const requestOrders = useCallback(() => {
         if (tableFor === "operator") {
-            return getPendingOrders
+            return getPendingOrders()
         }
         if (tableFor === "client") {
-            return getMyOrders
+            return getMyOrders()
         }
         if (tableFor === "admin") {
-            return getOrders
+            return getOrders()
         }
+        // It's good practice to return a default or throw an error if tableFor is an unexpected value
+        throw new Error(`Invalid tableFor value: ${tableFor}`);
     }, [tableFor])
 
-    const getOrderMutation = useMutation({
-        mutationKey: ["Get Orders"],
-        mutationFn: requestOrders(),
-        onError: (error) => {
-            setError(error);
-        },
-        onSuccess: (response) => {
-            setItems(response.data);
-        }
-    })
+    const { data: response, error, isLoading } = useQuery({ // isLoading can be used to show a loading state
+        queryKey: ["orders", tableFor], // It's good to include dependencies like tableFor in the queryKey
+        queryFn: requestOrders,
+        // onSuccess and onError are available, but often data and error properties are sufficient
+    });
+
+    const items = response?.data;
 
     useEffect(() => {
-        getOrderMutation.mutate()
         if (columns.find(column => column.path === 'actions')) {
             return
         }
@@ -86,13 +81,13 @@ export function OrdersTable({ tableFor, actions }: { tableFor: TableFor, actions
                 name: 'Actions'
             })
         }
-    }, [])
-
-
+    }, [actions]) // actions should be a dependency if it can change and affect the columns
 
 
     return (
-        <section>
+        isLoading ? 
+            <p>Loading orders...</p> : 
+            <section>
             {error && <BackEndError inputError={error} />}
             <Table columns={columns} items={items as Items[]} actions={actions}></Table>
         </section>
