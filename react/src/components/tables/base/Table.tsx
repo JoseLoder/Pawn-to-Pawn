@@ -1,4 +1,4 @@
-import { TableInputs } from "../../types/table.types";
+import { TableInputs } from "../../../types/table.types";
 
 export function Table({ columns, items, actions }: TableInputs) {
   return (

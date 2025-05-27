@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { OrdersTable } from "../../components/other/OrdersTable";
+import { OrdersTable } from "../../components/tables/OrdersTable";
 import { Actions } from "../../types/table.types";
 import { useMutation } from "@tanstack/react-query";
 import { setPendingOrder } from "../../api/orders.api";
