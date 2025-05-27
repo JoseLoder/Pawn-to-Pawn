@@ -17,7 +17,7 @@ export const MachinesController = {
             const order = await MachineModel.getById(id)
             if (!order) throw new ClientError('This machine already not exists')
 
-            res.status(200).json({ success: true, order })
+            res.status(200).json(order)
 
         } catch (e) {
             handleError(e as Error, res)
@@ -29,7 +29,7 @@ export const MachinesController = {
         try {
             const orders = await MachineModel.getAll()
             if (!orders) throw new ClientError('There are no orders right now.')
-            res.status(200).json({ success: true, orders })
+            res.status(200).json(orders)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -52,7 +52,7 @@ export const MachinesController = {
             const createdMachine = await MachineModel.getById(machineId)
             if (!createdMachine) throw new ServerError('The machine was not found after creation.')
 
-            res.status(201).json({ success: true, createdMachine })
+            res.status(201).json(createdMachine)
         } catch (e) {
             handleError(e as Error, res)
         }

@@ -17,7 +17,7 @@ export const MaterialsController = {
             const materials = await MaterialModel.getById(id)
             if (!materials) throw new ClientError('This material already not exists')
 
-            res.status(200).json({ success: true, materials })
+            res.status(200).json(materials)
 
         } catch (e) {
             handleError(e as Error, res)
@@ -29,7 +29,7 @@ export const MaterialsController = {
         try {
             const materials = await MaterialModel.getAll()
             if (!materials) throw new ClientError('There are no orders right now.')
-            res.status(200).json({ success: true, materials })
+            res.status(200).json(materials)
         } catch (e) {
             handleError(e as Error, res)
         }
@@ -52,7 +52,7 @@ export const MaterialsController = {
             const createdMaterial = await MaterialModel.getById(materialId)
             if (!createdMaterial) throw new ServerError('The material was not found after creation.')
 
-            res.status(201).json({ success: true, createdMaterial })
+            res.status(201).json(createdMaterial)
         } catch (e) {
             handleError(e as Error, res)
         }
