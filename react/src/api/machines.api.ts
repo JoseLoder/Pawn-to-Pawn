@@ -3,7 +3,7 @@ import { CreateMachine } from "../types/machines.types";
 import { API } from "../config";
 
 const machinesApi = axios.create({
-    baseURL: API + '/materials',
+    baseURL: API + '/machines',
     withCredentials: true,
 })
 
