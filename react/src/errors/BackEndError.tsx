@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import { AxiosErrorData, AxiosValidationErrorData, CustomAxiosError } from "../types/errors/axios.type";
 import { UnexpectedError, UnexpectedResponseError } from "../types/errors/unexpected.type";
 import { useEffect, useState } from "react";
+import styled from '@emotion/styled'
 export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
 
     const [errorMessage, setErrorMessage] = useState<AxiosValidationErrorData | AxiosErrorData | null>(null)
@@ -50,7 +51,7 @@ export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
         if (!errorMessage) return;
         if (errorMessage.name === "ValidationError") {
             const error = errorMessage as AxiosValidationErrorData;
-            return <div>
+            return <Error>
                 <p>{error.name}</p>
                 <ul>
                     {error.errors.map((error, index) => (
@@ -59,29 +60,29 @@ export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
                         </li>
                     ))}
                 </ul>
-            </div>
+            </Error>
         }
         if (errorMessage.name === "ClientError" || errorMessage.name === "ServerError" || errorMessage.name === "NetworkError") {
             const error = errorMessage as AxiosErrorData;
-            return <div>
+            return <Error>
                 <p>{error.name}</p>
                 <p>{error.message}</p>
-            </div>;
+            </Error>;
         }
         if (errorMessage.name === "UnexpectedResponseError") {
             const error = errorMessage as UnexpectedResponseError;
             console.log(error.response)
-            return <div>
+            return <Error>
                 <p>{error.name}</p>
                 <p>{error.message}</p>
-            </div>
+            </Error>
         }
         if (errorMessage.name === "UnexpectedError") {
             const error = errorMessage as UnexpectedError;
-            return <div>
+            return <Error>
                 <p>{error.name}</p>
                 <p>{error.message}</p>
-            </div>
+            </Error>
         }
         else {
             return <p>Something went wrong</p>;
@@ -91,3 +92,11 @@ export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
     return (showError());
 
 }
+
+const Error = styled.div`
+font-weight: bold;
+color: #9b0000;
+background-color: #bfbfbf;
+border-radius: 15px;
+padding: 10px
+`
