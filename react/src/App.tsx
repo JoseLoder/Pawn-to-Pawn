@@ -14,6 +14,8 @@ import { ShowOperatorOrders } from './pages/profesional/ShowOperatorOrders'
 import { ShowClientOrders } from './pages/Client/ShowClientOrders'
 import { PreparationView } from './pages/profesional/PreparationView'
 import { ShowClient } from './pages/admin/ShowClient'
+import { Materials } from './pages/admin/Materials'
+import { Machines } from './pages/admin/Machines'
 
 const RouterMap = {
   "client":
@@ -32,6 +34,8 @@ const RouterMap = {
   "admin":
     <Route path="admin" element={<Admin />}>
       <Route path="show-clients" element={<ShowClient />} />
+      <Route path='machines' element={<Machines/>}/>
+      <Route path='materials' element={<Materials/>}/>
       <Route path="me" element={<Profile />} />
     </Route>
 }
