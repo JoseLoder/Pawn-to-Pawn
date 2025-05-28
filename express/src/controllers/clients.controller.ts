@@ -10,7 +10,7 @@ import {
   validateClientUpdate
 } from '../schema/clients.schema.ts'
 import { handleError } from '../errors/handleError.ts'
-import { Client, CreateClient, UpdateClient } from '../types/clients.types.ts'
+import { Client, CreateClient, UpdateClient } from '@pawn-to-pawn/shared'
 
 export const ClientsController = {
   async getAll(_: Request, res: Response): Promise<void> {

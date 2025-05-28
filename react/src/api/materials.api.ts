@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CreateMaterial } from "../types/materials.types";
+import { CreateMaterial } from "@pawn-to-pawn/shared";
 import { API } from "../config";
 
 const materialsApi = axios.create({

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Client } from "../../types/Clients";
+import { Client } from "@pawn-to-pawn/shared";
 import { Table } from "./base/Table";
 import { ascendUserToOperator } from "../../api/users.api";
 import { useState } from "react";

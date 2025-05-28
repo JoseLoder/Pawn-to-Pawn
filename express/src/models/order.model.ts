@@ -1,7 +1,7 @@
 import { DB } from "../database/connect"
 import { ClientError } from "../errors/client.error"
 import { QueryError } from "../errors/server.error"
-import { CreateOrder, Order, UpdateOrder } from "../types/orders.type"
+import { CreateOrder, Order, UpdateOrder } from "@pawn-to-pawn/shared"
 
 export const OrderModel = {
     async getAll(): Promise<Order[]> {

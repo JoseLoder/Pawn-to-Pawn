@@ -2,7 +2,7 @@
 
 import axios from 'axios'
 
-import { Client, RegisterClient } from '../types/Clients'
+import { Client, RegisterClient } from '@pawn-to-pawn/shared'
 
 const clientsApi = axios.create({
     baseURL: 'http://localhost:3000/clients',

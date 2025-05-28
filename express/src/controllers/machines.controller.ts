@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { ClientError } from "../errors/client.error"
 import { handleError } from "../errors/handleError"
 import { MachineModel } from "../models/machine.model"
-import { CreateMachine } from "../types/machines.types"
+import { CreateMachine } from '@pawn-to-pawn/shared'
 import { validateMachine } from "../schema/machine.schema"
 import { ZodError } from "zod"
 import { ServerError } from "../errors/server.error"

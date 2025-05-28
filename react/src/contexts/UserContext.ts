@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { PublicUser } from "../types/users.types";
+import { PublicUser } from "@pawn-to-pawn/shared";
 
 export interface UserContextValue {
     getUserContext: () => PublicUser | undefined;

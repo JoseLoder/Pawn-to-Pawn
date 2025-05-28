@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
-import { PublicCreateOrder } from "../../types/orders.type"
+import { PublicCreateOrder } from "@pawn-to-pawn/shared"
 import { createOrder } from "../../api/orders.api"
 import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
 import { BackEndError } from "../../errors/BackEndError"
 import { getProducts } from "../../api/products.api"
-import { ProductReturn } from "../../types/products.types"
+import { ProductReturn } from "@pawn-to-pawn/shared"
 
 export function CreateOrder() {
 

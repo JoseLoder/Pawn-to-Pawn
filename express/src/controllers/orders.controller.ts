@@ -2,16 +2,16 @@ import { Request, Response } from "express";
 import { ClientError, UnauthorizedError } from "../errors/client.error";
 import { handleError } from "../errors/handleError";
 import { OrderModel } from "../models/order.model";
-import { Order, OrderReturn, PublicCreateOrder } from "../types/orders.type";
+import { Order, OrderReturn, PublicCreateOrder } from "@pawn-to-pawn/shared";
 import { UserModel } from "../models/user.model";
 import { validateOrder } from "../schema/orders.schema";
 import { ProductModel } from "../models/product.model";
 import { ServerError } from "../errors/server.error";
 import { ZodError } from "zod";
-import { AccessTokenEncryption } from "../types/tokens.types";
-import { PreparationOrder } from "../types/products.types";
+import { AccessTokenEncryption } from "@pawn-to-pawn/shared";
+import { PreparationOrder } from "@pawn-to-pawn/shared";
 import { MaterialModel } from "../models/material.model";
-import { User } from "../types/users.types";
+import { User } from "@pawn-to-pawn/shared";
 declare global {
     namespace Express {
         interface Request {

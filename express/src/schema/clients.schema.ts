@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { CreateClient, UpdateClient } from '../types/clients.types'
+import { CreateClient, UpdateClient } from '@pawn-to-pawn/shared'
 
 const clientRegisterSchema = z.object({
   dni: z.string().length(9),

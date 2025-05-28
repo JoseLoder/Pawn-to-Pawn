@@ -1,6 +1,6 @@
 import { DB } from '../database/connect';
 import { QueryError } from '../errors/server.error';
-import { CreateRefreshToken, RefreshToken } from '../types/tokens.types';
+import { CreateRefreshToken, RefreshToken } from '@pawn-to-pawn/shared';
 
 export const RefreshTokenModel = {
     // Crear un nuevo refresh token

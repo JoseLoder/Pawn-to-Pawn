@@ -1,6 +1,6 @@
 import { Table } from "./base/Table";
 
-import { Machine } from "../../types/machines.types";
+import { Machine } from "@pawn-to-pawn/shared";
 
 const columns = [
   {

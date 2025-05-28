@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 import { Table } from "./base/Table";
 import { getMyOrders, getOrders, getPendingOrders } from "../../api/orders.api";
 import { useQuery } from "@tanstack/react-query";
-import { Actions, Columns, Items, TableFor } from "../../types/table.types";
+import { Actions, Columns, Items, TableFor } from "@pawn-to-pawn/shared";
 import { BackEndError } from "../../errors/BackEndError";
 
 const columns = [

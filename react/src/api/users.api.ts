@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API } from "../config";
-import { RegisterUser, LoginUser } from "../types/users.types";
+import { RegisterUser, LoginUser } from "@pawn-to-pawn/shared";
 
 const usersApi = axios.create({
     baseURL: API + '/users',

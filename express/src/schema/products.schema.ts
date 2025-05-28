@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { CreateProduct } from '../types/products.types'
+import { CreateProduct } from '@pawn-to-pawn/shared'
 
 const ProductRegisterSchema = z.object({
     id_machine: z.string(),

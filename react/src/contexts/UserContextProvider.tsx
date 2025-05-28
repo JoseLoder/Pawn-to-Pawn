@@ -1,5 +1,5 @@
 import React, { ReactNode, useState, useCallback, useMemo } from 'react';
-import { PublicUser } from '../types/users.types';
+import { PublicUser } from '@pawn-to-pawn/shared';
 import { UserContext } from './UserContext'
 
 interface UserContextProps {

@@ -1,6 +1,6 @@
 import { DB } from "../database/connect";
 import { QueryError } from "../errors/server.error";
-import { Product } from "../types/products.types";
+import { Product } from '@pawn-to-pawn/shared';
 
 export const ProductModel = {
     async getAll(): Promise<Product[]> {

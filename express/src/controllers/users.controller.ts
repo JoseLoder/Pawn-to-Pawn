@@ -7,9 +7,9 @@ import { ClientError } from '../errors/client.error.ts';
 import { validateLogin, validateUser } from '../schema/users.schema.ts';
 import { ServerError } from '../errors/server.error.ts';
 import { handleError } from '../errors/handleError.ts';
-import { LogUser, PublicUser, RegisterUser } from '../types/users.types.ts';
+import { LogUser, PublicUser, RegisterUser } from '@pawn-to-pawn/shared';
 import { RefreshTokensController } from './refreshTokens.controller.ts';
-import { AccessTokenEncryption } from '../types/tokens.types.ts';
+import { AccessTokenEncryption } from '@pawn-to-pawn/shared';
 
 declare global {
   namespace Express {

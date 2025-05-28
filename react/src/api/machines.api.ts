@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CreateMachine } from "../types/machines.types";
+import { CreateMachine } from "@pawn-to-pawn/shared";
 import { API } from "../config";
 
 const machinesApi = axios.create({

@@ -1,5 +1,5 @@
 import { Table } from "./base/Table";
-import { Material } from "../../types/materials.types";
+import { Material } from "@pawn-to-pawn/shared";
 
 const columns = [
   {

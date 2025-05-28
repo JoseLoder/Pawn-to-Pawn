@@ -1,7 +1,7 @@
 import { DB } from "../database/connect";
 import { ClientError } from "../errors/client.error";
 import { QueryError } from "../errors/server.error";
-import { CreateMaterial, Material, UpdateMaterial } from "../types/materials.types";
+import { CreateMaterial, Material, UpdateMaterial } from "@pawn-to-pawn/shared";
 
 export const MaterialModel = {
     async getAll(): Promise<Material[]> {

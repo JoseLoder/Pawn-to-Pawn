@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { ClientError } from "../errors/client.error"
 import { MaterialModel } from "../models/material.model"
 import { handleError } from "../errors/handleError"
-import { CreateMaterial } from "../types/materials.types"
+import { CreateMaterial } from '@pawn-to-pawn/shared'
 import { validateMaterial } from "../schema/material.schema"
 import { ZodError } from "zod"
 import { ServerError } from "../errors/server.error"

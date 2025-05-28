@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt, { JsonWebTokenError } from 'jsonwebtoken'
-import { AccessTokenEncryption } from '../types/tokens.types'
+import { AccessTokenEncryption } from '@pawn-to-pawn/shared'
 import { RefreshTokensController } from '../controllers/refreshTokens.controller'
 import { UnauthorizedError } from '../errors/client.error'
 import { handleError } from '../errors/handleError'
@@ -34,8 +34,9 @@ export function auth(req: Request, res: Response, next: NextFunction) {
             return RefreshTokensController.refresh(req, res, next)
         }
         
-        // If no refresh token, throw authentication error
-        throw new JsonWebTokenError('Authentication required, please login again')
+        // If no refresh token, handle the error
+        handleError(new JsonWebTokenError('Authentication required, please login again'), res)
+        return
     }
 }
 

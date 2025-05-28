@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API } from "../config";
-import { PublicCreateOrder } from "../types/orders.type";
+import { PublicCreateOrder } from "@pawn-to-pawn/shared";
 
 const ordersApi = axios.create({
     baseURL: API + '/orders',

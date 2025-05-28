@@ -1,5 +1,5 @@
 import { useState, ReactNode, useMemo, useCallback } from "react";
-import { Client } from "../types/Clients";
+import { Client } from "@pawn-to-pawn/shared";
 import { ProfessionalContext } from "./ProfessionalContext";
 
 interface ProfessionalContextProps {

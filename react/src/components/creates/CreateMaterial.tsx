@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { BackEndError } from "../../errors/BackEndError";
 import { createMaterial } from "../../api/materials.api";
-import { CreateMaterial as CreateMaterialType } from "../../types/materials.types";
+import { CreateMaterial as CreateMaterialType } from "@pawn-to-pawn/shared";
 
 export function CreateMaterial() {
 

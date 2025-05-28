@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { createMachine } from "../../api/machines.api";
 import { useState } from "react";
-import { CreateMachine as CreateMachineType } from "../../types/machines.types";
+import { CreateMachine as CreateMachineType } from "@pawn-to-pawn/shared";
 import { BackEndError } from "../../errors/BackEndError";
 
 export function CreateMachine() {

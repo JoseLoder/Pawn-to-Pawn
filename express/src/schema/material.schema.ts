@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CreateMaterial } from "../types/materials.types";
+import { CreateMaterial } from "@pawn-to-pawn/shared";
 
 const MaterialRegisterSchema = z.object({
     price: z.number().min(.1),

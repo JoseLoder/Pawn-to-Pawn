@@ -1,5 +1,5 @@
 import { z, ZodType } from 'zod'
-import { RegisterClient } from '../types/Clients'
+import { RegisterClient } from '@pawn-to-pawn/shared'
 
 export const clientSchema: ZodType<RegisterClient> = z.object({
   dni: z.string().length(9),

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { handleError } from "../errors/handleError";
 import { ProductModel } from "../models/product.model";
 import { ClientError } from "../errors/client.error";
-import { CreateProduct, Product, ProductReturn } from "../types/products.types";
+import { CreateProduct, Product, ProductReturn } from '@pawn-to-pawn/shared';
 import { validateProduct } from "../schema/products.schema";
 import { ZodError } from "zod";
 import { MaterialModel } from "../models/material.model";

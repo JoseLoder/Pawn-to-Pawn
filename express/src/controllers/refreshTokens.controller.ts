@@ -5,7 +5,7 @@ import crypto from 'crypto'
 
 import { handleError } from '../errors/handleError'
 import { RefreshTokenModel } from '../models/refreshToken.model'
-import { RefreshTokenEncryption } from '../types/tokens.types'
+import { RefreshTokenEncryption } from '@pawn-to-pawn/shared'
 import { UserModel } from '../models/user.model'
 import { ClientError } from '../errors/client.error'
 import { ServerError } from '../errors/server.error'

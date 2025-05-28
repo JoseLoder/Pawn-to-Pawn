@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CreateMachine } from "../types/machines.types";
+import { CreateMachine } from "@pawn-to-pawn/shared";
 
 const MachineRegisterSchema = z.object({
     price: z.number().min(.1),

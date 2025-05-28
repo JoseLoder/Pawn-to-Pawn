@@ -1,6 +1,6 @@
 import { DB } from '../database/connect.ts'
 import { QueryError } from '../errors/server.error.ts'
-import { RegisterUser, User } from '../types/users.types.ts'
+import { RegisterUser, User } from '@pawn-to-pawn/shared'
 
 export const UserModel = {
 

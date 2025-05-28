@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { LogUser, RegisterUser } from '../types/users.types'
+import { LogUser, RegisterUser } from '@pawn-to-pawn/shared'
 
 const userRegisterSchema = z.object({
   name: z.string().min(3),

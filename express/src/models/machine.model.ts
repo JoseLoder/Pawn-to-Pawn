@@ -1,7 +1,7 @@
 import { DB } from "../database/connect"
 import { ClientError } from "../errors/client.error"
 import { QueryError } from "../errors/server.error"
-import { CreateMachine, Machine, UpdateMachine } from "../types/machines.types"
+import { CreateMachine, Machine, UpdateMachine } from "@pawn-to-pawn/shared"
 
 export const MachineModel = {
     async getAll(): Promise<Machine[]> {

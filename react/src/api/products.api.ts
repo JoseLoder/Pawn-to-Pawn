@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API } from "../config";
-import { CreateProduct } from "../types/products.types";
+import { CreateProduct } from "@pawn-to-pawn/shared";
 
 const productsApi = axios.create({
     baseURL: API + '/products',

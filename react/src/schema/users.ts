@@ -1,11 +1,9 @@
 import { z, ZodType } from 'zod'
-import { LogUser } from '../types/Users'
+import { LogUser } from '@pawn-to-pawn/shared'
 
 const userSchema: ZodType<LogUser> = z.object({
-  username: z.string().min(3),
+  email: z.string().email(),
   password: z.string().min(6)
 })
 
-export function validateUser (user: LogUser) {
-  return userSchema.safeParse(user)
-}
+export default userSchema

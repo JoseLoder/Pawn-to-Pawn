@@ -9,6 +9,7 @@ export interface Client {
 
 export type CreateClient = Omit<Client, 'id'>
 export type UpdateClient = Omit<CreateClient, 'dni'>
+export type RegisterClient = CreateClient
 
 // Tipos específicos del backend
 // Por ahora no hay tipos específicos del backend
