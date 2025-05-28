@@ -20,7 +20,8 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.14",
     "ts-node-dev": "2.0.0",
-    "typescript": "5.8.2"
+    "typescript": "5.8.2",
+    "@pawn-to-pawn/shared": "file:../shared"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
