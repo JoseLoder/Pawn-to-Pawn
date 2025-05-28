@@ -52,8 +52,10 @@ function App() {
     const userAlreadyLogged = getUserContext()
     if (userAlreadyLogged) {
       setRole(userAlreadyLogged.role)
+    } else {
+      setRole(null)
     }
-  }, [])
+  }, [getUserContext])
 
   const showRoute = (role: string | null): JSX.Element | null => {
     if (role === "client" || role === "operator" || role === "admin") {

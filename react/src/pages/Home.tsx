@@ -17,17 +17,19 @@ input {
 }
 `
 export function Home() {
-
   const navigate = useNavigate();
   const userContextProvider = useContext(UserContext);
+  
   if (!userContextProvider) {
     throw new Error("UserContext must be used within a UserProvider");
   }
+  
   const { getUserContext } = userContextProvider;
-  const userAlreadyLogged = getUserContext();
 
   useEffect(() => {
     // Check if user is already logged in and redirect
+    const userAlreadyLogged = getUserContext();
+    
     if (userAlreadyLogged) {
       if (userAlreadyLogged.role === 'client') {
         navigate('/client');
@@ -37,7 +39,7 @@ export function Home() {
         navigate('/admin');
       }
     }
-  }, [userAlreadyLogged, navigate]);
+  }, [getUserContext, navigate]);
 
   const linksToShow = [
     { to: "login", text: "Login" },
