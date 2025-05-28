@@ -8,7 +8,8 @@ import { OrdersRouter } from './routes/orders.route.ts'
 import { ProductsRouter } from './routes/products.route.ts'
 import { MaterialsRoute } from './routes/materials.route.ts'
 import { MachinesRoute } from './routes/machine.route.ts'
-import { initializeAdminUser } from './database/admin.ts'
+import { DatabaseManager } from './database/DatabaseManager.ts'
+import { AdminManager } from './database/AdminManager.ts'
 
 const port = process.env.PORT ?? 3000
 const app = express()
@@ -25,6 +26,25 @@ app.use(
 app.use(json())
 app.use(cookieParser())
 
+// Initialize database and admin
+async function initializeApp() {
+  try {
+    // Initialize database tables
+    await DatabaseManager.getInstance().initializeTables();
+    
+    // Initialize admin user
+    await AdminManager.getInstance().initializeAdmin();
+    
+    // Start server
+    app.listen(port, () => {
+      console.log(`Server running on http://localhost:${port}/`)
+    })
+  } catch (error) {
+    console.error('Failed to initialize application:', error);
+    process.exit(1);
+  }
+}
+
 // Endpoints
 app.use('/clients', ClientsRouter)
 app.use('/users', UsersRouter)
@@ -37,9 +57,6 @@ app.use('/machines', MachinesRoute)
 app.use((_, res) => {
   res.status(404).send('404 Not Found')
 })
-//TODO: The first time be not create admin 
-initializeAdminUser()
 
-app.listen(port, () => {
-  console.log(`Example app listening on port http://localhost:${port}/`)
-})
+// Initialize the application
+initializeApp();
