@@ -1,6 +1,7 @@
 import jwt, { JsonWebTokenError } from 'jsonwebtoken'
 import { NextFunction, Request, Response } from 'express'
 import { CookieOptions } from 'express'
+import crypto from 'crypto'
 
 import { handleError } from '../errors/handleError'
 import { RefreshTokenModel } from '../models/refreshToken.model'
@@ -29,28 +30,39 @@ export const RefreshTokensController = {
       if (!storedToken) {
         throw new JsonWebTokenError('Invalid or expired refresh token, please login again')
       }
-      // 3.5 Traer el rol del usuario.
-      const user = await UserModel.getById(decoded.id_user)
-      if (!user) throw new JsonWebTokenError('The user associated with the token does not exist, please login again')
 
-      // 4. Generar nuevo access token
+      // 4. Traer el rol del usuario
+      const user = await UserModel.getById(decoded.id_user)
+      if (!user) {
+        throw new JsonWebTokenError('The user associated with the token does not exist, please login again')
+      }
+
+      // 5. Generar nuevo access token
       const newAccessToken = jwt.sign(
         {
           id_user: user.id,
           role: user.role
-
         },
         process.env.SECRET_JWT_KEY ?? 'fallback_secret',
         { expiresIn: '15m' }
       )
 
-      // 5. Rotación: Crear nuevo refresh token y 6. Actualizar en base de datos
+      // 6. Rotación: Crear nuevo refresh token
       const newRefreshToken = await RefreshTokensController.create(user.id, req.headers['user-agent'])
 
-      // Revocar el anterior
+      // 7. Revocar el anterior y limpiar tokens expirados
       await RefreshTokenModel.revoke(refreshToken)
+      await RefreshTokenModel.cleanupExpiredTokens(user.id)
 
-      // 7. Configurar cookies
+      // 8. Actualizar la sesión
+      req.session = {
+        userSession: {
+          id_user: user.id,
+          role: user.role
+        }
+      }
+
+      // 9. Configurar cookies
       const cookieOptions: CookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -58,7 +70,6 @@ export const RefreshTokensController = {
         path: '/'
       }
 
-      // 8. Responder con los nuevos tokens
       res
         .cookie('access_token', newAccessToken, {
           ...cookieOptions,
@@ -71,7 +82,6 @@ export const RefreshTokensController = {
 
       next()
     } catch (e) {
-      // Limpiar cookies si hay error
       handleError(e as Error, res)
     }
   },

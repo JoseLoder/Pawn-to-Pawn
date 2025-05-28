@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import jwt from 'jsonwebtoken'
+import jwt, { JsonWebTokenError } from 'jsonwebtoken'
 import { AccessTokenEncryption } from '../types/tokens.types'
 import { RefreshTokensController } from '../controllers/refreshTokens.controller'
 import { UnauthorizedError } from '../errors/client.error'
@@ -15,19 +15,27 @@ declare global {
 
 export function auth(req: Request, res: Response, next: NextFunction) {
     const accessToken = req.cookies.access_token
+    const refreshToken = req.cookies.refresh_token
 
     req.session = { userSession: null }
 
     try {
+        // First try to verify the access token
         const data = jwt.verify(
             accessToken,
             process.env.SECRET_JWT_KEY || 'fallback_secret'
         ) as AccessTokenEncryption
 
-        req.session.userSession = data // Add data in the request for get user any route
-        next()
+        req.session.userSession = data
+        return next()
     } catch (e) {
-        RefreshTokensController.refresh(req, res, next)
+        // If access token is invalid/expired and we have a refresh token, try to refresh
+        if (refreshToken) {
+            return RefreshTokensController.refresh(req, res, next)
+        }
+        
+        // If no refresh token, throw authentication error
+        throw new JsonWebTokenError('Authentication required, please login again')
     }
 }
 
