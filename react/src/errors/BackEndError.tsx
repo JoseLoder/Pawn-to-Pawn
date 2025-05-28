@@ -1,11 +1,24 @@
 import { AxiosError } from "axios";
 import { AxiosErrorData, AxiosValidationErrorData, CustomAxiosError } from "../types/errors/axios.type";
 import { UnexpectedError, UnexpectedResponseError } from "../types/errors/unexpected.type";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import styled from '@emotion/styled'
-export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
+import { useNavigate } from "react-router";
+import { UserContext } from "../contexts/UserContext";
 
+export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
+    const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState<AxiosValidationErrorData | AxiosErrorData | null>(null)
+    const userContextProvider = useContext(UserContext);
+    
+    if (!userContextProvider) {
+        const contextError: UnexpectedError = {
+            name: "ContextError",
+            message: "UserContext must be used within a UserProvider"
+        };
+        throw contextError;
+    }
+    const { setUserContext } = userContextProvider;
 
     useEffect(() => {
         if (!inputError) return;
@@ -13,9 +26,17 @@ export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
             const axiosError = inputError as CustomAxiosError;
             // Handle Axios errors
             if (axiosError.response) {
+                // Check for 401 Unauthorized error
+                if (axiosError.response.status === 401) {
+                    // Clear user context and redirect to login
+                    setUserContext(undefined);
+                    localStorage.removeItem("user");
+                    navigate("/login");
+                    return;
+                }
+
                 if (axiosError.response.data.name === "ValidationError") {
                     setErrorMessage(axiosError.response.data as AxiosValidationErrorData)
-
                 } else if (
                     axiosError.response.data.name === "ClientError" ||
                     axiosError.response.data.name === "ServerError"
@@ -29,7 +50,6 @@ export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
                         response: axiosError.response,
                     } as UnexpectedResponseError)
                 }
-
             } else {
                 // Handle cases where there's no response
                 setErrorMessage({
@@ -39,13 +59,12 @@ export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
             }
         } else {
             // Handle non-Axios errors
-
             setErrorMessage({
                 name: inputError.name,
                 message: inputError.message,
             } as UnexpectedError)
         }
-    }, [inputError])
+    }, [inputError, navigate, setUserContext])
 
     const showError = () => {
         if (!errorMessage) return;
@@ -71,7 +90,6 @@ export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
         }
         if (errorMessage.name === "UnexpectedResponseError") {
             const error = errorMessage as UnexpectedResponseError;
-            console.log(error.response)
             return <Error>
                 <p>{error.name}</p>
                 <p>{error.message}</p>
@@ -87,10 +105,8 @@ export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
         else {
             return <p>Something went wrong</p>;
         }
-
     }
     return (showError());
-
 }
 
 const Error = styled.div`

@@ -15,7 +15,7 @@ export const handleError = (e: Error, res: Response) => {
     })
   } else if (e instanceof JsonWebTokenError) {
     res
-      .status(500)
+      .status(401)
       .clearCookie('access_token')
       .clearCookie('refresh_token')
       .json({
