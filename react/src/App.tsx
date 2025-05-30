@@ -16,6 +16,8 @@ import { PreparationView } from './pages/profesional/PreparationView'
 import { ShowClient } from './pages/admin/ShowClient'
 import { Materials } from './pages/admin/Materials'
 import { Machines } from './pages/admin/Machines'
+import { Products } from './pages/admin/Products'
+import { ShowAdminOrders } from './pages/admin/ShowAdminOrders'
 
 const RouterMap = {
   "client":
@@ -29,13 +31,16 @@ const RouterMap = {
     <Route path="professional" element={<Professional />}>
       <Route path="show-orders" element={<ShowOperatorOrders />} />
       <Route path="preparation" element={<PreparationView />} />
+      <Route path='products' element={<Products/>}/>
       <Route path="me" element={<Profile />} />
     </Route>,
   "admin":
     <Route path="admin" element={<Admin />}>
       <Route path="show-clients" element={<ShowClient />} />
+      <Route path="show-orders" element={<ShowAdminOrders />} />
       <Route path='machines' element={<Machines/>}/>
       <Route path='materials' element={<Materials/>}/>
+      <Route path='products' element={<Products/>}/>
       <Route path="me" element={<Profile />} />
     </Route>
 }

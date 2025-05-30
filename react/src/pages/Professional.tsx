@@ -8,6 +8,7 @@ export function Professional() {
   const linksToShow = [
     { to: "show-orders", text: "Show Orders" },
     { to: "preparation", text: "Order Preparation" },
+    { to: "products", text: "Products Zone" },
     { to: "me", text: "Profile" },
   ];
 
