@@ -1,59 +1,41 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BackEndError } from "../../errors/BackEndError";
-import { PreparationOrder } from "../../types/products.types";
-import { useMutation } from "@tanstack/react-query";
+import { PreparationOrder } from "@pawn-to-pawn/shared";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getPreparationOrder, setCompleteOrder } from "../../api/orders.api";
+import { AxiosResponse } from 'axios';
+import { useNavigate } from "react-router";
 
 export function PreparationView() {
 
-    const [loading, setLoading] = useState<boolean>(false)
+    const navigate = useNavigate()
     const [error, setError] = useState<Error | null>(null)
-    const [order, setOrder] = useState<PreparationOrder | null>(null)
 
-    const getPreparationOrderMutation = useMutation({
-        mutationKey: ['Get Preparation'],
-        mutationFn: getPreparationOrder,
-        onMutate: () => {
-            setLoading(true)
-        },
-        onSuccess: (response) => {
-            setOrder(response.data)
-            console.log(response.data)
-            setLoading(false)
-        },
-        onError: (error) => {
-            setError(error)
-            setLoading(false)
-        }
+    const { data: order, isLoading, error: fetchError } = useQuery<AxiosResponse<PreparationOrder, any>, Error, PreparationOrder>({
+        queryKey: ['Get Preparation'],
+        queryFn: getPreparationOrder,
+        select: (response) => response.data,
+        retry: 1
     })
     const setCompleteOrderMutation = useMutation({
-        mutationKey: ['Get Preparation'],
+        mutationKey: ['Set Complete Order'],
         mutationFn: setCompleteOrder,
-        onMutate: () => {
-            setLoading(true)
-        },
         onSuccess: () => {
-            setLoading(false)
-            alert('Order Complete, go to get new orders')
+            navigate('/professional/show-orders')
         },
         onError: (error) => {
             setError(error)
-            setLoading(false)
         }
     })
-
-    useEffect(() => {
-        getPreparationOrderMutation.mutate()
-    }, [])
 
 
     return (
         <main>
             <h1>Order Preparation</h1>
-            <section>
-                {loading && <h2>Cargando..</h2>}
-                <BackEndError inputError={error} />
-                {order &&
+            {isLoading && <h2>Cargando..</h2>}
+            <BackEndError inputError={fetchError || error} />
+            {order &&
+                <section>
                     <ul>
                         <li>Base: {order.base} </li>
                         <li>Amount base: {order.amount_base}</li>
@@ -64,13 +46,14 @@ export function PreparationView() {
                         <li>Estimated weight product: {order.estimated_weight_product / 1000} Kg</li>
                         <li>Estimated weight order: {order.estimated_weight_order / 1000} Kg</li>
                     </ul>
-                }
-                {order && 
-                    <button onClick={() => {setCompleteOrderMutation.mutate(order.id)
+
+                    <button onClick={() => {
+                        setCompleteOrderMutation.mutate(order.id)
                     }}>
-                    Set complete
-                </button>}
-            </section>
+                        Set complete
+                    </button>
+                </section>
+            }
         </main>
     )
 }
