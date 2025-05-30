@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { OrdersTable } from "../../components/tables/OrdersTable";
-import { Actions } from "../../types/table.types";
+import { Actions } from "@pawn-to-pawn/shared";
 import { useMutation } from "@tanstack/react-query";
 import { setPendingOrder } from "../../api/orders.api";
 

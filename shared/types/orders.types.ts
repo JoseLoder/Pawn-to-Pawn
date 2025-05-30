@@ -1,5 +1,5 @@
 // Tipos compartidos (usados tanto en frontend como backend)
-export type StatusOrder = 'eraser' | 'inHold' | 'inProgress' | 'done'
+export type StatusOrder = 'draft' | 'inHold' | 'inProgress' | 'done'
 
 export type Order = {
     id: string,
