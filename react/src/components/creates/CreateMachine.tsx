@@ -1,19 +1,21 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createMachine } from "../../api/machines.api";
 import { useState } from "react";
 import { CreateMachine as CreateMachineType } from "@pawn-to-pawn/shared";
 import { BackEndError } from "../../errors/BackEndError";
-
+const initialMachine: CreateMachineType = {
+  max_velocity: 0,
+  max_weight: 0,
+  max_widht: 0,
+  price: 0
+}
 export function CreateMachine() {
 
-  const [machine, setMachine] = useState<CreateMachineType>({
-    max_velocity: 0,
-    max_weight: 0,
-    max_widht: 0,
-    price: 0
-  })
+  const [machine, setMachine] = useState<CreateMachineType>(initialMachine)
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<Error | null>(null)
+
+  const queryClient = useQueryClient();
 
   const createMachineMutation = useMutation({
     mutationKey: ['Create Machine'],
@@ -24,6 +26,7 @@ export function CreateMachine() {
     },
     onSuccess: () => {
       setLoading(false)
+      queryClient.invalidateQueries({ queryKey: ['machines'] });
     },
     onError: (e: Error) => {
       setLoading(false)
@@ -34,12 +37,14 @@ export function CreateMachine() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     createMachineMutation.mutate(machine)
+    setMachine(initialMachine)
+    
   }
   const handleChance = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
     setMachine((prevNewOrder) => ({
       ...prevNewOrder,
-      [name]: parseInt(value)
+      [name]: event.target.type === "number" ? parseFloat(value) : value,
     }))
   }
   return (
