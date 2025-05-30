@@ -144,7 +144,7 @@ export const OrdersController = {
             const orderUpdated = await OrderModel.getById(idUpdated)
 
 
-            const orderReturn = await this.orderReturn(orderUpdated)
+            const orderReturn = await OrdersController.orderReturn(orderUpdated)
             res.status(200).json(orderReturn)
         } catch (e) {
             handleError(e as Error, res)
@@ -177,7 +177,7 @@ export const OrdersController = {
             if (!id) throw new ClientError('The order id must be correct')
             const order = await OrderModel.getById(id)
             if (!order) throw new ClientError('This order not exists')
-            if (order.status != 'eraser') throw new ClientError('The order must first be a draft to be manufactured.')
+            if (order.status != 'draft') throw new ClientError('The order must first be a draft to be manufactured.')
             const updated: Order = {
                 ...order,
                 status: 'inHold'
@@ -257,7 +257,7 @@ export const OrdersController = {
             const price = quantity * product.price
 
             const id = crypto.randomUUID()
-            const createdId = await OrderModel.create(id, { id_client: id_user, id_product, quantity, createdAt: Date.now().toString(), status: 'eraser', price })
+            const createdId = await OrderModel.create(id, { id_client: id_user, id_product, quantity, createdAt: Date.now().toString(), status: 'draft', price })
             if (!createdId) throw new ServerError('Finally could not been created order')
 
             const createdOrder = await OrderModel.getById(createdId)
