@@ -2,7 +2,7 @@ import { useNavigate } from "react-router"
 import { useMutation } from "@tanstack/react-query";
 import { login } from "../../api/users";
 import { UserContext } from "../../contexts/UserContext";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { LoginUser, PublicUser } from "@pawn-to-pawn/shared";
 import { BackEndError } from "../../errors/BackEndError";
 
@@ -19,15 +19,17 @@ export function Login() {
 
   const userAlreadyLogged = getUserContext()
   // Check if user is already logged in and redirect too
-  if (userAlreadyLogged) {
-    if (userAlreadyLogged.role === 'client') {
-      navigate('/client')
-    } else if (userAlreadyLogged.role === 'operator') {
-      navigate('/professional')
-    } else if (userAlreadyLogged.role === 'admin') {
-      navigate('/admin')
+  useEffect(() => {
+    if (userAlreadyLogged) {
+      if (userAlreadyLogged.role === 'client') {
+        navigate('/client')
+      } else if (userAlreadyLogged.role === 'operator') {
+        navigate('/professional')
+      } else if (userAlreadyLogged.role === 'admin') {
+        navigate('/admin')
+      }
     }
-  }
+  }, [userAlreadyLogged, navigate]); // Add dependencies to the effect
 
   // State for error messages 
   const [error, setError] = useState<Error | null>(null)
@@ -42,7 +44,6 @@ export function Login() {
         setError(null)
     },
     onSuccess: (data) => {
-      console.log(data.data)
       setUserContext(data.data as PublicUser)
       navigate('/home')
     },
@@ -74,7 +75,7 @@ export function Login() {
         <label htmlFor="email">Username</label>
         <input type="email" id="email" />
         <label htmlFor="password">Password</label>
-        <input type="password" id="password" />
+        <input type="password" id="password" autoComplete="current-password" />
         <button onClick={handleSubmit} disabled={loading}>
           {loading ? "Cargando..." : "Login"}
         </button>
