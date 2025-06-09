@@ -1,11 +1,5 @@
-import styled from '@emotion/styled';
+import styled from 'styled-components';
 
-const StyledHeader = styled.header`
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`
 
 interface HeaderProps {
     title: string;
@@ -13,7 +7,7 @@ interface HeaderProps {
 }
 
 export const Header = ({ title, children }: HeaderProps) => {
-
+    
     return (
         <StyledHeader >
             <h1>{title}</h1>
@@ -21,3 +15,9 @@ export const Header = ({ title, children }: HeaderProps) => {
         </StyledHeader>
     )
 }
+const StyledHeader = styled.header`
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`

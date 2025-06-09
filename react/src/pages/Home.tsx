@@ -1,7 +1,7 @@
 import { Outlet, useNavigate } from "react-router";
 import { Header } from "../components/semantic/Header";
 import { Nav } from "../components/semantic/Nav";
-import styled from "@emotion/styled";
+import styled from "styled-components";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../contexts/UserContext";
 

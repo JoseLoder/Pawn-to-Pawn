@@ -1,20 +1,5 @@
 import { NavLink } from "react-router"
-import styled from '@emotion/styled'
-
-const StyledNav = styled.nav`
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-
-    ul {
-        display: flex;
-        gap: 1rem;
-        list-style-type: none;
-    }
-    a {
-        text-decoration: none;
-    }
-`
+import styled from 'styled-components'
 
 interface NavProps {
     links: { to: string, text: string, actions?: () => void}[];
@@ -35,3 +20,18 @@ export const Nav = ({ links }: NavProps) => {
         </StyledNav>
     )
 }
+
+const StyledNav = styled.nav`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    ul {
+        display: flex;
+        gap: 1rem;
+        list-style-type: none;
+    }
+    a {
+        text-decoration: none;
+    }
+`

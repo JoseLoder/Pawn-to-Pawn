@@ -1,8 +1,8 @@
 import { AxiosError } from "axios";
-import { AxiosErrorData, AxiosValidationErrorData, CustomAxiosError } from "../types/errors/axios.type";
-import { UnexpectedError, UnexpectedResponseError } from "../types/errors/unexpected.type";
+import { AxiosErrorData, AxiosValidationErrorData, CustomAxiosError } from '@pawn-to-pawn/shared';
+import { UnexpectedError, UnexpectedResponseError } from "@pawn-to-pawn/shared";
 import { useEffect, useState, useContext } from "react";
-import styled from '@emotion/styled'
+import styled from 'styled-components'
 import { useNavigate } from "react-router";
 import { UserContext } from "../contexts/UserContext";
 
@@ -111,8 +111,8 @@ export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
 
 const Error = styled.div`
 font-weight: bold;
-color: #9b0000;
-background-color: #bfbfbf;
+color: ${(props) => props.theme.danger1};
+background-color: ${(props) => props.theme.danger2};
 border-radius: 15px;
 padding: 10px
 `
