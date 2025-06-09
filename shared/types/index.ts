@@ -6,5 +6,7 @@ export * from './materials.types'
 export * from './machines.types'
 export * from './clients.types'
 export * from './table.types'
-
+export * from './axios.types'
+export * from './unexpected.types'
+export * from './handle_error.types'
 // TODO: Agregar exportaciones de los demás tipos cuando se migren 

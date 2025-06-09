@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "main": "types/index.ts",
   "types": "types/index.ts",
-  "private": true
-} 
+  "private": true,
+  "dependencies": {
+    "axios": "^1.9.0"
+  }
+}
