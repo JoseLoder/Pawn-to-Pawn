@@ -5,11 +5,17 @@ import crypto from 'crypto'
 
 import { handleError } from '../errors/handleError'
 import { RefreshTokenModel } from '../models/refreshToken.model'
-import { RefreshTokenEncryption } from '@pawn-to-pawn/shared'
+import { AccessTokenEncryption, RefreshTokenEncryption } from '@pawn-to-pawn/shared'
 import { UserModel } from '../models/user.model'
 import { ClientError } from '../errors/client.error'
 import { ServerError } from '../errors/server.error'
-
+declare global {
+  namespace Express {
+    interface Request {
+      session?: { userSession: AccessTokenEncryption | null }
+    }
+  }
+} 
 export const RefreshTokensController = {
   async refresh(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -52,7 +58,7 @@ export const RefreshTokensController = {
 
       // 7. Revocar el anterior y limpiar tokens expirados
       await RefreshTokenModel.revoke(refreshToken)
-      await RefreshTokenModel.cleanupExpiredTokens(user.id)
+      await RefreshTokenModel.deleteExpired()
 
       // 8. Actualizar la sesión
       req.session = {
@@ -108,7 +114,7 @@ export const RefreshTokensController = {
       revoked: false,
       device_info: headers
     })
-    await RefreshTokenModel.cleanupExpiredTokens(id_user)
+    await RefreshTokenModel.deleteExpired()
     return refreshToken
   },
 

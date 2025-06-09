@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router"
 import { useMutation } from "@tanstack/react-query";
-import { login } from "../../api/users";
+import { loginUser } from "../../api/users.api";
 import { UserContext } from "../../contexts/UserContext";
 import { useContext, useState, useEffect } from "react";
 import { LoginUser, PublicUser } from "@pawn-to-pawn/shared";
@@ -38,7 +38,7 @@ export function Login() {
   // Login mutation
   const loginMutation = useMutation({
     mutationKey: ["login"],
-    mutationFn: login,
+    mutationFn: loginUser,
     onMutate: () => {
       setLoading(true),
         setError(null)

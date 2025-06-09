@@ -5,13 +5,6 @@ import { RefreshTokensController } from '../controllers/refreshTokens.controller
 import { UnauthorizedError } from '../errors/client.error'
 import { handleError } from '../errors/handleError'
 // Extend the Request interface to include the session property
-declare global {
-    namespace Express {
-        interface Request {
-            session?: { userSession: AccessTokenEncryption | null }
-        }
-    }
-}
 
 export function auth(req: Request, res: Response, next: NextFunction) {
     const accessToken = req.cookies.access_token

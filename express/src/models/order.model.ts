@@ -6,171 +6,125 @@ import { CreateOrder, Order, UpdateOrder } from "@pawn-to-pawn/shared"
 export const OrderModel = {
     async getAll(): Promise<Order[]> {
         const sql = `SELECT * FROM orders`
-        const data: { orders: Order[] } = { orders: [] }
-
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-
-            DB.all(sql, [], (err, rows) => {
-                if (err) return reject(new QueryError('Could not get all orders'));
-
-                (rows as Order[]).forEach((row: Order) => {
-                    data.orders.push({
-                        ...row
-                    })
-                })
-                resolve(data.orders)
-            })
-        })
+        try {
+            const result = await DB.query(sql)
+            return result.rows
+        } catch (error: unknown) {
+            throw new QueryError('Could not get all orders')
+        }
     },
 
     async getOrderPending(): Promise<Order[]> {
         const sql = `SELECT * FROM orders WHERE status = 'inHold'`
-        const data: { orders: Order[] } = { orders: [] }
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.all(sql, [], (err: Error, rows: Order[]) => {
-                if (err) reject(new QueryError(`Could not get all orders pending`));
-
-                (rows as Order[]).forEach((row: Order) => {
-                    data.orders.push({
-                        ...row
-                    })
-                })
-                resolve(data.orders)
-            })
-        })
-
+        try {
+            const result = await DB.query(sql)
+            return result.rows
+        } catch (error: unknown) {
+            throw new QueryError('Could not get all orders pending')
+        }
     },
 
     async getByClient(idClient: string): Promise<Order[]> {
-        const sql = `SELECT * FROM orders WHERE id_client = ?`
-        const data: { orders: Order[] } = { orders: [] }
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.all(sql, idClient, (err: Error, rows: Order[]) => {
-                if (err) reject(new QueryError(`Could not get all orders by this client: ${idClient}`));
-
-                (rows as Order[]).forEach((row: Order) => {
-                    data.orders.push({
-                        ...row
-                    })
-                })
-                resolve(data.orders)
-            })
-        })
+        const sql = `SELECT * FROM orders WHERE id_client = $1`
+        try {
+            const result = await DB.query(sql, [idClient])
+            return result.rows
+        } catch (error: unknown) {
+            throw new QueryError(`Could not get all orders by this client: ${idClient}`)
+        }
     },
 
     async getByOperator(idOperator: string | null): Promise<Order[]> {
-        const sql = `SELECT * FROM orders WHERE id_operator = ?`
-        const data: { orders: Order[] } = { orders: [] }
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.all(sql, idOperator, (err: Error, rows: Order[]) => {
-                if (err) reject(new QueryError(`Could not get all orders by this operator: ${idOperator}`));
-
-                (rows as Order[]).forEach((row: Order) => {
-                    data.orders.push({
-                        ...row
-                    })
-                })
-                resolve(data.orders)
-            })
-        })
+        const sql = `SELECT * FROM orders WHERE id_operator = $1`
+        try {
+            const result = await DB.query(sql, [idOperator])
+            return result.rows
+        } catch (error: unknown) {
+            throw new QueryError(`Could not get all orders by this operator: ${idOperator}`)
+        }
     },
 
     async getById(idProduct: string): Promise<Order> {
-        const sql = `SELECT * FROM orders WHERE id = ?`
-
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.get(sql, idProduct, (err: Error, row: Order) => {
-                if (err) reject(new QueryError(`Could not get order by this id: ${idProduct}`))
-
-                resolve(row)
-            })
-        })
+        const sql = `SELECT * FROM orders WHERE id = $1`
+        try {
+            const result = await DB.query(sql, [idProduct])
+            if (result.rows.length === 0) {
+                throw new QueryError(`Order not found with id: ${idProduct}`)
+            }
+            return result.rows[0]
+        } catch (error: unknown) {
+            throw new QueryError(`Could not get order by this id: ${idProduct}`)
+        }
     },
 
     async create(id: string, order: CreateOrder): Promise<string> {
         const sql = `
             INSERT INTO orders (id, id_client, id_product, quantity, price, status) 
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES ($1, $2, $3, $4, $5, $6)
         `
-
-        const params = [
-            id,
-            order.id_client,
-            order.id_product,
-            order.quantity,
-            order.price,
-            order.status
-        ]
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.get(sql, params, function (err: Error) {
-                if (err) reject(new QueryError(`Could not create order by this id: ${id}`))
-
-                resolve(id)
-            })
-        })
+        try {
+            await DB.query(sql, [
+                id,
+                order.id_client,
+                order.id_product,
+                order.quantity,
+                order.price,
+                order.status
+            ])
+            return id
+        } catch (error: unknown) {
+            throw new QueryError(`Could not create order by this id: ${id}`)
+        }
     },
 
     async update(id: string, order: UpdateOrder): Promise<string> {
+        const updates: string[] = []
+        const values: any[] = []
+        let paramCount = 1
 
-        const fields: string[] = []
-        const values: unknown[] = []
-
-        if (order.id_operator) {
-            fields.push('id_operator = ?')
+        if (order.id_operator !== undefined) {
+            updates.push(`id_operator = $${paramCount}`)
             values.push(order.id_operator)
+            paramCount++
         }
-        if (order.price) {
-            fields.push('price = ?')
-            values.push(order.price)
-        }
-        if (order.quantity) {
-            fields.push('quantity = ?')
-            values.push(order.quantity)
-        }
-        if (order.status) {
-            fields.push('status = ?')
+        if (order.status !== undefined) {
+            updates.push(`status = $${paramCount}`)
             values.push(order.status)
-        }
-        if (order.processingAt) {
-            fields.push('processing_at = ?')
-            values.push(order.processingAt)
-        }
-        if (order.completedAt) {
-            fields.push('completed_at = ?')
-            values.push(order.completedAt)
+            paramCount++
         }
 
-        if (fields.length === 0) {
-            return Promise.reject(new ClientError('There are no fields to modify'));
+        if (updates.length === 0) {
+            throw new ClientError('No fields to update')
         }
 
         values.push(id)
-
         const sql = `
             UPDATE orders 
-            SET ${fields.join(', ')} 
-            WHERE id = ?
+            SET ${updates.join(', ')} 
+            WHERE id = $${paramCount}
         `
 
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.run(sql, values, (err: Error) => {
-
-                console.log(err)
-                if (err) reject(new QueryError(`Could not update order by this id: ${id}`))
-
-                resolve(id)
-            })
-        })
+        try {
+            const result = await DB.query(sql, values)
+            if (result.rowCount === 0) {
+                throw new QueryError(`Order not found with id: ${id}`)
+            }
+            return id
+        } catch (error: unknown) {
+            throw new QueryError(`Could not update order by this id: ${id}`)
+        }
     },
 
     async delete(id: string): Promise<boolean> {
-        const sql = 'DELETE FROM orders WHERE id = ?'
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.run(sql, id, (err: Error) => {
-                if (err) reject(new QueryError(`Could not delete order by this id ${id}`))
-
-                resolve(true)
-            })
-        })
+        const sql = 'DELETE FROM orders WHERE id = $1'
+        try {
+            const result = await DB.query(sql, [id])
+            if (result.rowCount === 0) {
+                throw new QueryError(`Order not found with id: ${id}`)
+            }
+            return true
+        } catch (error: unknown) {
+            throw new QueryError(`Could not delete order by this id: ${id}`)
+        }
     }
 }   

@@ -1,95 +1,90 @@
-import { DB } from '../database/connect.ts'
-import { QueryError } from '../errors/server.error.ts'
+import { DB } from '../database/connect'
+import { QueryError } from '../errors/server.error'
 import { RegisterUser, User } from '@pawn-to-pawn/shared'
 
 export const UserModel = {
 
   async getAll(): Promise<User[]> {
     const sql = 'SELECT * FROM users'
-    const data: { users: User[] } = { users: [] }
-
-    return new Promise((resolve, reject: (reason: Error) => void) => {
-      DB.all(sql, [], (err, rows) => {
-        if (err) return reject(new QueryError('Could not get all users'));
-
-        (rows as User[]).forEach((row: User) => {
-          data.users.push({
-            ...row
-          })
-        })
-        resolve(data.users)
-      })
-    })
+    try {
+      const result = await DB.query(sql)
+      return result.rows
+    } catch (error: unknown) {
+      throw new QueryError('Could not get all users')
+    }
   },
 
   async getById(id: string): Promise<User> {
-    const sql = 'SELECT * FROM users WHERE id = ?'
-
-    return new Promise((resolve, reject: (reason: Error) => void) => {
-      DB.get(sql, id, (err, row) => {
-        if (err) return reject(new QueryError('Could not get a user'))
-
-        resolve(row as User)
-      })
-    })
+    const sql = 'SELECT * FROM users WHERE id = $1'
+    try {
+      const result = await DB.query(sql, [id])
+      if (result.rows.length === 0) {
+        throw new QueryError('User not found')
+      }
+      return result.rows[0]
+    } catch (error: unknown) {
+      throw new QueryError('Could not get a user')
+    }
   },
 
   async getByEmail(email: string): Promise<User> {
-    const sql = 'SELECT * FROM users WHERE email = ?'
-    return new Promise((resolve, reject: (reason: Error) => void) => {
-      DB.get(sql, email, (err, row) => {
-        if (err) return reject(new QueryError('Could not get a user'))
-
-        resolve(row as User)
-      })
-    })
+    const sql = 'SELECT * FROM users WHERE email = $1'
+    try {
+      const result = await DB.query(sql, [email])
+      if (result.rows.length === 0) {
+        throw new QueryError('User not found')
+      }
+      return result.rows[0]
+    } catch (error: unknown) {
+      throw new QueryError('Could not get a user')
+    }
   },
 
   async create(id: string, user: RegisterUser): Promise<string> {
-    const sql =
-      'INSERT INTO users(id, id_number, name, phone, email, password, role) VALUES(?, ?, ?, ?, ?, ?, ?)'
-    return new Promise((resolve, reject: (reason: Error) => void) => {
-      DB.run(
-        sql,
-        [id, user.id_number, user.name, user.phone, user.email, user.password, 'client'],
-        (err: Error) => {
-          if (err) {
-            return reject(new QueryError('The user could not be created'))
-          }
-
-          resolve(id)
-        }
-      )
-    })
+    const sql = `
+      INSERT INTO users(id, id_number, name, phone, email, password, role)
+      VALUES($1, $2, $3, $4, $5, $6, $7)
+    `
+    try {
+      await DB.query(sql, [
+        id,
+        user.id_number,
+        user.name,
+        user.phone,
+        user.email,
+        user.password,
+        'client'
+      ])
+      return id
+    } catch (error: unknown) {
+      throw new QueryError('The user could not be created')
+    }
   },
 
   async createOperator(id: string): Promise<string> {
     const sql = `
       UPDATE users 
       SET role = 'operator' 
-      WHERE id = ?
-    `;
-    return new Promise((resolve, reject: (reason: Error) => void) => {
-      DB.run(sql, [id], function (err) {
-        if (err) {
-          return reject(new QueryError(`Could not update role on id_user ${id}`));
-        }
-        if (this.changes === 0) {
-          return reject(new QueryError(`No user found with id ${id}`));
-        }
-        resolve(id);
-      });
-    });
+      WHERE id = $1
+    `
+    try {
+      const result = await DB.query(sql, [id])
+      if (!result.rowCount || result.rowCount === 0) {
+        throw new QueryError(`No user found with id ${id}`)
+      }
+      return id
+    } catch (error: unknown) {
+      throw new QueryError(`Could not update role on id_user ${id}`)
+    }
   },
 
-
   async delete(id: string): Promise<boolean> {
-    const sql = 'DELETE FROM users WHERE id = ?'
-    return new Promise((resolve, reject: (reason: Error) => void) => {
-      DB.run(sql, [id], (err: Error) => {
-        if (err) return reject(new QueryError('User can not be deleted'))
-        resolve(true)
-      })
-    })
+    const sql = 'DELETE FROM users WHERE id = $1'
+    try {
+      const result = await DB.query(sql, [id])
+      return result.rowCount ? result.rowCount > 0 : false
+    } catch (error: unknown) {
+      throw new QueryError('User can not be deleted')
+    }
   }
 }

@@ -2,15 +2,15 @@ import express, { json } from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
-import { ClientsRouter } from './routes/clients.route.ts'
-import { UsersRouter } from './routes/users.route.ts'
-import { OrdersRouter } from './routes/orders.route.ts'
-import { ProductsRouter } from './routes/products.route.ts'
-import { MaterialsRoute } from './routes/materials.route.ts'
-import { MachinesRoute } from './routes/machine.route.ts'
-import { DatabaseManager } from './database/DatabaseManager.ts'
-import { AdminManager } from './database/AdminManager.ts'
+import { UsersRouter } from './routes/users.route'
+import { OrdersRouter } from './routes/orders.route'
+import { ProductsRouter } from './routes/products.route'
+import { MaterialsRoute } from './routes/materials.route'
+import { MachinesRoute } from './routes/machine.route'
+import { AdminManager } from './database/AdminManager'
+import dotenv from 'dotenv';
 
+dotenv.config();
 const port = process.env.PORT ?? 3000
 const app = express()
 app.disable('x-powered-by')
@@ -18,7 +18,7 @@ app.disable('x-powered-by')
 // Middlewares
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: process.env.FRONTEND_URL,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true
   })
@@ -26,18 +26,15 @@ app.use(
 app.use(json())
 app.use(cookieParser())
 
-// Initialize database and admin
+// Initialize admin
 async function initializeApp() {
   try {
-    // Initialize database tables
-    await DatabaseManager.getInstance().initializeTables();
-    
     // Initialize admin user
     await AdminManager.getInstance().initializeAdmin();
     
     // Start server
     app.listen(port, () => {
-      console.log(`Server running on http://localhost:${port}/`)
+      console.log(`Server running on ${process.env.FRONTEND_URL}`)
     })
   } catch (error) {
     console.error('Failed to initialize application:', error);
@@ -46,7 +43,6 @@ async function initializeApp() {
 }
 
 // Endpoints
-app.use('/clients', ClientsRouter)
 app.use('/users', UsersRouter)
 app.use('/orders', OrdersRouter)
 app.use('/products', ProductsRouter)

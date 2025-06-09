@@ -6,115 +6,136 @@ export const RefreshTokenModel = {
     // Crear un nuevo refresh token
     async create(token: CreateRefreshToken): Promise<string> {
         const sql = `
-      INSERT INTO user_refresh_tokens (id, id_user, token, expires_at, revoked, device_info)
-      VALUES (?, ?, ?, ?, ?, ?)`;
-
-        return new Promise((resolve, reject) => {
-            DB.run(
-                sql,
-                [token.id, token.id_user, token.token, token.expires_at, token.revoked ? 1 : 0, token.device_info],
-                (err) => {
-                    if (err) {
-                        return reject(new QueryError(`Could not create refresh token: ${err.message}`));
-                    }
-                    resolve(token.token);
-                }
-            );
-        });
+            INSERT INTO user_refresh_tokens (id, id_user, token, expires_at, revoked, device_info)
+            VALUES ($1, $2, $3, $4, $5, $6)
+        `;
+        try {
+            await DB.query(sql, [
+                token.id,
+                token.id_user,
+                token.token,
+                token.expires_at,
+                token.revoked ? 1 : 0,
+                token.device_info
+            ]);
+            return token.token;
+        } catch (error: unknown) {
+            throw new QueryError(`Could not create refresh token: ${error instanceof Error ? error.message : 'unknown error'}`);
+        }
     },
 
     // Buscar por token (para validación)
     async getByToken(token: string): Promise<RefreshToken> {
         const sql = `
-      SELECT * FROM user_refresh_tokens
-      WHERE token = ? AND revoked = 0 AND expires_at > datetime('now')`;
-
-        return new Promise((resolve, reject) => {
-            DB.get(sql, [token], (err, row) => {
-                if (err) return reject(new QueryError('Could not fetch refresh token'));
-                resolve(row as RefreshToken);
-            });
-        });
+            SELECT * FROM user_refresh_tokens
+            WHERE token = $1 AND revoked = 0 AND expires_at > NOW()
+        `;
+        try {
+            const result = await DB.query(sql, [token]);
+            if (result.rows.length === 0) {
+                throw new QueryError('Refresh token not found or expired');
+            }
+            return result.rows[0];
+        } catch (error: unknown) {
+            throw new QueryError('Could not fetch refresh token');
+        }
     },
 
     // Revocar un token (logout)
-    async revoke(token: string): Promise<boolean> {
+    async revokeByUserId(userId: string): Promise<void> {
         const sql = `
-      UPDATE user_refresh_tokens
-      SET revoked = 1
-      WHERE token = ?`;
-
-        return new Promise((resolve, reject) => {
-            DB.run(sql, [token], function (err) {
-                if (err) return reject(new QueryError('Could not revoke token'));
-                resolve(this.changes > 0); // Devuelve true si se actualizó alguna fila
-            });
-        });
+            UPDATE user_refresh_tokens
+            SET revoked = 1
+            WHERE id_user = $1 AND revoked = 0
+        `;
+        try {
+            await DB.query(sql, [userId]);
+        } catch (error: unknown) {
+            throw new QueryError('Could not revoke refresh tokens');
+        }
     },
 
     // Revocar todos los tokens de un usuario (logout all devices)
     async revokeAllForUser(user_id: string): Promise<boolean> {
         const sql = `
-      UPDATE user_refresh_tokens
-      SET revoked = 1
-      WHERE user_id = ? AND revoked = 0`;
-
-        return new Promise((resolve, reject) => {
-            DB.run(sql, [user_id], function (err) {
-                if (err) return reject(new QueryError('Could not revoke tokens'));
-                resolve(this.changes > 0);
-            });
-        });
+            UPDATE user_refresh_tokens
+            SET revoked = 1
+            WHERE id_user = $1 AND revoked = 0
+        `;
+        try {
+            const result = await DB.query(sql, [user_id]);
+            return result.rowCount ? result.rowCount > 0 : false;
+        } catch (error: unknown) {
+            throw new QueryError('Could not revoke tokens');
+        }
     },
+
     // Revocar todos los tokens del mismo dispositivo de un usuario (logout one devices)
     async revokeAllForUserDevice(id_user: string, headers: string): Promise<boolean> {
         const sql = `
-          UPDATE user_refresh_tokens
-          SET revoked = 1
-          WHERE user_id = ? AND revoked = 0 AND device_info = ?`;
-
-        return new Promise((resolve, reject) => {
-            DB.run(sql, [id_user, headers], function (err) {
-                if (err) return reject(new QueryError('Could not revoke tokens'));
-                resolve(true);
-            });
-        });
+            UPDATE user_refresh_tokens
+            SET revoked = 1
+            WHERE id_user = $1 AND revoked = 0 AND device_info = $2
+        `;
+        try {
+            const result = await DB.query(sql, [id_user, headers]);
+            return result.rowCount ? result.rowCount > 0 : false;
+        } catch (error: unknown) {
+            throw new QueryError('Could not revoke tokens');
+        }
     },
 
     // Limpieza de tokens expirados (para ejecutar periódicamente)
-    async cleanupExpiredTokens(id_user: string): Promise<Boolean> {
+    async deleteExpired(): Promise<void> {
         const sql = `
-      DELETE FROM user_refresh_tokens
-      WHERE id_user = ? AND (revoked = 1 OR expires_at < datetime('now'))`;
+            DELETE FROM user_refresh_tokens
+            WHERE expires_at < NOW()
+        `;
+        try {
+            await DB.query(sql);
+        } catch (error: unknown) {
+            throw new QueryError('Could not delete expired tokens');
+        }
+    },
 
-        return new Promise((resolve, reject) => {
-            DB.run(sql, [id_user], function (err) {
-                if (err) return reject(new QueryError('Could not clean tokens'));
-                resolve(true);
-            });
-        });
+    async getByUserId(userId: string): Promise<RefreshToken[]> {
+        const sql = `
+            SELECT * FROM user_refresh_tokens
+            WHERE id_user = $1 AND revoked = 0 AND expires_at > NOW()
+        `;
+        try {
+            const result = await DB.query(sql, [userId]);
+            return result.rows;
+        } catch (error: unknown) {
+            throw new QueryError('Could not fetch refresh tokens');
+        }
     },
 
     async showUsersToken(userId: string): Promise<RefreshToken[]> {
         const sql = `
-        SELECT * 
-        FROM user_refresh_tokens 
-        WHERE user_id = ? AND revoked = 1 
-        `
-        const data: { tokens: RefreshToken[] } = { tokens: [] }
+            SELECT * 
+            FROM user_refresh_tokens 
+            WHERE id_user = $1 AND revoked = 1
+        `;
+        try {
+            const result = await DB.query(sql, [userId]);
+            return result.rows;
+        } catch (error: unknown) {
+            throw new QueryError('Could not get all clients');
+        }
+    },
 
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.all(sql, [userId], (err, rows) => {
-                if (err) return reject(new QueryError('Could not get all clients'));
-
-                (rows as RefreshToken[]).forEach((row: RefreshToken) => {
-                    data.tokens.push({
-                        ...row
-                    })
-                })
-                const { tokens } = data
-                resolve(tokens)
-            })
-        })
+    // Revocar un token específico
+    async revoke(token: string): Promise<void> {
+        const sql = `
+            UPDATE user_refresh_tokens
+            SET revoked = 1
+            WHERE token = $1 AND revoked = 0
+        `;
+        try {
+            await DB.query(sql, [token]);
+        } catch (error: unknown) {
+            throw new QueryError(`Could not revoke refresh token: ${error instanceof Error ? error.message : 'unknown error'}`);
+        }
     }
 };

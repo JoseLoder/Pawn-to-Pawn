@@ -29,11 +29,11 @@ export class AdminManager {
 
   public async checkAdminExists(): Promise<boolean> {
     try {
-      const row = await this.db.query(
-        'SELECT 1 FROM users WHERE email = ? OR role = ? LIMIT 1',
+      const rows = await this.db.query(
+        'SELECT 1 FROM users WHERE email = $1 OR role = $2 LIMIT 1',
         [this.adminConfig.EMAIL, this.adminConfig.ROLE]
       );
-      return !!row;
+      return rows.length > 0;
     } catch (err) {
       throw new QueryError('Could not verify admin existence');
     }
@@ -46,7 +46,7 @@ export class AdminManager {
     try {
       await this.db.run(
         `INSERT INTO users (id, id_number, name, phone, email, password, role)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
           adminId,
           this.adminConfig.ID_NUMBER,

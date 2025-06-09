@@ -1,4 +1,4 @@
-import { RegisterUser } from "../../types/users.types";
+import { RegisterUser } from "@pawn-to-pawn/shared";
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../../api/users.api";
 import { useNavigate } from "react-router";
@@ -43,7 +43,7 @@ export function Register() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setNewUser((prevUser) => ({
+    setNewUser((prevUser: RegisterUser) => ({
       ...prevUser,
       [name]: value,
     }));

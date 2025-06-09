@@ -6,101 +6,98 @@ import { CreateMaterial, Material, UpdateMaterial } from "@pawn-to-pawn/shared";
 export const MaterialModel = {
     async getAll(): Promise<Material[]> {
         const sql = `SELECT * FROM materials`
-        const data: { materials: Material[] } = { materials: [] }
-
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-
-            DB.all(sql, [], (err, rows) => {
-                if (err) return reject(new QueryError('Could not get all materials'));
-
-                (rows as Material[]).forEach((row: Material) => {
-                    data.materials.push({
-                        ...row
-                    })
-                })
-                resolve(data.materials)
-            })
-        })
+        try {
+            const result = await DB.query(sql)
+            return result.rows
+        } catch (error: unknown) {
+            throw new QueryError('Could not get all materials')
+        }
     },
+
     async getById(id: string): Promise<Material> {
-        const sql = 'SELECT * FROM materials WHERE id = ?'
-
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.get(sql, id, (err, row) => {
-                if (err) reject(new QueryError(`Could not get material by this id ${id}`))
-
-                resolve(row as Material)
-            })
-        })
+        const sql = 'SELECT * FROM materials WHERE id = $1'
+        try {
+            const result = await DB.query(sql, [id])
+            if (result.rows.length === 0) {
+                throw new QueryError(`Material not found with id: ${id}`)
+            }
+            return result.rows[0]
+        } catch (error: unknown) {
+            throw new QueryError(`Could not get material by this id ${id}`)
+        }
     },
 
     async create(id: string, material: CreateMaterial): Promise<string> {
         const sql = `
             INSERT INTO materials (id, type, weight, price)
-            VALUES (?, ?, ?, ?)
+            VALUES ($1, $2, $3, $4)
         `
-
-        const params = [
-            id,
-            material.type,
-            material.weight,
-            material.price
-        ]
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.run(sql, params, (err: Error) => {
-                if (err) reject(new QueryError('Could not create material',))
-
-                resolve(id)
-            })
-        })
+        try {
+            await DB.query(sql, [
+                id,
+                material.type,
+                material.weight,
+                material.price
+            ])
+            return id
+        } catch (error: unknown) {
+            throw new QueryError('Could not create material')
+        }
     },
 
     async update(id: string, material: UpdateMaterial): Promise<string> {
-        const fields: string[] = []
-        const values: unknown[] = []
+        const updates: string[] = []
+        const values: any[] = []
+        let paramCount = 1
 
-        if (material.type) {
+        if (material.type !== undefined) {
+            updates.push(`type = $${paramCount}`)
             values.push(material.type)
-            fields.push('type = ?')
+            paramCount++
         }
-        if (material.weight) {
+        if (material.weight !== undefined) {
+            updates.push(`weight = $${paramCount}`)
             values.push(material.weight)
-            fields.push('weight = ?')
+            paramCount++
         }
-        if (material.price) {
+        if (material.price !== undefined) {
+            updates.push(`price = $${paramCount}`)
             values.push(material.price)
-            fields.push('price = ?')
+            paramCount++
         }
 
-        if (fields.length === 0) {
-            return Promise.reject(new ClientError('There are no fields to modify'))
+        if (updates.length === 0) {
+            throw new ClientError('No fields to update')
         }
 
         values.push(id)
-
         const sql = `
-            UPDATE o
-            SET ${fields.join(', ')} 
-            WHERE id = ?
+            UPDATE materials 
+            SET ${updates.join(', ')} 
+            WHERE id = $${paramCount}
         `
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.run(sql, values, (err: Error) => {
-                if (err) reject(new QueryError(`Could not update material by this id: ${id}`))
 
-                resolve(id)
-            })
-
-        })
+        try {
+            const result = await DB.query(sql, values)
+            if (result.rowCount === 0) {
+                throw new QueryError(`Material not found with id: ${id}`)
+            }
+            return id
+        } catch (error: unknown) {
+            throw new QueryError(`Could not update material by this id: ${id}`)
+        }
     },
 
     async delete(id: string): Promise<boolean> {
-        const sql = 'DELETE FROM material WHERE id = ?'
-        return new Promise((resolve, reject: (reason: Error) => void) => {
-            DB.run(sql, id, (err: Error) => {
-                if (err) reject(new QueryError(`Could not delete material by this id ${id}`))
-
-                resolve(true)
-            })
-        })
+        const sql = 'DELETE FROM materials WHERE id = $1'
+        try {
+            const result = await DB.query(sql, [id])
+            if (result.rowCount === 0) {
+                throw new QueryError(`Material not found with id: ${id}`)
+            }
+            return true
+        } catch (error: unknown) {
+            throw new QueryError(`Could not delete material by this id: ${id}`)
+        }
     }
 }
