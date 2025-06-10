@@ -1,7 +1,7 @@
 import { ZodError } from 'zod'
 import { Response } from 'express'
-import { ServerError } from './server.error.ts'
-import { ClientError } from './client.error.ts'
+import { ServerError } from './server.error'
+import { ClientError } from './client.error'
 import { JsonWebTokenError } from 'jsonwebtoken'
 
 export const handleError = (e: Error, res: Response) => {

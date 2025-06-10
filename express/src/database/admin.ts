@@ -17,7 +17,7 @@ const ADMIN_CONFIG = {
  */
 export async function checkAdminExists(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-        DB.get(
+        DB.query(
             'SELECT 1 FROM users WHERE email = ? OR role = ? LIMIT 1',
             [ADMIN_CONFIG.EMAIL, ADMIN_CONFIG.ROLE],
             (err, row) => {
@@ -47,7 +47,7 @@ export async function createAdminIfNotExists(): Promise<void> {
         const adminPassword = await bcrypt.hash(ADMIN_CONFIG.DEFAULT_PASSWORD, 12); // Usamos versión asíncrona
 
         await new Promise<void>((resolve, reject) => {
-            DB.run(
+            DB.query(
                 `INSERT INTO users (id, id_number, name, phone, email, password, role)
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [

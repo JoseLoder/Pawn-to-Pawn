@@ -2,13 +2,13 @@ import jwt from 'jsonwebtoken';
 import { ZodError } from 'zod';
 import { CookieOptions, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import { UserModel } from '../models/user.model.ts';
-import { ClientError } from '../errors/client.error.ts';
-import { validateLogin, validateUser } from '../schema/users.schema.ts';
-import { ServerError } from '../errors/server.error.ts';
-import { handleError } from '../errors/handleError.ts';
+import { UserModel } from '../models/user.model';
+import { ClientError } from '../errors/client.error';
+import { validateLogin, validateUser } from '../schema/users.schema';
+import { ServerError } from '../errors/server.error';
+import { handleError } from '../errors/handleError';
 import { LogUser, PublicUser, RegisterUser } from '@pawn-to-pawn/shared';
-import { RefreshTokensController } from './refreshTokens.controller.ts';
+import { RefreshTokensController } from './refreshTokens.controller';
 import { AccessTokenEncryption } from '@pawn-to-pawn/shared';
 
 declare global {
