@@ -1,4 +1,4 @@
-export const API_LOCAL = "http://localhost:3000"
+export const API_LOCAL = "https://pawn-to-pawn.vercel.app"
 
 
 export const API = process.env.NODE_ENV === 'production' ?
