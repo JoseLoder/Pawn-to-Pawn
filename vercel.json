@@ -1,0 +1,15 @@
+{
+  "installCommand": "npm install --prefix express",
+  "builds": [
+    {
+      "src": "express/build/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "express/build/index.js"
+    }
+  ]
+} 
