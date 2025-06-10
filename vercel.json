@@ -1,27 +1,15 @@
 {
-  "installCommand": "npm install --prefix express && npm install --prefix react",
-  "buildCommand": "npm run build --prefix react && npm run tsc --prefix express",
-  "builds": [
-    {
-      "src": "express/src/index.ts",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "react/index.html",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
+  "installCommand": "npm install --prefix express",
+  "buildCommand": "npm run tsc --prefix express",
+  "functions": {
+    "express/src/index.ts": {
+      "runtime": "@vercel/node"
     }
-  ],
+  },
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "express/src/index.ts"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "react/index.html"
     }
   ],
   "headers": [
