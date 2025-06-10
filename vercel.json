@@ -1,15 +1,46 @@
 {
-  "installCommand": "npm install --prefix express",
+  "installCommand": "npm install --prefix express && npm install --prefix react",
+  "buildCommand": "npm run build --prefix react && npm run tsc --prefix express",
   "builds": [
     {
-      "src": "express/build/index.js",
+      "src": "express/src/index.ts",
       "use": "@vercel/node"
+    },
+    {
+      "src": "react/index.html",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     }
   ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "express/src/index.ts"
+    },
+    {
       "src": "/(.*)",
-      "dest": "express/build/index.js"
+      "dest": "react/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "X-Requested-With, Content-Type, Authorization"
+        }
+      ]
     }
   ]
 } 
