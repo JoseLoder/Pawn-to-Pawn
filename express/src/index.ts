@@ -23,6 +23,7 @@ app.use(
     credentials: true
   })
 )
+console.log(`CORS origin set to: ${process.env.FRONTEND_URL}`);
 app.use(json())
 app.use(cookieParser())
 
