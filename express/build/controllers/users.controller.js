@@ -141,7 +141,7 @@ exports.UsersController = {
             const cookieOptions = {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                sameSite: 'none',
                 maxAge: 15 * 60 * 1000,
                 path: '/',
             };
@@ -218,7 +218,7 @@ exports.UsersController = {
             const cookieOptions = {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                sameSite: 'none',
                 path: '/',
             };
             res
