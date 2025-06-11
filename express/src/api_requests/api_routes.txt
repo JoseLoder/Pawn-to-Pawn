@@ -1,0 +1,41 @@
+API Routes Documentation:
+
+--- machines.http ---
+GET /machines/ (ACCESS: CLIENTS | OPERATORS | ADMIN)
+GET /machines/{id} (ACCESS: CLIENTS | OPERATORS | ADMIN)
+POST /machines/ (ACCESS: ONLY ADMIN)
+
+--- materials.http ---
+GET /materials/ (ACCESS: CLIENTS | OPERATORS | ADMIN)
+GET /materials/{id} (ACCESS: CLIENTS | OPERATORS | ADMIN)
+POST /materials/ (ACCESS: ONLY ADMIN)
+
+--- orders.http ---
+POST /orders (ACCESS: CLIENTS | OPERATORS | ADMIN)
+GET /orders/all/me (ACCESS: CLIENT | OPERATOR | ADMIN)
+GET /orders/me/{id} (ACCESS: CLIENT | OPERATOR | ADMIN)
+PATCH /orders/set/pending/{id} (ACCESS: CLIENT | OPERATOR | ADMIN)
+GET /orders/pending (ACCESS: OPERATOR | ADMIN)
+PATCH /orders/set/operator/{id} (ACCESS: OPERATOR)
+GET /orders/preparation/{id} (ACCESS: OPERATOR | ADMIN)
+GET /orders/operator/orders/{id_operator} (ACCESS: OPERATOR | ADMIN)
+PATCH /orders/set/complete/{id} (ACCESS: OPERATOR | ADMIN)
+GET /orders/ (ACCESS: ADMIN)
+GET /orders/{id} (ACCESS: ADMIN)
+
+--- products.http ---
+GET /products/ (ACCESS: CLIENTS | OPERATORS | ADMIN)
+GET /products/{id} (ACCESS: CLIENTS | OPERATORS | ADMIN)
+POST /products/ (ACCESS: ADMIN | OPERATOR)
+
+--- users.http ---
+POST /users/register (ACCESS: ALL)
+POST /users/login (ACCESS: ALL)
+GET /users/me (ACCESS: CLIENTS | OPERATOR | ADMIN)
+//GET /users/email/{email} (ACCESS: CLIENTS | OPERATOR | ADMIN) - Commented out in source
+GET /users (ACCESS: ONLY ADMIN)
+GET /users/clients (ACCESS: OPERATOR | ADMIN)
+GET /users/operators (ACCESS: ONLY ADMIN)
+PATCH /users/{id} (ACCESS: ONLY ADMIN) - Ascend User
+POST /users/logout (ACCESS: ALL)
+DELETE /users/{id} (ACCESS: ONLY ADMIN) 
