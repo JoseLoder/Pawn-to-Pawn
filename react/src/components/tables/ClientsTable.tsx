@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { PublicUser, Items } from "@pawn-to-pawn/shared";
+import { PublicUser, Items, AxiosErrorData } from "@pawn-to-pawn/shared";
 import { Table } from "./base/Table";
 import { ascendUserToOperator } from "../../api/users.api";
-import { useState } from "react";
-import { BackEndError } from "../../errors/BackEndError";
+import { AxiosError } from "axios";
 
 const columns = [
   {
@@ -30,13 +29,13 @@ const columns = [
 
 export function ClientsTable({ clients }: Readonly<{ clients: PublicUser[] }>) {
 
-  const [error, setError] = useState<Error | null>(null)
   const QueryClient = useQueryClient()
   const ascendUserToOperatorMutation = useMutation({
     mutationKey: ["Ascend User"],
     mutationFn: ascendUserToOperator,
-    onError: (error) => {
-      setError(error)
+    onError: (error: AxiosError) => {
+      const axiosError = error.response?.data as AxiosErrorData;
+      alert(axiosError.message)
     },
     onSuccess: () => {
       QueryClient.invalidateQueries({ queryKey: ["clients"] });
@@ -44,12 +43,13 @@ export function ClientsTable({ clients }: Readonly<{ clients: PublicUser[] }>) {
   });
 
   const ascendUser = (id:string) => {
-    ascendUserToOperatorMutation.mutate(id)
+    if (confirm('Are you sure you want to ascend this user to operator?')) {
+      ascendUserToOperatorMutation.mutate(id)
+    }
   }
 
   const actions = [
     {
-      disabled: (item: Items) => item['role'] !== "client",
       name: "Ascend User",
       action: (id: string) => {
         ascendUser(id);
@@ -58,8 +58,7 @@ export function ClientsTable({ clients }: Readonly<{ clients: PublicUser[] }>) {
 
   return (
     <>
-    <Table columns={columns} items={clients} actions={actions}/>
-    <BackEndError inputError={error}/>
+      <Table columns={columns} items={clients} actions={actions}/>
     </>
   )
 }

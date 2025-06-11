@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { OrdersTable } from "../../components/tables/OrdersTable";
-import { Actions } from "@pawn-to-pawn/shared";
+import { Actions, AxiosErrorData } from "@pawn-to-pawn/shared";
 import { useMutation } from "@tanstack/react-query";
 import { setOrderToOperator } from "../../api/orders.api";
 import { useNavigate } from "react-router";
+import { AxiosError } from "axios";
 
 export function ShowOperatorOrders() {
     const navigate = useNavigate()
@@ -16,9 +17,9 @@ export function ShowOperatorOrders() {
             alert('The order has been assigned to the operator.')
             navigate('/professional/preparation')
         },
-        onError: (error) => {
-            alert('The order could not be assigned.')
-            console.log(error)
+        onError: (error: AxiosError) => {
+            const axiosError = error.response?.data as AxiosErrorData;   
+            alert(axiosError.message)
         }
     })
 
