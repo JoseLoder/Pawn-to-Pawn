@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Client } from "@pawn-to-pawn/shared";
+import { PublicUser, Items } from "@pawn-to-pawn/shared";
 import { Table } from "./base/Table";
 import { ascendUserToOperator } from "../../api/users.api";
 import { useState } from "react";
@@ -28,7 +28,7 @@ const columns = [
   },
 ];
 
-export function ClientsTable({ clients }: Readonly<{ clients: Client[] }>) {
+export function ClientsTable({ clients }: Readonly<{ clients: PublicUser[] }>) {
 
   const [error, setError] = useState<Error | null>(null)
   const QueryClient = useQueryClient()
@@ -49,6 +49,7 @@ export function ClientsTable({ clients }: Readonly<{ clients: Client[] }>) {
 
   const actions = [
     {
+      disabled: (item: Items) => item['role'] !== "client",
       name: "Ascend User",
       action: (id: string) => {
         ascendUser(id);
@@ -57,8 +58,8 @@ export function ClientsTable({ clients }: Readonly<{ clients: Client[] }>) {
 
   return (
     <>
-    <BackEndError inputError={error}/>
     <Table columns={columns} items={clients} actions={actions}/>
+    <BackEndError inputError={error}/>
     </>
   )
 }

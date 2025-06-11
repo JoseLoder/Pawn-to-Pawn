@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { Table } from "./base/Table";
 import { getMyOrders, getOrders, getPendingOrders } from "../../api/orders.api";
 import { useQuery } from "@tanstack/react-query";
@@ -59,14 +59,12 @@ export function OrdersTable({ tableFor, actions }: { tableFor: TableFor, actions
         if (tableFor === "admin") {
             return getOrders()
         }
-        // It's good practice to return a default or throw an error if tableFor is an unexpected value
         throw new Error(`Invalid tableFor value: ${tableFor}`);
     }, [tableFor])
 
-    const { data: response, error, isLoading } = useQuery({ // isLoading can be used to show a loading state
-        queryKey: ["orders", tableFor], // It's good to include dependencies like tableFor in the queryKey
+    const { data: response, error, isLoading } = useQuery({ 
+        queryKey: ["orders", tableFor],
         queryFn: requestOrders,
-        // onSuccess and onError are available, but often data and error properties are sufficient
     });
 
     const items = response?.data;
@@ -83,13 +81,29 @@ export function OrdersTable({ tableFor, actions }: { tableFor: TableFor, actions
         }
     }, [actions]) // actions should be a dependency if it can change and affect the columns
 
+    const modifiedActions = useMemo(() => {
+        if (!actions) return undefined;
+
+        return actions.map(action => {
+            if (tableFor === "client") {
+                return {
+                    ...action,
+                    disabled: (item: Items) => item['status'] !== "inHold"
+                };
+            }
+            return action;
+        });
+    }, [actions, tableFor, items]);
 
     return (
-        isLoading ? 
-            <p>Loading orders...</p> : 
-            <section>
+        <>
+        {isLoading ? 
+        <section>
+            <p>Loading orders...</p> 
+        </section> : 
+        <Table columns={columns} items={items as Items[]} actions={modifiedActions}/>
+        }
             {error && <BackEndError inputError={error} />}
-            <Table columns={columns} items={items as Items[]} actions={actions}></Table>
-        </section>
+        </>
     )
 } 

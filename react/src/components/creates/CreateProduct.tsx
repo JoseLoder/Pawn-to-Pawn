@@ -9,6 +9,8 @@ import { createProduct } from "../../api/products.api";
 import { getAllMachines } from "../../api/machines.api";
 import { getAllMaterials } from "../../api/materials.api";
 import { Material } from "@pawn-to-pawn/shared";
+import * as Form from "@radix-ui/react-form";
+import styled from "styled-components";
 
 const initialProduct: CreateProductType = {
   base: "iron",
@@ -72,93 +74,216 @@ export function CreateProduct() {
   };
 
   return (
-    <section>
-      {error && <BackEndError inputError={error} />}
-      <form onSubmit={(event) => handleSubmit(event)}>
-        <label htmlFor="base">Base</label>
-        <select
-          name="base"
-          id="base"
-          value={product.base}
-          onChange={handleChance}
-        >
-          <option value="iron">iron</option>
-          <option value="pvc">pvc</option>
-          <option value="cardboard">cardboard</option>
-        </select>
+    <>
+    <LoginSection>
+      <StyledH2>Create Product</StyledH2>
+      <FormRoot onSubmit={(event) => handleSubmit(event)}>
+        <FormField name="base">
+          <FormLabel htmlFor="base">Base</FormLabel>
+          <Form.Control asChild>
+            <StyledSelect
+              name="base"
+              id="base"
+              value={product.base}
+              onChange={handleChance}
+              required
+            >
+              <option value="iron">iron</option>
+              <option value="pvc">pvc</option>
+              <option value="cardboard">cardboard</option>
+            </StyledSelect>
+          </Form.Control>
+          <FormMessage match="valueMissing">Please select a base</FormMessage>
+        </FormField>
 
-        <label htmlFor="cover">Cover</label>
-        <select
-          name="cover"
-          id="cover"
-          value={product.cover}
-          onChange={handleChance}
-        >
-          <option value="white">white</option>
-          <option value="black">black</option>
-          <option value="golden">golden</option>
-        </select>
+        <FormField name="cover">
+          <FormLabel htmlFor="cover">Cover</FormLabel>
+          <Form.Control asChild>
+            <StyledSelect
+              name="cover"
+              id="cover"
+              value={product.cover}
+              onChange={handleChance}
+              required
+            >
+              <option value="white">white</option>
+              <option value="black">black</option>
+              <option value="golden">golden</option>
+            </StyledSelect>
+          </Form.Control>
+          <FormMessage match="valueMissing">Please select a cover</FormMessage>
+        </FormField>
 
-        <label htmlFor="id_machine">Machine</label>
-        {isLoadingMachines && <p>Loading machines...</p>}
-        {isErrorMachines && <BackEndError inputError={machinesError as Error} />}
-        {!isLoadingMachines && !isErrorMachines && (
-          <select
-            name="id_machine"
-            id="id_machine"
-            value={product.id_machine}
-            onChange={handleChance}
-            disabled={!machines || machines.data.length === 0}
-          >
-            <option value="">Select a machine</option>
-            {machines?.data?.map((machine: any) => (
-              <option key={machine.id} value={machine.id}>
-                {machine.id} {/* Assuming machine object has an "id" property */}
-              </option>
-            ))}
-          </select>
-        )}
+        <FormField name="id_machine">
+          <FormLabel htmlFor="id_machine">Machine</FormLabel>
+          {isLoadingMachines && <p>Loading machines...</p>}
+          {isErrorMachines && <BackEndError inputError={machinesError as Error} />}
+          {!isLoadingMachines && !isErrorMachines && (
+            <Form.Control asChild>
+              <StyledSelect
+                name="id_machine"
+                id="id_machine"
+                value={product.id_machine}
+                onChange={handleChance}
+                disabled={!machines || machines.data.length === 0}
+                required
+              >
+                <option value="">Select a machine</option>
+                {machines?.data?.map((machine: any) => (
+                  <option key={machine.id} value={machine.id}>
+                    {machine.id}
+                  </option>
+                ))}
+              </StyledSelect>
+            </Form.Control>
+          )}
+          <FormMessage match="valueMissing">Please select a machine</FormMessage>
+        </FormField>
 
-        <label htmlFor="id_material">Material</label>
-        {isLoadingMaterials && <p>Loading materials...</p>}
-        {isErrorMaterials && <BackEndError inputError={materialsError as Error} />}
-        {!isLoadingMaterials && !isErrorMaterials && (
-          <select
-            name="id_material"
-            id="id_material"
-            value={product.id_material}
-            onChange={handleChance}
-            disabled={!materials || materials.data.length === 0}
-          >
-            <option value="">Select a material</option>
-            {materials?.data?.map((material: Material) => (
-              <option key={material.id} value={material.id}>
-                {material.type}
-              </option>
-            ))}
-          </select>
-        )}
+        <FormField name="id_material">
+          <FormLabel htmlFor="id_material">Material</FormLabel>
+          {isLoadingMaterials && <p>Loading materials...</p>}
+          {isErrorMaterials && <BackEndError inputError={materialsError as Error} />}
+          {!isLoadingMaterials && !isErrorMaterials && (
+            <Form.Control asChild>
+              <StyledSelect
+                name="id_material"
+                id="id_material"
+                value={product.id_material}
+                onChange={handleChance}
+                disabled={!materials || materials.data.length === 0}
+                required
+              >
+                <option value="">Select a material</option>
+                {materials?.data?.map((material: Material) => (
+                  <option key={material.id} value={material.id}>
+                    {material.type}
+                  </option>
+                ))}
+              </StyledSelect>
+            </Form.Control>
+          )}
+          <FormMessage match="valueMissing">Please select a material</FormMessage>
+        </FormField>
 
-        <label htmlFor="length">Length</label>
-        <input
-          type="number"
-          name="length"
-          id="length"
-          value={product.length}
-          onChange={handleChance}
-        />
+        <FormField name="length">
+          <FormLabel htmlFor="length">Length</FormLabel>
+          <Form.Control asChild>
+            <StyledInput
+              type="number"
+              name="length"
+              id="length"
+              value={product.length}
+              onChange={handleChance}
+              required
+            />
+          </Form.Control>
+          <FormMessage match="valueMissing">Please enter the length</FormMessage>
+          <FormMessage match={(value) => parseFloat(value) <= 0}>
+            Length must be greater than 0
+          </FormMessage>
+        </FormField>
 
-        <label htmlFor="widht">Width</label>
-        <input
-          type="number"
-          name="widht"
-          id="widht"
-          value={product.widht}
-          onChange={handleChance}
-        />
+        <FormField name="widht">
+          <FormLabel htmlFor="widht">Width</FormLabel>
+          <Form.Control asChild>
+            <StyledInput
+              type="number"
+              name="widht"
+              id="widht"
+              value={product.widht}
+              onChange={handleChance}
+              required
+            />
+          </Form.Control>
+          <FormMessage match="valueMissing">Please enter the width</FormMessage>
+          <FormMessage match={(value) => parseFloat(value) <= 0}>
+            Width must be greater than 0
+          </FormMessage>
+        </FormField>
 
-        <button type="submit">{loading ? "Loading.." : "Create Product"}</button>
-      </form>
-    </section>
+        <Form.Submit asChild>
+          <StyledButton type="submit">{loading ? "Loading.." : "Create Product"}</StyledButton>
+        </Form.Submit>
+      </FormRoot>
+    </LoginSection>
+    {error && <BackEndError inputError={error} />}
+    </>
   );
-} 
+}
+
+const FormRoot = styled(Form.Root)`
+  flex: 1;
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const FormField = styled(Form.Field)`
+  display: flex;
+  flex-direction: column;
+`;
+
+const FormLabel = styled(Form.Label)`
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #333;
+`;
+
+const StyledInput = styled.input`
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+`;
+
+const StyledSelect = styled.select`
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: white;
+  cursor: pointer;
+`;
+
+const StyledButton = styled.button`
+  background-color: ${(props) => props.theme.accent12};
+  color: ${(props) => props.theme.accent1};
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+
+  &:disabled {
+    background-color: ${(props) => props.theme.accent6};
+    cursor: not-allowed;
+  }
+`;
+
+const LoginSection = styled.section`
+  background-color: ${(props) => props.theme.accent4};
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+`;
+
+const StyledH2 = styled.h2`
+  color: ${(props) => props.theme.accent12};
+  margin-bottom: 20px;
+`;
+
+const FormMessage = styled(Form.Message)`
+  font-size: 12px;
+  color: ${(props) => props.theme.danger1};
+  margin-top: 5px;
+`; 

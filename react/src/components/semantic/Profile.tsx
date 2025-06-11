@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
-import { User } from "../../types/users.types"
+import { User } from "@pawn-to-pawn/shared"
 import { useMutation } from "@tanstack/react-query"
 import { getMyUser } from "../../api/users.api"
 import { BackEndError } from "../../errors/BackEndError"
+import styled from "styled-components"
 
 export function Profile() {
 
@@ -30,20 +31,71 @@ export function Profile() {
     }, [])
 
     return (
-        <main>
-            <h1>My Profile</h1>
-            <section>
-                {loading && <h2>Cargando..</h2>}
-                <BackEndError inputError={error} />
+        <>
+            <StyledSection>
+            <StyledHeader>My Profile</StyledHeader>
+                {loading && <StyledLoading>Cargando..</StyledLoading>}
                 {user &&
-                    <ul>
-                        <li>Name: {user.name} </li>
-                        <li>Email: {user.email}</li>
-                        <li>Identifier: {user.id_number}</li>
-                        <li>Phone: {user.phone}</li>
-                    </ul>
+                    <StyledList>
+                        <StyledListItem><strong>Name </strong> {user.name} </StyledListItem>
+                        <StyledListItem><strong>Email </strong> {user.email}</StyledListItem>
+                        <StyledListItem><strong>Identifier </strong> {user.id_number}</StyledListItem>
+                        <StyledListItem><strong>Phone </strong> {user.phone}</StyledListItem>
+                    </StyledList>
                 }
-            </section>
-        </main>
+            </StyledSection>
+            {error && <BackEndError inputError={error} />}
+        </>
     )
 }
+
+
+const StyledHeader = styled.h1`
+    color: ${(props) => props.theme.accent12};
+    font-size: 2.5em;
+    text-align: center;
+    border-bottom: 2px solid ${(props) => props.theme.accent6};
+    padding-bottom: 15px;
+`
+
+const StyledSection = styled.section`
+    background-color: ${(props) => props.theme.accent3};
+    padding: 25px;
+    border-radius: 8px;
+    
+    margin:30px;
+`
+
+const StyledLoading = styled.h2`
+    color: ${(props) => props.theme.accent11};
+    text-align: center;
+    font-size: 1.5em;
+    margin-top: 20px;
+`
+
+const StyledList = styled.ul`
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+`
+
+const StyledListItem = styled.li`
+    background-color: ${(props) => props.theme.accent4};
+    color: ${(props) => props.theme.accent12};
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+
+    strong {
+        font-weight: bold;
+        color: ${(props) => props.theme.accent11};
+        margin-right: 10px;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+`

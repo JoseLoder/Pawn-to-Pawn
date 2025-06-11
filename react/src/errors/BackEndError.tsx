@@ -111,8 +111,8 @@ export const BackEndError = ({ inputError }: { inputError: Error | null }) => {
 
 const Error = styled.div`
 font-weight: bold;
-color: ${(props) => props.theme.danger1};
-background-color: ${(props) => props.theme.danger2};
+color: ${(props) => props.theme.accent1};
+background-color: ${(props) => props.theme.danger1};
 border-radius: 15px;
 padding: 10px
 `

@@ -10,13 +10,13 @@ export function Professional() {
     { to: "preparation", text: "Order Preparation" },
     { to: "products", text: "Products Zone" },
     { to: "me", text: "Profile" },
+    Logout()
   ];
 
   return (
     <>
       <Header title="Hello Professional">
         <Nav links={linksToShow} />
-        <Logout />
       </Header>
       <Outlet />
     </>

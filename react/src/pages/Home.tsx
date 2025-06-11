@@ -5,17 +5,6 @@ import styled from "styled-components";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../contexts/UserContext";
 
-const StyledMain = styled.main`
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-input {
-  margin-bottom: 10px;
-}
-`
 export function Home() {
   const navigate = useNavigate();
   const userContextProvider = useContext(UserContext);
@@ -57,3 +46,11 @@ export function Home() {
     </>
   );
 }
+
+const StyledMain = styled.main`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+`;

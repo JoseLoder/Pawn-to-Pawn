@@ -10,14 +10,14 @@ export function Admin() {
         { to: "machines", text: "Machines Zone"},
         { to: "materials", text: "Materials Zone"},
         { to: "products", text: "Products Zone"},
-        { to: "me", text: "Profile" }
+        { to: "me", text: "Profile" },
+        Logout()
     ];
 
     return (
         <>
             <Header title="Hello Admin">
                 <Nav links={linksToShow} />
-                <Logout />
             </Header>
             <Outlet />
         </>

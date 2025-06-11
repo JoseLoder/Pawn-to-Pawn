@@ -27,15 +27,13 @@ export const Logout = () => {
     },
   });
 
-  return (
-    <Nav
-      links={[
-        {
-          to: "/",
-          text: "Log Out",
-          actions: () => logoutMutation.mutate()
-        },
-      ]}
-    ></Nav>
-  );
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  }
+
+  return {
+    to: "/",
+    text: "Log Out",
+    actions: handleLogout
+  }
 };

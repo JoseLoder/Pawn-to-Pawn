@@ -14,6 +14,7 @@ export type Actions = {
     name: string;
     action: (id: string) => void;
     icon?: string;
+    disabled?: (item: Items) => boolean;
 }
 
 export type TableFor = 'client' | 'operator' | 'admin'

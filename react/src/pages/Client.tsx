@@ -9,14 +9,14 @@ export function Client() {
     const linksToShow = [
         { to: "create-order", text: "Create Order" },
         { to: "show-orders", text: "Show Order" },
-        { to: "me", text: "Profile" }
+        { to: "me", text: "Profile" },
+        Logout()
     ];
 
     return (
         <>
             <Header title="Hello Client">
                 <Nav links={linksToShow} />
-                <Logout />
             </Header>
             <Outlet />
         </>
