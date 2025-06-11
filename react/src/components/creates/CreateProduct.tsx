@@ -1,8 +1,5 @@
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-// TODO: Import the actual createProduct API function
-// import { createProduct } from "../../api/products.api";
-
 import { CreateProduct as CreateProductType } from "@pawn-to-pawn/shared";
 import { BackEndError } from "../../errors/BackEndError";
 import { createProduct } from "../../api/products.api";
@@ -80,7 +77,6 @@ export function CreateProduct() {
       <FormRoot onSubmit={(event) => handleSubmit(event)}>
         <FormField name="base">
           <FormLabel htmlFor="base">Base</FormLabel>
-          <Form.Control asChild>
             <StyledSelect
               name="base"
               id="base"
@@ -92,13 +88,11 @@ export function CreateProduct() {
               <option value="pvc">pvc</option>
               <option value="cardboard">cardboard</option>
             </StyledSelect>
-          </Form.Control>
           <FormMessage match="valueMissing">Please select a base</FormMessage>
         </FormField>
 
         <FormField name="cover">
           <FormLabel htmlFor="cover">Cover</FormLabel>
-          <Form.Control asChild>
             <StyledSelect
               name="cover"
               id="cover"
@@ -110,7 +104,6 @@ export function CreateProduct() {
               <option value="black">black</option>
               <option value="golden">golden</option>
             </StyledSelect>
-          </Form.Control>
           <FormMessage match="valueMissing">Please select a cover</FormMessage>
         </FormField>
 
@@ -119,7 +112,7 @@ export function CreateProduct() {
           {isLoadingMachines && <p>Loading machines...</p>}
           {isErrorMachines && <BackEndError inputError={machinesError as Error} />}
           {!isLoadingMachines && !isErrorMachines && (
-            <Form.Control asChild>
+            
               <StyledSelect
                 name="id_machine"
                 id="id_machine"
@@ -131,11 +124,11 @@ export function CreateProduct() {
                 <option value="">Select a machine</option>
                 {machines?.data?.map((machine: any) => (
                   <option key={machine.id} value={machine.id}>
-                    {machine.id}
+                    {machine.name}
                   </option>
                 ))}
               </StyledSelect>
-            </Form.Control>
+            
           )}
           <FormMessage match="valueMissing">Please select a machine</FormMessage>
         </FormField>
@@ -145,7 +138,7 @@ export function CreateProduct() {
           {isLoadingMaterials && <p>Loading materials...</p>}
           {isErrorMaterials && <BackEndError inputError={materialsError as Error} />}
           {!isLoadingMaterials && !isErrorMaterials && (
-            <Form.Control asChild>
+            
               <StyledSelect
                 name="id_material"
                 id="id_material"
@@ -161,14 +154,14 @@ export function CreateProduct() {
                   </option>
                 ))}
               </StyledSelect>
-            </Form.Control>
+            
           )}
           <FormMessage match="valueMissing">Please select a material</FormMessage>
         </FormField>
 
         <FormField name="length">
-          <FormLabel htmlFor="length">Length</FormLabel>
-          <Form.Control asChild>
+          <FormLabel htmlFor="length">Length (m)</FormLabel>
+          
             <StyledInput
               type="number"
               name="length"
@@ -177,7 +170,7 @@ export function CreateProduct() {
               onChange={handleChance}
               required
             />
-          </Form.Control>
+          
           <FormMessage match="valueMissing">Please enter the length</FormMessage>
           <FormMessage match={(value) => parseFloat(value) <= 0}>
             Length must be greater than 0
@@ -185,8 +178,8 @@ export function CreateProduct() {
         </FormField>
 
         <FormField name="widht">
-          <FormLabel htmlFor="widht">Width</FormLabel>
-          <Form.Control asChild>
+          <FormLabel htmlFor="widht">Width (mm)</FormLabel>
+          
             <StyledInput
               type="number"
               name="widht"
@@ -195,7 +188,7 @@ export function CreateProduct() {
               onChange={handleChance}
               required
             />
-          </Form.Control>
+          
           <FormMessage match="valueMissing">Please enter the width</FormMessage>
           <FormMessage match={(value) => parseFloat(value) <= 0}>
             Width must be greater than 0
