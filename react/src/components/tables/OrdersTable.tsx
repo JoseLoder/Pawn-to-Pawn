@@ -79,21 +79,7 @@ export function OrdersTable({ tableFor, actions }: { tableFor: TableFor, actions
                 name: 'Actions'
             })
         }
-    }, [actions]) // actions should be a dependency if it can change and affect the columns
-
-    const modifiedActions = useMemo(() => {
-        if (!actions) return undefined;
-
-        return actions.map(action => {
-            if (tableFor === "client") {
-                return {
-                    ...action,
-                    disabled: (item: Items) => item['status'] !== "inHold"
-                };
-            }
-            return action;
-        });
-    }, [actions, tableFor, items]);
+    }, [actions])
 
     return (
         <>
@@ -101,7 +87,7 @@ export function OrdersTable({ tableFor, actions }: { tableFor: TableFor, actions
         <section>
             <p>Loading orders...</p> 
         </section> : 
-        <Table columns={columns} items={items as Items[]} actions={modifiedActions}/>
+        <Table columns={columns} items={items as Items[]} actions={actions}/>
         }
             {error && <BackEndError inputError={error} />}
         </>

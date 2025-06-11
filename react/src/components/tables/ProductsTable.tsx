@@ -17,23 +17,28 @@ const columns = [
   },
   {
     path: "length",
-    name: "Length",
+    name: "Length (m)",
+    unit: "m"
   },
     {
     path: "widht",
-    name: "Width",
+    name: "Width (mm)",
+    unit: "mm"
   },
   {
     path: "estimated_time",
-    name: "Estimated Time",
+    name: "Estimated Time (min)",
+    unit: "min"
   },
   {
     path: "estimated_weight",
-    name: "Estimated Weight",
+    name: "Estimated Weight (g)",
+    unit: "g"
   },
   {
     path: "price",
-    name: "Price",
+    name: "Price (€)",
+    unit: "€"
   }
 ];
 

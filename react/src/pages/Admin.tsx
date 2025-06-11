@@ -1,9 +1,11 @@
 import { Header } from "../components/semantic/Header"
 import { Logout } from "./home/Logout"
-import { Outlet } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import { Nav } from "../components/semantic/Nav";
+import { useEffect } from "react";
 
 export function Admin() {
+    const navigate = useNavigate();
     const linksToShow = [
         { to: "show-clients", text: "Show Clients" },
         { to: "show-orders", text: "Show Orders" },
@@ -13,7 +15,9 @@ export function Admin() {
         { to: "me", text: "Profile" },
         Logout()
     ];
-
+    useEffect(() => {
+            navigate("/admin/show-clients");
+    }, []);
     return (
         <>
             <Header title="Hello Admin">

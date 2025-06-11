@@ -33,7 +33,7 @@ export function CreateOrder() {
         },
         onSuccess: () => {
             setLoading(false)
-            alert("Order created, got to show order page");
+            alert("Order created, will be redirected to show order page");
             navigate('/client/show-orders')
         },
         onError: (e) => {

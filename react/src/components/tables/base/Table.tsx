@@ -24,13 +24,13 @@ export function Table({ columns, items, actions }: TableInputs) {
                   {column.path === "actions" ? (
                     <>
                       {actions?.map((action) => (
-                        <StyledActionButton disabled={action.disabled ? action.disabled(item) : false} key={action.name} onClick={() => action.action(item.id)}>
+                        <StyledActionButton key={action.name} onClick={() => action.action(item.id)}>
                           {action.name}
                         </StyledActionButton>
                       ))}
                     </>
                   ) : (
-                    item[column.path]
+                    item[column.path] + (column.unit ? ` ${column.unit}` : "")
                   )}
                 </StyledTableCell>
               ))}

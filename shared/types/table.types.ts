@@ -3,6 +3,7 @@ export type Columns = {
     id?: string;
     path: string;
     name: string;
+    unit?: string;
 };
 
 export type Items = {

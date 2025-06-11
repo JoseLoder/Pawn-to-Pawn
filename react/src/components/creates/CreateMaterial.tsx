@@ -70,7 +70,7 @@ export function CreateMaterial() {
         </FormField>
         <FormField name="weight">
           <FormLabel htmlFor="max_weight">
-            Weight
+            Weight per meter (g)
           </FormLabel>
           <Form.Control asChild>
             <StyledInput
@@ -89,7 +89,7 @@ export function CreateMaterial() {
         </FormField>
         <FormField name="price">
           <FormLabel htmlFor="price">
-            Price per meter
+            Price per meter (€)
           </FormLabel>
           <Form.Control asChild>
             <StyledInput

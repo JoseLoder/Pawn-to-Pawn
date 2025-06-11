@@ -8,11 +8,13 @@ const columns = [
   },
   {
     path: "weight",
-    name: "Weight per meter",
+    name: "Weight per meter (g)",
+    unit: "g"
   },
   {
     path: "price",
-    name: "Price per meter",
+    name: "Price per meter (€)",
+    unit: "€"
   }
 ];
 
