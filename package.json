@@ -16,9 +16,5 @@
   "bugs": {
     "url": "https://github.com/jrx-jms/pawn-to-pawn/issues"
   },
-  "homepage": "https://github.com/jrx-jms/pawn-to-pawn#readme",
-  "dependencies": {
-    "@radix-ui/react-form": "^0.1.7",
-    "@radix-ui/themes": "^3.2.1"
-  }
+  "homepage": "https://github.com/jrx-jms/pawn-to-pawn#readme"
 }
