@@ -1,6 +1,7 @@
 // Tipos compartidos (usados tanto en frontend como backend)
 export type Machine = {
     id: string,
+    name: string,
     max_widht: number,
     max_weight: number,
     max_velocity: number,

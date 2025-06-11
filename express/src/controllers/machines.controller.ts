@@ -37,8 +37,8 @@ export const MachinesController = {
 
     async create(req: Request, res: Response) {
         try {
-            const { max_velocity, max_weight, max_widht, price } = req.body as CreateMachine;
-            const validated = await validateMachine({ price, max_velocity, max_weight, max_widht })
+            const { name, max_velocity, max_weight, max_widht, price } = req.body as CreateMachine;
+            const validated = await validateMachine({ name, price, max_velocity, max_weight, max_widht })
             if (!validated.success || !validated.data) {
                 if (validated.error instanceof ZodError) {
                     throw validated.error
@@ -47,7 +47,7 @@ export const MachinesController = {
             }
 
             const id = crypto.randomUUID()
-            const machineId = await MachineModel.create(id as string, { max_velocity, max_weight, max_widht, price })
+            const machineId = await MachineModel.create(id as string, { name, max_velocity, max_weight, max_widht, price })
             if (!machineId) throw new ServerError('Finally could not been created machine')
             const createdMachine = await MachineModel.getById(machineId)
             if (!createdMachine) throw new ServerError('The machine was not found after creation.')

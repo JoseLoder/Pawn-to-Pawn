@@ -7,6 +7,7 @@ import * as Form from "@radix-ui/react-form";
 import styled from "styled-components";
 
 const initialMachine: CreateMachineType = {
+  name: "",
   max_velocity: 0,
   max_weight: 0,
   max_widht: 0,
@@ -56,9 +57,23 @@ export function CreateMachine() {
     <LoginSection>
       <StyledH2>Create Machine</StyledH2>
       <FormRoot onSubmit={(event) => handleSubmit(event)}>
+        <FormField name="name">
+          <FormLabel htmlFor="name">Name</FormLabel>
+          <Form.Control asChild>
+            <StyledInput
+              type="text"
+              name="name"
+              id="name"
+              value={machine.name}
+              onChange={handleChance}
+              required
+            />
+          </Form.Control>
+          <FormMessage match="valueMissing">Please enter the name</FormMessage>
+        </FormField>
         <FormField name="max_velocity">
           <FormLabel htmlFor="max_velocity">
-            Maximum speed achievable
+            Maximum speed achievable (m/min)
           </FormLabel>
           <Form.Control asChild>
             <StyledInput
@@ -77,7 +92,7 @@ export function CreateMachine() {
         </FormField>
         <FormField name="max_weight">
           <FormLabel htmlFor="max_weight">
-            Maximum supported weight
+            Maximum supported weight (g)
           </FormLabel>
           <Form.Control asChild>
             <StyledInput
@@ -96,7 +111,7 @@ export function CreateMachine() {
         </FormField>
         <FormField name="max_widht">
           <FormLabel htmlFor="max_widht">
-            Maximum supported width
+            Maximum supported width (mm)
           </FormLabel>
           <Form.Control asChild>
             <StyledInput
@@ -115,7 +130,7 @@ export function CreateMachine() {
         </FormField>
         <FormField name="price">
           <FormLabel htmlFor="price">
-            Price per minute of operation
+            Price per minute of operation (€)
           </FormLabel>
           <Form.Control asChild>
             <StyledInput

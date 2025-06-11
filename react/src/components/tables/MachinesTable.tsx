@@ -4,20 +4,28 @@ import { Machine } from "@pawn-to-pawn/shared";
 
 const columns = [
   {
+    path: "name",
+    name: "Name",
+  },
+  {
     path: "max_widht",
-    name: "Maximum supported width",
+    name: "Maximum supported width (mm)",
+    unit: "mm"
   },
   {
     path: "max_weight",
-    name: "Maximum supported weight",
+    name: "Maximum supported weight (g)",
+    unit: "g"
   },
   {
     path: "max_velocity",
-    name: "Maximum speed achievable",
+    name: "Maximum speed achievable (m/min)",
+    unit: "m/min"
   },
   {
     path: "price",
-    name: "Price per minute of operation",
+    name: "Price per minute of operation (€)",
+    unit: "€"
   }
 ];
 
