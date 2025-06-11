@@ -35,8 +35,8 @@ exports.MachinesController = {
     },
     async create(req, res) {
         try {
-            const { max_velocity, max_weight, max_widht, price } = req.body;
-            const validated = await (0, machine_schema_1.validateMachine)({ price, max_velocity, max_weight, max_widht });
+            const { name, max_velocity, max_weight, max_widht, price } = req.body;
+            const validated = await (0, machine_schema_1.validateMachine)({ name, price, max_velocity, max_weight, max_widht });
             if (!validated.success || !validated.data) {
                 if (validated.error instanceof zod_1.ZodError) {
                     throw validated.error;
@@ -44,7 +44,7 @@ exports.MachinesController = {
                 throw new client_error_1.ClientError('Validation failed');
             }
             const id = crypto.randomUUID();
-            const machineId = await machine_model_1.MachineModel.create(id, { max_velocity, max_weight, max_widht, price });
+            const machineId = await machine_model_1.MachineModel.create(id, { name, max_velocity, max_weight, max_widht, price });
             if (!machineId)
                 throw new server_error_1.ServerError('Finally could not been created machine');
             const createdMachine = await machine_model_1.MachineModel.getById(machineId);
