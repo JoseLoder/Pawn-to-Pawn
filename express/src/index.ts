@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    credentials: true
+    credentials: true,
   })
 )
 console.log(`CORS origin set to: ${process.env.FRONTEND_URL}`);
