@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "cd ../shared && npm install && cd ../react && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
