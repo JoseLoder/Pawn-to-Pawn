@@ -35,7 +35,7 @@ async function initializeApp() {
     
     // Start server
     app.listen(port, () => {
-      console.log(`Server running on ${process.env.FRONTEND_URL}`)
+      console.log(`Server running`)
     })
   } catch (error) {
     console.error('Failed to initialize application:', error);

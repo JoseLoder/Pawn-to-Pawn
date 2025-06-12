@@ -182,7 +182,6 @@ export const OrdersController = {
                 status: 'inHold',
                 processingAt: Date.now().toString()
             }
-            console.log(updated)
             const idUpdated = await OrderModel.update(id, updated)
             const orderUpdated = await OrderModel.getById(idUpdated)
 

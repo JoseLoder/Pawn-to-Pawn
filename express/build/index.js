@@ -66,7 +66,7 @@ async function initializeApp() {
         await AdminManager_1.AdminManager.getInstance().initializeAdmin();
         // Start server
         app.listen(port, () => {
-            console.log(`Server running on ${process.env.FRONTEND_URL}`);
+            console.log(`Server running`);
         });
     }
     catch (error) {
