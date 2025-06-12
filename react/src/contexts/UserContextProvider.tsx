@@ -26,7 +26,6 @@ export const UserContextProvider: React.FC<UserContextProps> = ({ children }) =>
             mutationFn: login,
             onSuccess: (data: User) => {
                 setUser(data)
-                console.log("login")
             },
             onError: (e) => {
                 console.error(e)

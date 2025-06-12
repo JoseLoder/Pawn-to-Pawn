@@ -65,6 +65,7 @@ export function OrdersTable({ tableFor, actions }: { tableFor: TableFor, actions
     const { data: response, error, isLoading } = useQuery({ 
         queryKey: ["orders", tableFor],
         queryFn: requestOrders,
+        retry: false,
     });
 
     const items = response?.data;

@@ -130,7 +130,7 @@ export function CreateMachine() {
         </FormField>
         <FormField name="price">
           <FormLabel htmlFor="price">
-            Price per minute of operation (€)
+            Price per estimated kg weight (€/kg)
           </FormLabel>
           <Form.Control asChild>
             <StyledInput

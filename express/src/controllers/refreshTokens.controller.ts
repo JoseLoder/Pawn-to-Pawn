@@ -50,7 +50,7 @@ export const RefreshTokensController = {
           role: user.role
         },
         process.env.SECRET_JWT_KEY ?? 'fallback_secret',
-        { expiresIn: '15m' }
+        { expiresIn: '60m' }
       )
 
       // 6. Rotación: Crear nuevo refresh token
@@ -72,14 +72,14 @@ export const RefreshTokensController = {
       const cookieOptions: CookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none',
+        
         path: '/'
       }
 
       res
         .cookie('access_token', newAccessToken, {
           ...cookieOptions,
-          maxAge: 15 * 60 * 1000 // 15 minutos
+          maxAge: 60 * 60 * 1000 // 60 minutos
         })
         .cookie('refresh_token', newRefreshToken, {
           ...cookieOptions,

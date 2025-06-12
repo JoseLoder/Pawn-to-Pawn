@@ -23,7 +23,6 @@ export const Logout = () => {
       localStorage.removeItem("user");
       setUserContext(undefined)
       navigate("/")
-      console.log("Logged out");
     },
   });
 

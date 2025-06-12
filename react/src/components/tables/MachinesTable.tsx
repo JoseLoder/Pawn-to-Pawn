@@ -24,8 +24,8 @@ const columns = [
   },
   {
     path: "price",
-    name: "Price per minute of operation (€)",
-    unit: "€"
+    name: "Price per estimated kg weight (€/kg)",
+    unit: "€/kg"
   }
 ];
 

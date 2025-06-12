@@ -10,8 +10,8 @@ export type Order = {
     price: number,
     status: StatusOrder,
     createdAt: string,
-    processingAt: string,
-    completedAt: string
+    processingAt: string | null,
+    completedAt: string | null
 }
 
 export type PublicCreateOrder = Pick<Order, 'id_product' | 'quantity'>
@@ -27,8 +27,8 @@ export type OrderReturn = {
     price: number,
     status: StatusOrder,
     createdAt: string,
-    processingAt: string,
-    completedAt: string,
+    processingAt: string | null,
+    completedAt: string | null,
     product_name: string,
     client_name: string,
     operator_name: string | null

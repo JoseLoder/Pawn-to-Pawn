@@ -13,8 +13,8 @@ const columns = [
   },
   {
     path: "price",
-    name: "Price per meter (€)",
-    unit: "€"
+    name: "Price per meter (€/m)",
+    unit: "€/m"
   }
 ];
 

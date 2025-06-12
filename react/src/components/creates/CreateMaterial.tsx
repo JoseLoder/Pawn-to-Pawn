@@ -89,7 +89,7 @@ export function CreateMaterial() {
         </FormField>
         <FormField name="price">
           <FormLabel htmlFor="price">
-            Price per meter (€)
+            Price per meter (€/m)
           </FormLabel>
           <Form.Control asChild>
             <StyledInput

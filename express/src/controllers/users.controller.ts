@@ -145,15 +145,14 @@ export const UsersController = {
         },
         process.env.SECRET_JWT_KEY ?? 'fallback_secret',
         {
-          expiresIn: '15m',
+          expiresIn: '60m',
         }
       );
 
       const cookieOptions: CookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none',
-        maxAge: 15 * 60 * 1000,
+        maxAge: 60 * 60 * 1000,
         path: '/',
       };
 
@@ -233,7 +232,7 @@ export const UsersController = {
       const cookieOptions: CookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none',
+        
         path: '/',
       };
 
