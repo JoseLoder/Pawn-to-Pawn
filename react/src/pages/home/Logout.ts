@@ -1,5 +1,4 @@
 import { useMutation } from "@tanstack/react-query";
-import { Nav } from "../../components/semantic/Nav";
 import { logoutUser } from "../../api/users.api";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";

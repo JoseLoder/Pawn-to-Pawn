@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { PublicUser, Items, AxiosErrorData } from "@pawn-to-pawn/shared";
+import { PublicUser, AxiosErrorData } from "@pawn-to-pawn/shared";
 import { Table } from "./base/Table";
 import { ascendUserToOperator } from "../../api/users.api";
 import { AxiosError } from "axios";

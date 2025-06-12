@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../../api/users.api";
 import { UserContext } from "../../contexts/UserContext";
 import { useContext, useState, useEffect } from "react";
-import { LoginUser, PublicUser } from "@pawn-to-pawn/shared";
+import { PublicUser } from "@pawn-to-pawn/shared";
 import { BackEndError } from "../../errors/BackEndError";
 import * as Form from "@radix-ui/react-form";
 import styled from "styled-components";

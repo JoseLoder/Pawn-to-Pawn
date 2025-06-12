@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 import { Table } from "./base/Table";
 import { getMyOrders, getOrders, getPendingOrders } from "../../api/orders.api";
 import { useQuery } from "@tanstack/react-query";
