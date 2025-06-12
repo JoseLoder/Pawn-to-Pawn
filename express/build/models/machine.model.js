@@ -30,12 +30,13 @@ exports.MachineModel = {
     },
     async create(id, machine) {
         const sql = `
-            INSERT INTO machines (id, max_widht, max_weight, max_velocity, price)
-            VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO machines (id, name, max_widht, max_weight, max_velocity, price)
+            VALUES ($1, $2, $3, $4, $5, $6)
         `;
         try {
             await connect_1.DB.query(sql, [
                 id,
+                machine.name,
                 machine.max_widht,
                 machine.max_weight,
                 machine.max_velocity,
@@ -51,6 +52,11 @@ exports.MachineModel = {
         const updates = [];
         const values = [];
         let paramCount = 1;
+        if (machine.name !== undefined) {
+            updates.push(`name = $${paramCount}`);
+            values.push(machine.name);
+            paramCount++;
+        }
         if (machine.max_widht !== undefined) {
             updates.push(`max_widht = $${paramCount}`);
             values.push(machine.max_widht);

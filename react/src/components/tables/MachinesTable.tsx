@@ -19,8 +19,8 @@ const columns = [
   },
   {
     path: "max_velocity",
-    name: "Maximum speed achievable (m/min)",
-    unit: "m/min"
+    name: "Maximum speed achievable (g/min)",
+    unit: "g/min"
   },
   {
     path: "price",

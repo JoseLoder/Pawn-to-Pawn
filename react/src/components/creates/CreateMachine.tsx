@@ -73,7 +73,7 @@ export function CreateMachine() {
         </FormField>
         <FormField name="max_velocity">
           <FormLabel htmlFor="max_velocity">
-            Maximum speed achievable (m/min)
+            Maximum speed achievable (g/min)
           </FormLabel>
           <Form.Control asChild>
             <StyledInput
