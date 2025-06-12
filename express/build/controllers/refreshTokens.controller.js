@@ -68,7 +68,7 @@ exports.RefreshTokensController = {
             const newAccessToken = jsonwebtoken_1.default.sign({
                 id_user: user.id,
                 role: user.role
-            }, process.env.SECRET_JWT_KEY ?? 'fallback_secret', { expiresIn: '15m' });
+            }, process.env.SECRET_JWT_KEY ?? 'fallback_secret', { expiresIn: '60m' });
             // 6. Rotación: Crear nuevo refresh token
             const newRefreshToken = await exports.RefreshTokensController.create(user.id, req.headers['user-agent']);
             // 7. Revocar el anterior y limpiar tokens expirados
@@ -85,13 +85,12 @@ exports.RefreshTokensController = {
             const cookieOptions = {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'none',
                 path: '/'
             };
             res
                 .cookie('access_token', newAccessToken, {
                 ...cookieOptions,
-                maxAge: 15 * 60 * 1000 // 15 minutos
+                maxAge: 60 * 60 * 1000 // 60 minutos
             })
                 .cookie('refresh_token', newRefreshToken, {
                 ...cookieOptions,

@@ -121,7 +121,6 @@ exports.OrdersController = {
             const order = await order_model_1.OrderModel.getById(id);
             if (!order)
                 throw new client_error_1.ClientError('This order not exists');
-            console.log(order.status);
             if (order.status != 'inProgress')
                 throw new client_error_1.ClientError('The order must be inProgress before to be completed');
             const updated = {
@@ -171,8 +170,10 @@ exports.OrdersController = {
                 throw new client_error_1.ClientError('The order must first be a draft to be manufactured.');
             const updated = {
                 ...order,
-                status: 'inHold'
+                status: 'inHold',
+                processingAt: Date.now().toString()
             };
+            console.log(updated);
             const idUpdated = await order_model_1.OrderModel.update(id, updated);
             const orderUpdated = await order_model_1.OrderModel.getById(idUpdated);
             const orderReturn = await exports.OrdersController.orderReturn(orderUpdated);

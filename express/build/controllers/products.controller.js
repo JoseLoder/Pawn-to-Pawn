@@ -98,9 +98,9 @@ exports.ProductsController = {
             // Calculate price Material, lenght(meters) * Material.Price(euros). (Calculated by the transportation of the material, its cost, handling and benefits)
             // Example: 40(m) * 1.5(euros) = 60(euros)
             const priceMaterial = length * material.price;
-            // Calculate price machine, estimated_time(minutes) * Machine.Price(euros). (Calculated by the maintenance of the machine and the personnel working on it and benefits)
-            // Example: 20(minutes) * 1.5 = 30(euros)
-            const priceMachine = estimated_time * machine.price;
+            // Calculate price machine, estimated_weight * Machine.Price(euros). (Calculated by the maintenance of the machine and the personnel working on it and benefits)
+            // Example: 20000(g) * 1.5(euros) = 30000(euros) / 1000 = 30(euros)
+            const priceMachine = (estimated_weight * machine.price) / 1000;
             // Total Price, priceMaterial + PriceMachine
             // Example:  60(euros) + 30(euros) = 90 euros(per product)
             const price = priceMaterial + priceMachine;

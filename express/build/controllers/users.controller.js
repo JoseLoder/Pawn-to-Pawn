@@ -136,13 +136,12 @@ exports.UsersController = {
                 id_user: user.id,
                 role: user.role,
             }, process.env.SECRET_JWT_KEY ?? 'fallback_secret', {
-                expiresIn: '15m',
+                expiresIn: '60m',
             });
             const cookieOptions = {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'none',
-                maxAge: 15 * 60 * 1000,
+                maxAge: 60 * 60 * 1000,
                 path: '/',
             };
             req.session = {
@@ -218,7 +217,6 @@ exports.UsersController = {
             const cookieOptions = {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'none',
                 path: '/',
             };
             res

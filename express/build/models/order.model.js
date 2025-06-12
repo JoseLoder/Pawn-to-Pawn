@@ -95,6 +95,17 @@ exports.OrderModel = {
         if (updates.length === 0) {
             throw new client_error_1.ClientError('No fields to update');
         }
+        /*       if (order.processingAt !== null) {
+                    updates.push(`processing_at = $${paramCount}`)
+                    values.push(new Date(order.processingAt))
+                    paramCount++
+                }
+                if (order.completedAt !== null) {
+                    updates.push(`completed_at = $${paramCount}`)
+                    values.push(new Date(order.completedAt))
+                    paramCount++
+                }
+        */
         values.push(id);
         const sql = `
             UPDATE orders 
@@ -109,6 +120,7 @@ exports.OrderModel = {
             return id;
         }
         catch (error) {
+            console.error("Error updating order:", error);
             throw new server_error_1.QueryError(`Could not update order by this id: ${id}`);
         }
     },
