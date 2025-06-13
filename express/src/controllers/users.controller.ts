@@ -187,10 +187,6 @@ export const UsersController = {
         }
         throw new ClientError('Validation failed');
       }
-      const exists = await UserModel.getByEmail(email);
-      if (exists) {
-        throw new ClientError('This client already exists');
-      }
 
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(validated.data.password, salt);
