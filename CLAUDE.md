@@ -1234,3 +1234,4 @@ The shared package uses `file:../shared` linking and needs to be reinstalled.
 - **Admin user password should be changed** after first login via admin panel
 - **Refresh token revocation** is partially implemented (commented out in logout)
 - **User agent validation** can be added to refresh token flow for extra security
+- i see you create a DOCKER.md file I wanna all this files about how works certains parts in the route ./docs/ai-context/how
