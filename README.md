@@ -148,65 +148,46 @@ sequenceDiagram
 ### Role-Based Access Control
 
 ```mermaid
-graph LR
-    subgraph "Public Routes"
-        A[/register]
-        B[/login]
+flowchart TB
+    subgraph Public["Public Routes"]
+        A["POST /register"]
+        B["POST /login"]
     end
 
-    subgraph "Client Routes"
-        C[/client/create-order]
-        D[/client/show-orders]
-        E[/client/me]
+    subgraph Client["Client Routes (authenticated)"]
+        C["POST /orders (create)"]
+        D["GET /orders (own orders)"]
+        E["GET /users/me"]
     end
 
-    subgraph "Operator Routes"
-        F[/professional/show-orders]
-        G[/professional/preparation]
-        H[/professional/products]
-        I[/professional/me]
+    subgraph Operator["Operator Routes (operator + admin)"]
+        F["GET /orders/pending"]
+        G["GET /orders/preparation"]
+        H["GET /products"]
+        I["PATCH /orders/:id/assign"]
+        J["PATCH /orders/:id/complete"]
     end
 
-    subgraph "Admin Routes"
-        J[/admin/show-clients]
-        K[/admin/show-orders]
-        L[/admin/machines]
-        M[/admin/materials]
-        N[/admin/products]
-        O[/admin/me]
+    subgraph Admin["Admin Routes (admin only)"]
+        K["GET /users (all users)"]
+        L["GET /users/clients"]
+        M["POST /products"]
+        N["POST /materials"]
+        O["POST /machines"]
+        P["PATCH /users/:id (promote)"]
     end
 
-    P[Client User] --> A
-    P --> B
-    P --> C
-    P --> D
-    P --> E
+    U1[Client User] --> Public
+    U1 --> Client
 
-    Q[Operator User] --> A
-    Q --> B
-    Q --> C
-    Q --> D
-    Q --> E
-    Q --> F
-    Q --> G
-    Q --> H
-    Q --> I
+    U2[Operator User] --> Public
+    U2 --> Client
+    U2 --> Operator
 
-    R[Admin User] --> A
-    R --> B
-    R --> C
-    R --> D
-    R --> E
-    R --> F
-    R --> G
-    R --> H
-    R --> I
-    R --> J
-    R --> K
-    R --> L
-    R --> M
-    R --> N
-    R --> O
+    U3[Admin User] --> Public
+    U3 --> Client
+    U3 --> Operator
+    U3 --> Admin
 ```
 
 ## Tech Stack
