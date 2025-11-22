@@ -43,6 +43,11 @@ async function initializeApp() {
   }
 }
 
+// Health check endpoint
+app.get('/health', (_, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() })
+})
+
 // Endpoints
 app.use('/users', UsersRouter)
 app.use('/orders', OrdersRouter)
