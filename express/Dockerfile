@@ -14,9 +14,8 @@ RUN npm install
 WORKDIR /app/express
 COPY express/package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production && \
-    npm ci --only=development
+# Install all dependencies (devDependencies like TypeScript are needed to build)
+RUN npm ci
 
 # Copy backend source code
 COPY express/ ./
@@ -32,13 +31,15 @@ WORKDIR /app
 # Copy shared package
 COPY --from=builder /app/shared ./shared
 WORKDIR /app/shared
-RUN npm install --only=production
+RUN npm install --omit=dev
 
-# Copy backend built files and dependencies
+# Install only production dependencies (no TypeScript, ts-node-dev, etc.)
 WORKDIR /app/express
-COPY --from=builder /app/express/build ./build
-COPY --from=builder /app/express/node_modules ./node_modules
 COPY --from=builder /app/express/package*.json ./
+RUN npm ci --omit=dev
+
+# Copy compiled JavaScript
+COPY --from=builder /app/express/build ./build
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \

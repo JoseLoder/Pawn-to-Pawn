@@ -1,0 +1,40 @@
+# Docker only reads the .dockerignore at the root of the build context.
+# docker-compose.yml uses `context: .` (repo root), so this file applies to
+# both express/Dockerfile and react/Dockerfile.
+
+# Dependencies (installed inside the image for Linux; never copy the host's)
+**/node_modules
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+
+# Build output (generated inside the image)
+**/build
+**/dist
+**/.vite
+
+# Environment files (secrets are injected at runtime by docker-compose)
+**/.env
+**/.env.*
+!**/.env.example
+
+# IDE / OS
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+**/*~
+**/.DS_Store
+
+# Git
+.git
+**/.gitignore
+**/.gitattributes
+
+# Docker / docs / misc not needed in the images
+docker-compose.yml
+docs
+**/coverage
+**/*.log
+**/.cache
