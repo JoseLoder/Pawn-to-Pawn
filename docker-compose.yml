@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database (for local development)
   postgres:
@@ -37,6 +35,7 @@ services:
       PORT: 3000
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/pawnshop?sslmode=disable}
       SECRET_JWT_KEY: ${SECRET_JWT_KEY}
+      REFRESH_JWT_KEY: ${REFRESH_JWT_KEY}
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
       ADMIN_ID_NUMBER: ${ADMIN_ID_NUMBER}
       ADMIN_NAME: ${ADMIN_NAME}
