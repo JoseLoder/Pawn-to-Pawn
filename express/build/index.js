@@ -74,6 +74,10 @@ async function initializeApp() {
         process.exit(1);
     }
 }
+// Health check endpoint
+app.get('/health', (_, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 // Endpoints
 app.use('/users', users_route_1.UsersRouter);
 app.use('/orders', orders_route_1.OrdersRouter);
