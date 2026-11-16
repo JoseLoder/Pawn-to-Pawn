@@ -152,7 +152,8 @@ export const UsersController = {
       const cookieOptions: CookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none',
+        // 'none' (cross-site) requires secure (HTTPS); in local dev both apps are on localhost, so 'lax' is enough
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 60 * 60 * 1000,
         path: '/',
       };
@@ -229,7 +230,7 @@ export const UsersController = {
       const cookieOptions: CookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'none',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         path: '/',
       };
 
