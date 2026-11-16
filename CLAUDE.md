@@ -565,14 +565,12 @@ export const getClients = () => {
 ```typescript
 export const API_LOCAL = "https://pawn-to-pawn-express.vercel.app";
 
-export const API = import.meta.env.PROD
-  ? import.meta.env.VITE_API_URL
-  : API_LOCAL;
+export const API = import.meta.env.VITE_API_URL || API_LOCAL;
 ```
 
 **Environment Variables:**
-- `VITE_API_URL` - API URL used by production builds (`npm run build`). It is baked into the bundle at build time: set it in Vercel (frontend project) and as a build arg in Docker. If it is missing, `API` is `undefined` and every request fails.
-- `npm run dev` uses `API_LOCAL`, which points to the **deployed Vercel backend**, not to a local Express server
+- `VITE_API_URL` - Backend URL. Read when `npm run build` runs (baked into the bundle) and when `npm run dev` starts. Set in Vercel (frontend project, Production) and in `docker-compose.dev.yml` (`http://localhost:3000`) / as a build arg in `docker-compose.yml`
+- Without `VITE_API_URL`, the app falls back to `API_LOCAL`, the **deployed Vercel backend** (so a plain `npm run dev` talks to production, and CORS will reject it from `localhost`)
 - Use `import.meta.env.PROD` / `DEV` / `MODE`; Vite does not expose `NODE_ENV` on `import.meta.env`
 
 ## Domain Entities
@@ -1246,6 +1244,6 @@ The shared package uses `file:../shared` linking and needs to be reinstalled.
 - **No test suite currently exists** - Tests need to be implemented
 - **Two connection pools exist** - all models use `DB` from `connect.ts`; `AdminManager.ts` uses the `DatabaseManager.ts` singleton, which opens its own `Pool`
 - **Admin user password should be changed** after first login via admin panel
-- **Logout revokes the refresh tokens** of that user for the current device (user-agent)
-- **Cookies** use `sameSite: 'none'` and `secure: NODE_ENV === 'production'`. Browsers reject `SameSite=None` without `Secure`, so with `NODE_ENV=development` login cookies are not stored
+- **Logout only clears the cookies**: the refresh token revocation code in `UsersController.logout` is commented out, so the token stays valid in `user_refresh_tokens` until it expires
+- **Cookies** use `secure: NODE_ENV === 'production'` and `sameSite: 'none'` in production (frontend and backend are on different Vercel domains) / `'lax'` otherwise (browsers reject `SameSite=None` without `Secure`, and in local dev both apps are on `localhost`, which counts as the same site)
 - i see you create a DOCKER.md file I wanna all this files about how works certains parts in the route ./docs/ai-context/how

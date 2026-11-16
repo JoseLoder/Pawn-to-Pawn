@@ -8,6 +8,60 @@ Relacionado: [DOCKER-COMPOSE-EXPLICADO.md](./DOCKER-COMPOSE-EXPLICADO.md) (qué 
 >
 > Los ejemplos de base de datos usan el usuario `postgres` y la base `pawnshop`, que son los valores por defecto. Si los cambiaste en `.env` (`POSTGRES_USER`, `POSTGRES_DB`), sustitúyelos.
 
+### Dos archivos de Compose
+
+| Archivo | Para qué | Código | Base de datos |
+|---|---|---|---|
+| `docker-compose.dev.yml` | **Desarrollar día a día** | Tu carpeta montada + `npm run dev` → **recarga al guardar** | Postgres local con *profile* `db` (arranca solo cuando tú lo pides) |
+| `docker-compose.yml` | Probar cómo se comporta **en producción** | Compilado dentro de la imagen + Nginx → hay que reconstruir con cada cambio | Postgres local, arranca siempre |
+
+`docker compose` usa `docker-compose.yml` por defecto. Para el de desarrollo hay que indicarlo con `-f docker-compose.dev.yml` en **todos** los comandos (`up`, `logs`, `down`, `exec`…).
+
+---
+
+## Desarrollo diario con Docker (`docker-compose.dev.yml`)
+
+**Primera vez:** no hace falta crear ningún `.env`. Todos los valores de desarrollo están en el propio `docker-compose.dev.yml`; no tocan Supabase ni Vercel.
+
+```bash
+docker compose -f docker-compose.dev.yml up -d postgres
+```
+Arranca **solo** la base de datos. Como tiene `profiles: ["db"]`, un `up` normal no la arranca; nombrar el servicio explícitamente sí. La primera vez ejecuta `database/init.sql`.
+
+```bash
+docker compose -f docker-compose.dev.yml up
+```
+Arranca backend y frontend **en primer plano**, con los logs de los dos a la vista (`Ctrl+C` para parar). La primera vez tarda: instala las dependencias dentro de cada contenedor (`npm ci`). Añade `-d` si prefieres recuperar la terminal.
+
+- Frontend: http://localhost:5173
+- Backend: http://localhost:3000
+- Admin de desarrollo: `admin@local.dev` / `admin1234`
+
+**Recarga en caliente:** edita y guarda cualquier archivo de `express/src` (el backend se reinicia) o de `react/src` (Vite actualiza el navegador sin recargar).
+
+```bash
+docker compose -f docker-compose.dev.yml down
+```
+Para y borra los contenedores del backend y del frontend. **La base de datos sigue encendida** (está en otro *profile*), así que la próxima vez que hagas `up` arranca al momento y con los mismos datos.
+
+```bash
+docker compose -f docker-compose.dev.yml --profile db down
+```
+Para **todo**, base de datos incluida. Los datos se conservan en el volumen `pawn-to-pawn-dev_postgres_dev_data`.
+
+```bash
+docker compose -f docker-compose.dev.yml --profile db down -v
+```
+⚠️ Para todo **y borra los datos** de la base de datos de desarrollo. El próximo arranque vuelve a ejecutar `init.sql` (úsalo cuando cambies el esquema).
+
+**Cuándo reiniciar:**
+- Cambiaste `package.json` (añadiste una dependencia) → `docker compose -f docker-compose.dev.yml restart backend` (o `frontend`): vuelve a ejecutar `npm ci`.
+- Cambiaste variables en `docker-compose.dev.yml` → `docker compose -f docker-compose.dev.yml up -d` (recrea los contenedores afectados).
+
+**Por qué no usa tu `express/.env`:** las variables de `environment:` del compose existen antes de que arranque Node, y `dotenv` nunca sobrescribe una variable que ya existe. Así el contenedor nunca usa tu Supabase de producción ni tus secretos, aunque el archivo esté montado.
+
+**Por qué `node_modules` no viene de tu Mac:** las líneas `- /app/express/node_modules` del compose son **volúmenes anónimos** que tapan esa carpeta dentro del contenedor. Así se usan dependencias instaladas para Linux (por ejemplo `bcrypt` o `esbuild`, que tienen binarios nativos) y no las de macOS.
+
 ---
 
 ## 0. Anatomía de un comando `docker compose`
@@ -240,7 +294,7 @@ y en `express/.env` pon `DATABASE_URL=postgresql://postgres:TU_PASSWORD@localhos
 
 | Comando | Qué hace |
 |---|---|
-| `npm run dev` | Servidor de Vite en `http://localhost:5173` con recarga instantánea. Usa la API de Vercel (`API_LOCAL` en `config.ts`), porque en modo dev `import.meta.env.PROD` es `false`. |
+| `npm run dev` | Servidor de Vite en `http://localhost:5173` con recarga instantánea. Llama a la API que diga `VITE_API_URL`; si no está definida, usa la de Vercel (`API_LOCAL` en `config.ts`), y el backend de producción la rechazará por CORS desde `localhost`. Para trabajar en local usa `docker-compose.dev.yml`, que ya la define. |
 | `npm run build` | Instala `shared`, comprueba tipos (`tsc -b`) y genera `dist/` (es lo que hace el Dockerfile). |
 | `npm run preview` | Sirve `dist/` en local para probar el build de producción. |
 | `npm run lint` | Pasa ESLint por el código. |
