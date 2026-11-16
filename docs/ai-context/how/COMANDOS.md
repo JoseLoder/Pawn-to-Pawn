@@ -58,6 +58,39 @@ docker compose -f docker-compose.dev.yml --profile db down -v
 - Cambiaste `package.json` (añadiste una dependencia) → `docker compose -f docker-compose.dev.yml restart backend` (o `frontend`): vuelve a ejecutar `npm ci`.
 - Cambiaste variables en `docker-compose.dev.yml` → `docker compose -f docker-compose.dev.yml up -d` (recrea los contenedores afectados).
 
+### Si el frontend no conecta con el backend (`ERR_CONNECTION_REFUSED`)
+
+Ese error en la pestaña Network significa que **nada escucha en `localhost:3000`**: el backend no ha arrancado o su puerto no está publicado. Comprueba en este orden:
+
+```bash
+docker compose -f docker-compose.dev.yml ps
+```
+Columna **PORTS**: el backend debe mostrar `0.0.0.0:3000->3000/tcp`. Si solo pone `3000/tcp`, el puerto **no** está publicado en tu Mac.
+
+```bash
+docker compose -f docker-compose.dev.yml logs --tail=30 backend
+```
+Debe terminar en `Server running`. Si se queda en `npm ci` o aparece `EAI_AGAIN registry.npmjs.org`, el contenedor no tiene internet y no puede descargar dependencias.
+
+```bash
+docker inspect -f '{{json .NetworkSettings.Networks}}' pawn-to-pawn-dev-backend-1
+```
+Debe mostrar `pawn-to-pawn-dev_default`. Si sale `{}`, el contenedor **no está conectado a ninguna red**: eso explica a la vez que no tenga puerto ni internet. Es un fallo puntual de Docker Desktop (pasa a veces si el contenedor se crea justo cuando la red se está creando o borrando), no de la configuración.
+
+**Solución:** volver a crear solo ese contenedor:
+```bash
+docker compose -f docker-compose.dev.yml up -d --force-recreate --no-deps backend
+```
+- `--force-recreate`: lo borra y lo crea de nuevo aunque nada haya cambiado.
+- `--no-deps`: no toca los servicios de los que depende (Postgres sigue como estaba).
+
+Si fallan varias cosas a la vez, reinicia todo desde cero (los datos se conservan en el volumen):
+```bash
+docker compose -f docker-compose.dev.yml --profile db down
+docker compose -f docker-compose.dev.yml up -d postgres
+docker compose -f docker-compose.dev.yml up
+```
+
 **Por qué no usa tu `express/.env`:** las variables de `environment:` del compose existen antes de que arranque Node, y `dotenv` nunca sobrescribe una variable que ya existe. Así el contenedor nunca usa tu Supabase de producción ni tus secretos, aunque el archivo esté montado.
 
 **Por qué `node_modules` no viene de tu Mac:** las líneas `- /app/express/node_modules` del compose son **volúmenes anónimos** que tapan esa carpeta dentro del contenedor. Así se usan dependencias instaladas para Linux (por ejemplo `bcrypt` o `esbuild`, que tienen binarios nativos) y no las de macOS.
