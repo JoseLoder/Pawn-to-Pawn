@@ -1,0 +1,101 @@
+# =============================================================================
+# Pawn-to-Pawn - DEVELOPMENT environment (hot reload)
+# =============================================================================
+# Your source code is mounted into the containers and runs with `npm run dev`
+# (ts-node-dev for Express, Vite for React): save a file and it reloads.
+#
+#   docker compose -f docker-compose.dev.yml up -d postgres   # 1. start the DB (only when you need it)
+#   docker compose -f docker-compose.dev.yml up               # 2. start backend + frontend
+#
+# Frontend: http://localhost:5173   Backend: http://localhost:3000
+#
+# The database has the "db" profile, so `up` does NOT start it by itself:
+# you decide when it runs, and it keeps running while you restart the apps.
+#
+# All values below are DEV-ONLY and safe to commit. Nothing here talks to
+# Supabase or Vercel. For a production-like run, use docker-compose.yml.
+# =============================================================================
+
+name: pawn-to-pawn-dev
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL (local, disposable). Schema from database/init.sql.
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    profiles: ["db"]
+    environment:
+      POSTGRES_DB: pawnshop
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"            # connect from DBeaver/TablePlus: localhost:5432
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d pawnshop"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ---------------------------------------------------------------------------
+  # Express API with hot reload (ts-node-dev)
+  # ---------------------------------------------------------------------------
+  backend:
+    image: node:20-alpine
+    working_dir: /app/express
+    # Install inside the container (Linux binaries, e.g. bcrypt) and start dev mode.
+    # npm ci installs exactly what package-lock.json says and never rewrites it
+    # (npm install would, because the container's npm version differs from your Mac's).
+    command: sh -c "cd /app/shared && npm ci && cd /app/express && npm ci && npm run dev"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./express:/app/express
+      - ./shared:/app/shared
+      # Anonymous volumes hide your Mac's node_modules from the container.
+      - /app/express/node_modules
+      - /app/shared/node_modules
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      # These take precedence over express/.env (dotenv never overrides existing variables),
+      # so the container never uses your production Supabase or secrets.
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/pawnshop?sslmode=disable
+      FRONTEND_URL: http://localhost:5173
+      SECRET_JWT_KEY: dev-only-access-secret
+      REFRESH_JWT_KEY: dev-only-refresh-secret
+      ADMIN_ID_NUMBER: "000000000"
+      ADMIN_NAME: Admin
+      ADMIN_EMAIL: admin@local.dev
+      ADMIN_DEFAULT_PASSWORD: admin1234
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: false          # don't force-start the DB; wait for it only if it's running
+
+  # ---------------------------------------------------------------------------
+  # React app with hot reload (Vite dev server)
+  # ---------------------------------------------------------------------------
+  frontend:
+    image: node:20-alpine
+    working_dir: /app/react
+    # --host 0.0.0.0: listen on all interfaces so the browser can reach the container.
+    command: sh -c "cd /app/shared && npm ci && cd /app/react && npm ci && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./react:/app/react
+      - ./shared:/app/shared
+      - /app/react/node_modules
+      - /app/shared/node_modules
+    environment:
+      # The browser (outside Docker) calls the API, so it is localhost, not "backend".
+      VITE_API_URL: http://localhost:3000
+    depends_on:
+      - backend
+
+volumes:
+  postgres_dev_data:
