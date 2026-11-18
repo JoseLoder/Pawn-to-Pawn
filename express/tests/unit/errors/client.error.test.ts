@@ -41,6 +41,7 @@ describe('UnauthorizedError', () => {
         // Assert
         expect(error.message).toBe(message)
     })
+    // Known bug: UnauthorizedError sets its name to 'ClientError'. To be fixed in block 4 (TDD).
     it.fails('is named UnauthorizedError', () => {
         // Arrange & Act
         const name = "UnauthorizedError"
