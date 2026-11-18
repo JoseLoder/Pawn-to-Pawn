@@ -125,8 +125,8 @@ Notas de orden:
 
 | Bloque | Estado | PR |
 |---|---|---|
-| 0. Onboarding | En curso | |
-| 1. Unitarios | Pendiente | |
+| 0. Onboarding | hecho | |
+| 1. Unitarios | En curso | |
 | 2. Mocks | Pendiente | |
 | 3. Integración API | Pendiente | |
 | 4. TDD con bugs reales | Pendiente | |
