@@ -8,6 +8,7 @@ import { ZodError } from "zod";
 import { MaterialModel } from "../models/material.model";
 import { MachineModel } from "../models/machine.model";
 import { ServerError } from "../errors/server.error";
+import { calculateProduct } from "../services/product.calculations";
 
 export const ProductsController = {
 
@@ -65,52 +66,24 @@ export const ProductsController = {
                 }
                 throw new ClientError('Validation failed')
             }
-            //serch id_material to get: weight
+            //search by id_material to get: material.weight
             const material = await MaterialModel.getById(id_material)
             if (!material) {
                 throw new ClientError('This material not exists')
             }
-            // get lenght(meters) * Material.weight(g) = estimated_weight(g)
-            // Example: 40m * 500g = 20000g
-            const estimated_weight = material.weight * length
 
-            //search id_machine to get: Max_widht,Max_velocity,Max_weight
+            //search by id_machine to get: Max_widht,Max_velocity,Max_weight
             const machine = await MachineModel.getById(id_machine)
             if (!machine) {
                 throw new ClientError('This machine not exists')
             }
 
-            // check weight(g) < Machine.Max_weight(g)
-            if (estimated_weight > machine.max_weight) {
-                throw new ClientError(`
-                    This machine is too small for that product, 
-                    choose another machine that supports MORE WEIGHT,
-                    OR REDUCE THE LENGTH of the product.
-                `)
-            }
-            // check widht(mm) < Machine.Max_widht(mm)
-            if (widht > machine.max_widht)
-                throw new ClientError(`
-                        This machine is too narrow for that product, 
-                        choose another WIDER MACHINE, 
-                        OR REDUCE THE WIDTH of the product.
-                `)
-            // get (weight(g) / Machine.Max_velocity(g/minutes)) = estimated_time(minutes)
-            // Example: 20000g / 1000g = 20 minutes(per product)
-            const estimated_time = estimated_weight / machine.max_velocity
-
-            // Calculate price Material, lenght(meters) * Material.Price(euros). (Calculated by the transportation of the material, its cost, handling and benefits)
-            // Example: 40(m) * 1.5(euros) = 60(euros)
-            const priceMaterial = length * material.price
-
-            // Calculate price machine, estimated_weight * Machine.Price(euros). (Calculated by the maintenance of the machine and the personnel working on it and benefits)
-            // Example: 20000(g) * 1.5(euros) = 30000(euros) / 1000 = 30(euros)
-            const priceMachine = (estimated_weight * machine.price) / 1000
-
-            // Total Price, priceMaterial + PriceMachine
-            // Example:  60(euros) + 30(euros) = 90 euros(per product)
-            const price = priceMaterial + priceMachine
-
+            const result = calculateProduct({
+                material,
+                machine,
+                length,
+                widht
+            })
             const product: Product = {
                 id: crypto.randomUUID(),
                 id_machine,
@@ -119,15 +92,16 @@ export const ProductsController = {
                 cover,
                 widht,
                 length,
-                estimated_time,
-                estimated_weight,
-                price
+                estimated_time: result.estimated_time,
+                estimated_weight: result.estimated_weight,
+                price: result.price
             }
 
             const productId = await ProductModel.create(product)
             if (!productId) {
                 throw new ServerError('Finally could not been created product')
             }
+            
             const createdProduct = await ProductModel.getById(productId)
             if (!createdProduct) {
                 throw new ServerError('The product was not found after creation.')
