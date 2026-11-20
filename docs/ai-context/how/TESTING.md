@@ -99,6 +99,26 @@ En una API Express la mayoría de los fallos reales están en la **unión entre 
 - El **logout no revoca** el refresh token (código comentado en `UsersController.logout`).
 - `processing_at` / `completed_at` de los pedidos **nunca se rellenan**.
 
+**Decisiones de negocio pendientes** (detectadas en el bloque 1; cambian datos o el esquema de la BD, así que van con migraciones, bloque 8):
+- **El ancho no influye en el peso del producto.** `estimated_weight = material.weight × length`: una bobina de 100 m pesa lo mismo con 500 mm que con 1000 mm de ancho. Lo habitual sería expresar el material en gramaje (g/m²): `peso (g) = gramaje × largo (m) × ancho (m)`. Cambiarlo cambia el significado de `materials.weight` y los precios de los productos ya guardados. Hoy queda fijado por un test de caracterización en `tests/unit/services/product.calculations.test.ts`.
+- **Unidades mezcladas y sin documentar** en los nombres de las columnas. Las actuales, deducidas de las fórmulas de `ProductsController.create`:
+
+  | Campo | Unidad |
+  |---|---|
+  | `products.length` | m |
+  | `products.widht`, `machines.max_widht` | mm |
+  | `materials.weight` | g/m |
+  | `materials.price` | €/m |
+  | `machines.max_weight` | g |
+  | `machines.max_velocity` | g/min |
+  | `machines.price` | €/kg |
+  | `products.estimated_time` | min |
+
+**Pendientes en otras capas:**
+- **Frontend (bloque 5):** el formulario de registro no conoce las reglas nuevas del backend (DNI de 8 dígitos + letra, teléfono de 9 dígitos con `+34` opcional). Un dato inválido solo se detecta al enviar, con el error de zod.
+- **Documentación:** `CLAUDE.md` dice zod 3.24, pero `express/` tiene instalado zod **4.x**.
+
+
 ---
 
 ## 6. Hoja de ruta por bloques
@@ -125,7 +145,7 @@ Notas de orden:
 
 | Bloque | Estado | PR |
 |---|---|---|
-| 0. Onboarding | hecho | |
+| 0. Onboarding | Hecho | #8, #9 |
 | 1. Unitarios | En curso | |
 | 2. Mocks | Pendiente | |
 | 3. Integración API | Pendiente | |
