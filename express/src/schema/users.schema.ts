@@ -5,8 +5,8 @@ const userRegisterSchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(6),
-  id_number: z.string().length(9),
-  phone: z.string().regex(/^\d+$/).length(9)
+  id_number: z.string().toUpperCase().regex(/^\d{8}[A-Z]$/),
+  phone: z.string().regex(/^(\+34\s?)?\d{9}$/)
 })
 
 const userLoginSchema = z.object({
