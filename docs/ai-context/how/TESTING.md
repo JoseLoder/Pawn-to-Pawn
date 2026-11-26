@@ -93,6 +93,7 @@ En una API Express la mayoría de los fallos reales están en la **unión entre 
 - `express/src/database/connect.ts` se conecta a la BD **al importarse** → cualquier test que lo importe abre una conexión.
 - Los controladores mezclan cálculo y BD (el precio de un producto se calcula dentro de `ProductsController.create`) → extraer funciones puras las hace triviales de testear.
 - `tsconfig.json` compila todo `src/**/*.ts` → un `*.test.ts` dentro de `src/` acabaría en `build/` (y en Vercel).
+- `RefreshTokensController.refresh` no tiene tests. En el bloque 2 se sustituyó por un mock, así que su lógica se cubrirá en el bloque 3 con tests de integración.
 
 **Bugs reales, buenos para practicar TDD** (bloque 4):
 - Un cliente que entra en una ruta de admin recibe **400** en vez de **403 Forbidden**.
@@ -146,8 +147,8 @@ Notas de orden:
 | Bloque | Estado | PR |
 |---|---|---|
 | 0. Onboarding | Hecho | #8, #9 |
-| 1. Unitarios | En curso | |
-| 2. Mocks | Pendiente | |
+| 1. Unitarios | Hecho | #10 |
+| 2. Mocks | Hecho | |
 | 3. Integración API | Pendiente | |
 | 4. TDD con bugs reales | Pendiente | |
 | 5. Componentes React | Pendiente | |
