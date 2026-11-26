@@ -7,5 +7,6 @@ export default defineConfig({
             REFRESH_JWT_KEY: 'test-refresh-secret',
             DATABASE_URL: 'postgresql://test:test@127.0.0.1:1/unreachable',
         },
+        clearMocks: true
     },
 })
