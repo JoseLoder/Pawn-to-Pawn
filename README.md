@@ -8,10 +8,12 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)
 ![React](https://img.shields.io/badge/React-19-61dafb)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ed)
+![Vitest](https://img.shields.io/badge/tested_with-Vitest-6e9f18)
 
 Final project of my Higher Vocational Training in Web Application Development (DAW). Clients place orders for configurable products; operators pick them up, prepare them and mark them as completed; administrators manage the catalogue (products, materials and machines) and the users.
 
-<!-- TODO: add 1–2 screenshots here, e.g. ![Operator view](docs/screenshots/operator.png) -->
+<!-- TODO: add 2 screenshots: the client order form and the operator view -->
+<!-- ![Client view](docs/screenshots/client.png) ![Operator view](docs/screenshots/operator.png) -->
 
 ## Table of contents
 
@@ -21,6 +23,7 @@ Final project of my Higher Vocational Training in Web Application Development (D
 - [Authentication](#authentication)
 - [Roles and permissions](#roles-and-permissions)
 - [API reference](#api-reference)
+- [Testing](#testing)
 - [Tech stack](#tech-stack)
 - [Getting started](#getting-started)
 - [Project structure](#project-structure)
@@ -29,12 +32,13 @@ Final project of my Higher Vocational Training in Web Application Development (D
 ## Highlights
 
 - **Layered REST API** with Express: routes → middlewares → controllers → models, using raw SQL through `pg` (no ORM).
-- **Input validation with Zod** on every write endpoint.
+- **Input validation with Zod** on every write endpoint, including Spanish DNI and phone number formats on registration.
 - **Centralised error handling** with custom error classes (`ClientError`, `UnauthorizedError`, …) mapped to HTTP status codes in a single handler.
 - **JWT authentication in HTTP-only cookies**: short-lived access token plus a refresh token persisted in the database, with transparent renewal in the auth middleware.
 - **Role-based authorisation** (client, operator, admin) implemented as composable Express middlewares.
 - **Shared types package** (`@pawn-to-pawn/shared`) consumed by both backend and frontend through npm workspaces, so API contracts are type-checked end to end.
 - **Dockerised stack** (PostgreSQL + API + Nginx-served frontend) with health checks and a Makefile for setup, logs and database backups.
+- **Unit tests with Vitest** (schemas, business logic and middlewares with mocks), added block by block following a [testing roadmap](docs/ai-context/how/TESTING.md).
 
 ## Architecture
 
@@ -75,7 +79,7 @@ stateDiagram-v2
     done --> [*]
 ```
 
-- The order price is calculated on the server (`quantity × product price`), never trusted from the client.
+- The order price is calculated on the server (`quantity × product price`, in [`services/product.calculations.ts`](express/src/services/product.calculations.ts)), never trusted from the client.
 - Transitions are validated in the controller: for example, an order can only be completed if it is `inProgress`.
 
 ## Authentication
@@ -166,11 +170,34 @@ All routes except register, login and logout require authentication cookies. The
 
 Example requests for every endpoint are available as `.http` files in [`express/src/api_requests/`](express/src/api_requests/).
 
+## Testing
+
+The backend is tested with [Vitest](https://vitest.dev). Tests live in [`express/tests/`](express/tests/) and mirror the structure of `src/`.
+
+```bash
+cd express
+npm test             # run once
+npm run test:watch   # re-run on every change
+```
+
+Covered so far (unit tests, 39 in total):
+
+| Area | What is tested |
+|------|----------------|
+| Errors | Custom error classes and their HTTP status codes |
+| Validation | Zod user schemas: required fields, email, password, Spanish DNI and phone formats |
+| Business logic | Product price and quantity calculations |
+| Middlewares | `auth` and role middlewares (`authClient`, `authOperator`, `authAdmin`), isolated with mocked `req`, `res` and `next` |
+
+Tests are being added in blocks, each one merged through its own pull request. Done: setup, unit tests and mocks. Next: integration tests with Supertest and a real PostgreSQL, TDD on real bugs, frontend tests, E2E with Playwright and CI/CD with GitHub Actions. The full plan (in Spanish) is in [`docs/ai-context/how/TESTING.md`](docs/ai-context/how/TESTING.md).
+
 ## Tech stack
 
 **Backend:** Node.js, Express 4, TypeScript (strict), PostgreSQL with `pg`, Zod, jsonwebtoken, bcrypt, cookie-parser, CORS.
 
 **Frontend:** React 19, React Router 7, TanStack Query 5, axios, styled-components, Radix UI, Vite.
+
+**Testing:** Vitest.
 
 **Tooling and infrastructure:** npm workspaces, Docker and Docker Compose, Nginx, Makefile, Vercel, Supabase (managed PostgreSQL).
 
@@ -251,6 +278,8 @@ Never commit real values: `.env` files are ignored by Git and `.env.example` onl
 
 Planned improvements:
 
+- [x] Unit tests with Vitest (errors, Zod schemas, price calculations)
+- [x] Unit tests with mocks (auth and role middlewares)
 - [ ] Integration tests with Vitest and Supertest (auth, roles and order workflow)
 - [ ] CI with GitHub Actions (lint, type-check and tests on every push)
 - [ ] Fail fast at start-up when required secrets are missing
@@ -258,9 +287,14 @@ Planned improvements:
 - [ ] OpenAPI / Swagger documentation
 - [ ] Build on deploy instead of committing compiled output
 
+## How it was built
+
+I use an AI assistant as a pair programmer: [`CLAUDE.md`](CLAUDE.md) and the agents in `.claude/agents/` give it the project context. The tests and their configuration are written by me, following the testing roadmap.
+
 ## Author
 
-**José Miguel Martín** — Backend / Full-Stack Developer (Node.js · TypeScript)
+**José Martín** — Full-Stack Developer (Node.js · TypeScript)
 
-- Portfolio: https://joseloder.github.io/Curriculum-Vitae/
+- Portfolio: [joseloder.pro](https://joseloder.pro)
+- LinkedIn: [joseloder](https://www.linkedin.com/in/joseloder)
 - GitHub: [@JoseLoder](https://github.com/JoseLoder)
